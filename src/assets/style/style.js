@@ -30,7 +30,14 @@ export const GlobalStyle = createGlobalStyle`
 		line-height: 1;
 	}
 	html, body {
+		width:100%;
+		height:100%;
+		user-select:none;
+		overflow:hidden;
 		background: #f2f3f4;;
+	}
+	html, body {
+  font-family: 'PingFangSC-Light', 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', 'Arial', 'sans-serif';
 	}
 	ol, ul {
 		list-style: none;

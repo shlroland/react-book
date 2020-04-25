@@ -1,5 +1,5 @@
 import React from 'react';
-import { GlobalStyle } from './style.js';
+import { GlobalStyle } from './assets/style/style.js';
 import './assets/style/icon.css'
 
 
