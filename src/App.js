@@ -1,6 +1,6 @@
 import './assets/style/icon.css'
 import React from 'react'
-import { GlobalStyle } from './assets/style/style.js'
+import { Reset } from './assets/style'
 import {
   BrowserRouter as Router,
   Route,
@@ -14,7 +14,7 @@ import store from './store'
 function App() {
   return (
     <Provider store={store}>
-      <GlobalStyle></GlobalStyle>
+      <Reset></Reset>
       <Router>
         <Switch>
           <Route path="/ebook" component={Ebook}></Route>
