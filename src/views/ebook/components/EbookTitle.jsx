@@ -1,25 +1,30 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { EbookTitleWrapper } from '../style/EbookTitle'
 
 const EbookTitle = () => {
-  return (
+  const menuVisible = useSelector((state) =>
+    state.getIn(['ebook', 'menuVisible'])
+  )
+
+  return menuVisible ? (
     <EbookTitleWrapper>
-      <div class="left">
-        <span class="icon-back"></span>
+      <div className="left">
+        <span className="icon-back"></span>
       </div>
-      <div class="right">
-        <div class="icon-wrapper">
-          <span class="icon-shelf"></span>
+      <div className="right">
+        <div className="icon-wrapper">
+          <span className="icon-shelf"></span>
         </div>
-        <div class="icon-wrapper">
-          <span class="icon-cart"></span>
+        <div className="icon-wrapper">
+          <span className="icon-cart"></span>
         </div>
-        <div class="icon-wrapper">
-          <span class="icon-more"></span>
+        <div className="icon-wrapper">
+          <span className="icon-more"></span>
         </div>
       </div>
     </EbookTitleWrapper>
-  )
+  ) : null
 }
 
 export default EbookTitle
