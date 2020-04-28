@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { actionCreators as actions } from '../store'
 import Epub from 'epubjs'
+import { changeSettingVisible } from '../store/actionCreators'
 
 const baseUrl = 'http://localhost:9900/epub/'
 
@@ -11,9 +12,8 @@ const { changeFileName, changeMenuVisible } = actions
 const EbookReader = () => {
   const dispatch = useDispatch()
   const { fileName } = useParams()
-  const menuVisible = useSelector((state) =>
-    state.getIn(['ebook', 'menuVisible'])
-  )
+
+  const { menuVisible } = useSelector((state) => state.get('ebook').toJS())
 
   const book = useRef(null)
   const rendition = useRef(null)
@@ -33,6 +33,9 @@ const EbookReader = () => {
   }, [])
 
   const toggleMenuVisible = useCallback(() => {
+    if (menuVisible) {
+      dispatch(changeSettingVisible(-1))
+    }
     dispatch(changeMenuVisible(!menuVisible))
   }, [dispatch, menuVisible])
 
