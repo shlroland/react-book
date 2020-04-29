@@ -1,5 +1,5 @@
 import * as actionTypes from './constants'
-// import { fromJS } from 'immutable';
+import { fromJS } from 'immutable'
 
 export const changeFileName = (data) => ({
   type: actionTypes.CHANGE_FILENAME,
@@ -50,7 +50,7 @@ export const changeIsPaginating = (data) => ({
 })
 export const changeCurrentBook = (data) => ({
   type: actionTypes.CHANGE_CURRENT_BOOK,
-  data,
+  data: fromJS(data),
 })
 export const changeNavigation = (data) => ({
   type: actionTypes.CHANGE_NAVIGATION,

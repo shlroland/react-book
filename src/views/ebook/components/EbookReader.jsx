@@ -3,7 +3,11 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { actionCreators as actions } from '../store'
 import Epub from 'epubjs'
-import { changeSettingVisible } from '../store/actionCreators'
+import {
+  changeSettingVisible,
+  changeCurrentBook,
+  changeFontFamilyVisible,
+} from '../store/actionCreators'
 
 const baseUrl = 'http://localhost:9900/epub/'
 
@@ -13,9 +17,10 @@ const EbookReader = () => {
   const dispatch = useDispatch()
   const { fileName } = useParams()
 
-  const { menuVisible } = useSelector((state) => state.get('ebook').toJS())
+  const { menuVisible, currentBook } = useSelector((state) =>
+    state.get('ebook').toJS()
+  )
 
-  const book = useRef(null)
   const rendition = useRef(null)
   const touchStartX = useRef(0)
   const touchStartTime = useRef(0)
@@ -35,6 +40,7 @@ const EbookReader = () => {
   const toggleMenuVisible = useCallback(() => {
     if (menuVisible) {
       dispatch(changeSettingVisible(-1))
+      dispatch(changeFontFamilyVisible(false))
     }
     dispatch(changeMenuVisible(!menuVisible))
   }, [dispatch, menuVisible])
@@ -50,36 +56,62 @@ const EbookReader = () => {
       const time = e.timeStamp - touchStartTime.current
       if (time < 500 && offsetX > 40) {
         prevPage()
+        if (menuVisible) {
+          toggleMenuVisible()
+        }
       } else if (time < 500 && offsetX < -40) {
         nextPage()
+        if (menuVisible) {
+          toggleMenuVisible()
+        }
       } else {
         toggleMenuVisible()
       }
       e.stopPropagation()
     },
-    [nextPage, prevPage, toggleMenuVisible]
+    [menuVisible, nextPage, prevPage, toggleMenuVisible]
   )
 
   useEffect(() => {
-    dispatch(changeFileName(fileName))
     const url = `${baseUrl}${fileName.split('|').join('/')}.epub`
-    book.current = new Epub(url)
-    rendition.current = book.current.renderTo('read', {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      method: 'default',
-    })
-    rendition.current.display()
+    const constant = new Epub(url)
+    dispatch(changeFileName(fileName))
+    dispatch(changeCurrentBook(constant))
+    // if (currentBook) {
+
+    // }
+    // rendition.current = constant.renderTo('read', {
+    //   width: window.innerWidth,
+    //   height: window.innerHeight,
+    //   method: 'default',
+    // })
+    // rendition.current.display()
   }, [dispatch, fileName])
 
   useEffect(() => {
-    rendition.current.on('touchstart', registerTouchStart)
-    rendition.current.on('touchend', registerTouchEnd)
-    return () => {
-      rendition.current.off('touchstart', registerTouchStart)
-      rendition.current.off('touchend', registerTouchEnd)
+    if (currentBook) {
+      console.log(currentBook)
+      rendition.current = currentBook.renderTo('read', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        method: 'default',
+      })
+      rendition.current.display()
     }
-  }, [registerTouchEnd, registerTouchStart])
+  }, [currentBook])
+
+  useEffect(() => {
+    if (currentBook) {
+      rendition.current.on('touchstart', registerTouchStart)
+      rendition.current.on('touchend', registerTouchEnd)
+    }
+    return () => {
+      if (currentBook) {
+        rendition.current.off('touchstart', registerTouchStart)
+        rendition.current.off('touchend', registerTouchEnd)
+      }
+    }
+  }, [currentBook, registerTouchEnd, registerTouchStart])
 
   return (
     <>

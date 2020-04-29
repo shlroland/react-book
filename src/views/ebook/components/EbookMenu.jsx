@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 import { changeSettingVisible } from '../store/actionCreators'
 
-import { EbookMenuWrapper } from '../style/EbookMenu'
+import { EbookMenuWrapper } from '../style'
 import EbookSettingFont from './EbookSettingFont'
+import EbookSettingFontPopup from './EbookSettingFontPopup'
 
 const EbookMenu = () => {
   const dispatch = useDispatch()
@@ -50,6 +51,7 @@ const EbookMenu = () => {
         </EbookMenuWrapper>
       </CSSTransition>
       <EbookSettingFont></EbookSettingFont>
+      <EbookSettingFontPopup></EbookSettingFontPopup>
     </>
   )
 }

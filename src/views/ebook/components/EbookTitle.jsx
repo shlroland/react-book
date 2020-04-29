@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { EbookTitleWrapper } from '../style/EbookTitle'
+import { EbookTitleWrapper } from '../style'
 import { CSSTransition } from 'react-transition-group'
 
 const EbookTitle = () => {
