@@ -4,7 +4,11 @@ import { CSSTransition } from 'react-transition-group'
 import { useSelector, useDispatch } from 'react-redux'
 import { FONT_FAMILY } from '@/utils/book'
 import classnames from 'classnames'
-import { changeFontFamilyVisible, changeDefaultFontFamily } from '../store/actionCreators'
+import {
+  changeFontFamilyVisible,
+  changeDefaultFontFamily,
+} from '../store/actionCreators'
+import { saveFontFamily } from '../../../utils/localStorage'
 
 const PopupList = () => {
   const dispatch = useDispatch()
@@ -12,14 +16,37 @@ const PopupList = () => {
   const defaultFontFamily = useSelector((state) =>
     state.getIn(['ebook', 'defaultFontFamily'])
   )
-  const setFontFamily = useCallback((font)=>{
-    dispatch(changeDefaultFontFamily(font))
-  },[dispatch])
+  const currentBook = useSelector((state) =>
+    state.getIn(['ebook', 'currentBook'])
+  )
+
+  const fileName = useSelector((state) =>
+    state.getIn(['ebook', 'fileName'])
+  )
+
+  const setFontFamily = useCallback(
+    (font) => {
+      dispatch(changeDefaultFontFamily(font))
+      saveFontFamily(fileName,font)
+      if (currentBook) {
+        if (font === 'Default') {
+          currentBook.rendition.themes.font('Times New Roman')
+        } else {
+          currentBook.rendition.themes.font(font)
+        }
+      }
+    },
+    [currentBook, dispatch, fileName]
+  )
   return (
     <PopupListWrapper>
       {FONT_FAMILY.map((item, index) => {
         return (
-          <div className="ebook-popup-item" key={index} onClick={()=>setFontFamily(item.font)}>
+          <div
+            className="ebook-popup-item"
+            key={index}
+            onClick={() => setFontFamily(item.font)}
+          >
             <div
               className={classnames({
                 'ebook-popup-item-text': true,

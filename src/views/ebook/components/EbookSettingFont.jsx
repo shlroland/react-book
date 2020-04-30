@@ -3,7 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FontSettingWrapper } from '../style'
 import { CSSTransition } from 'react-transition-group'
 import { FONT_SIZE_LIST } from '@/utils/book'
-import { changeDefaultFontSize, changeFontFamilyVisible } from '../store/actionCreators'
+import {
+  changeDefaultFontSize,
+  changeFontFamilyVisible,
+} from '../store/actionCreators'
+import { saveFontSize } from '../../../utils/localStorage'
 
 const EbookSettingFont = () => {
   const dispatch = useDispatch()
@@ -33,20 +37,26 @@ const EbookSettingFont = () => {
     state.getIn(['ebook', 'defaultFontFamily'])
   )
 
+  const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
+
   const setFontSize = useCallback(
     (fontSize) => {
       dispatch(changeDefaultFontSize(fontSize))
+      saveFontSize(fileName, fontSize)
       if (currentBook) {
         currentBook.rendition.themes.fontSize(fontSize)
       }
     },
-    [currentBook, dispatch]
+    [currentBook, dispatch, fileName]
   )
 
-  const showFontFamilyVisible = useCallback((e) => {
-    e.preventDefault()
-    dispatch(changeFontFamilyVisible(true))
-  }, [dispatch])
+  const showFontFamilyVisible = useCallback(
+    (e) => {
+      e.preventDefault()
+      dispatch(changeFontFamilyVisible(true))
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
     itemsRef.current = itemsRef.current.slice(0, FONT_SIZE_LIST.length)

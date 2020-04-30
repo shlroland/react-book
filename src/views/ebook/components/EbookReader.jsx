@@ -7,9 +7,10 @@ import {
   changeSettingVisible,
   changeCurrentBook,
   changeFontFamilyVisible,
+  changeDefaultFontFamily,
+  changeDefaultFontSize,
 } from '../store/actionCreators'
-
-const baseUrl = 'http://localhost:9900/epub/'
+import { getFontFamily, saveFontFamily, getFontSize, saveFontSize } from '../../../utils/localStorage'
 
 const { changeFileName, changeMenuVisible } = actions
 
@@ -17,7 +18,7 @@ const EbookReader = () => {
   const dispatch = useDispatch()
   const { fileName } = useParams()
 
-  const { menuVisible, currentBook } = useSelector((state) =>
+  const { menuVisible, currentBook, defaultFontFamily } = useSelector((state) =>
     state.get('ebook').toJS()
   )
 
@@ -73,32 +74,54 @@ const EbookReader = () => {
   )
 
   useEffect(() => {
-    const url = `${baseUrl}${fileName.split('|').join('/')}.epub`
+    const url = `${process.env.REACT_APP_BOOK_URL}/${fileName
+      .split('|')
+      .join('/')}.epub`
     const constant = new Epub(url)
     dispatch(changeFileName(fileName))
     dispatch(changeCurrentBook(constant))
-    // if (currentBook) {
-
-    // }
-    // rendition.current = constant.renderTo('read', {
-    //   width: window.innerWidth,
-    //   height: window.innerHeight,
-    //   method: 'default',
-    // })
-    // rendition.current.display()
   }, [dispatch, fileName])
 
   useEffect(() => {
     if (currentBook) {
-      console.log(currentBook)
       rendition.current = currentBook.renderTo('read', {
         width: window.innerWidth,
         height: window.innerHeight,
         method: 'default',
       })
+      rendition.current.hooks.content.register((contents) => {
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/daysOne.css`
+        )
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/tangerine.css`
+        )
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/montserrat.css`
+        )
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/cabin.css`
+        )
+      })
       rendition.current.display()
     }
-  }, [currentBook])
+  }, [currentBook, dispatch])
+
+  useEffect(() => {
+    const font = getFontFamily(fileName)
+    const fontSize = getFontSize(fileName)
+    if (currentBook) {
+      if (!font) {
+        saveFontFamily(fileName, defaultFontFamily)
+        saveFontSize(fileName,fontSize)
+      } else {
+        rendition.current.themes.font(font)
+        rendition.current.themes.fontSize(fontSize)
+        dispatch(changeDefaultFontFamily(font))
+        dispatch(changeDefaultFontSize(fontSize))
+      }
+    }
+  }, [currentBook, defaultFontFamily, dispatch, fileName])
 
   useEffect(() => {
     if (currentBook) {
