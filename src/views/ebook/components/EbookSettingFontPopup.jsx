@@ -9,6 +9,7 @@ import {
   changeDefaultFontFamily,
 } from '../store/actionCreators'
 import { saveFontFamily } from '../../../utils/localStorage'
+import { useTranslation } from 'react-i18next'
 
 const PopupList = () => {
   const dispatch = useDispatch()
@@ -72,6 +73,7 @@ const PopupList = () => {
 
 const EbookSettingPopup = () => {
   const dispatch = useDispatch()
+  const { t } = useTranslation('book')
 
   const fontFamilyVisible = useSelector((state) =>
     state.getIn(['ebook', 'fontFamilyVisible'])
@@ -97,7 +99,7 @@ const EbookSettingPopup = () => {
           >
             <span className="icon-down2"></span>
           </div>
-          <span className="ebook-popup-title-text">选择字体</span>
+          <span className="ebook-popup-title-text">{t('selectFont')}</span>
         </div>
         <PopupList></PopupList>
       </FontFamilySettingWrapper>

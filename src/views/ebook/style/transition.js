@@ -42,4 +42,27 @@ export const slideDown = () => {
     `
 }
 
-// export const popupSlideUp = ()
+export const popupSlideUp = () => {
+  return `
+  &.popup-slide-up-enter,
+  &.popup-slide-up-appear {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+  &.popup-slide-up-enter-active,
+  &.popup-slide-up-appear-active {
+    transition: all 0.3s linear;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  &.popup-slide-up-exit {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  &.popup-slide-up-exit-active {
+    transition: all 0.3s linear;
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+  `
+}
