@@ -6,6 +6,7 @@ import { changeSettingVisible } from '../store/actionCreators'
 import { EbookMenuWrapper } from '../style'
 import EbookSettingFont from './EbookSettingFont'
 import EbookSettingFontPopup from './EbookSettingFontPopup'
+import EbookSettingTheme from './EbookSettingTheme'
 
 const EbookMenu = () => {
   const dispatch = useDispatch()
@@ -15,9 +16,10 @@ const EbookMenu = () => {
   const settingVisible = useSelector((state) =>
     state.getIn(['ebook', 'settingVisible'])
   )
-  const hideBoxShadow = useMemo(()=>(
-    settingVisible >= 0 || !menuVisible
-  ),[menuVisible, settingVisible])
+  const hideBoxShadow = useMemo(() => settingVisible >= 0 || !menuVisible, [
+    menuVisible,
+    settingVisible,
+  ])
 
   const toggleSettingVisibleDispatch = (data) => {
     dispatch(changeSettingVisible(data))
@@ -39,19 +41,22 @@ const EbookMenu = () => {
           <div className="icon-wrapper">
             <span className="icon-progress"></span>
           </div>
-          <div className="icon-wrapper">
+          <div className="icon-wrapper"
+            onClick={() => toggleSettingVisibleDispatch(1)}
+          >
             <span className="icon-bright"></span>
           </div>
-          <div className="icon-wrapper">
-            <span
-              className="icon-A"
-              onClick={() => toggleSettingVisibleDispatch(0)}
-            ></span>
+          <div
+            className="icon-wrapper"
+            onClick={() => toggleSettingVisibleDispatch(0)}
+          >
+            <span className="icon-A"></span>
           </div>
         </EbookMenuWrapper>
       </CSSTransition>
       <EbookSettingFont></EbookSettingFont>
       <EbookSettingFontPopup></EbookSettingFontPopup>
+      <EbookSettingTheme></EbookSettingTheme>
     </>
   )
 }

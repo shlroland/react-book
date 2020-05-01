@@ -8,7 +8,7 @@ import {
   changeFontFamilyVisible,
   changeDefaultFontFamily,
 } from '../store/actionCreators'
-import { saveFontFamily } from '../../../utils/localStorage'
+import { saveFontFamily } from '@/utils/localStorage'
 import { useTranslation } from 'react-i18next'
 
 const PopupList = () => {
@@ -21,14 +21,12 @@ const PopupList = () => {
     state.getIn(['ebook', 'currentBook'])
   )
 
-  const fileName = useSelector((state) =>
-    state.getIn(['ebook', 'fileName'])
-  )
+  const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
 
   const setFontFamily = useCallback(
     (font) => {
       dispatch(changeDefaultFontFamily(font))
-      saveFontFamily(fileName,font)
+      saveFontFamily(fileName, font)
       if (currentBook) {
         if (font === 'Default') {
           currentBook.rendition.themes.font('Times New Roman')

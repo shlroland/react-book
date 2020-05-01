@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
-import { slideDown, slideUp } from './transition'
+import { slideDown, slideUp, popupSlideUp } from './transition'
 
 export const EbookTitleWrapper = styled.div`
   position: absolute;
@@ -147,27 +147,8 @@ export const FontFamilySettingWrapper = styled.div`
   width: 100%;
   font-size: 0;
   box-shadow: 0 ${px2vw(-4)} ${px2vw(6)} rgba(0, 0, 0, 0.1);
-  background-color: rgba(242,243,244,1);
-  &.popup-slide-up-enter,
-  &.popup-slide-up-appear {
-    transform: translate3d(0, 100%, 0);
-    opacity: 0;
-  }
-  &.popup-slide-up-enter-active,
-  &.popup-slide-up-appear-active {
-    transition: all 0.3s linear;
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
-  &.popup-slide-up-exit {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
-  &.popup-slide-up-exit-active {
-    transition: all 0.3s linear;
-    transform: translate3d(0, 100%, 0);
-    opacity: 0;
-  }
+  background-color: rgba(242, 243, 244, 1);
+  ${popupSlideUp()}
   .ebook-popup-title {
     position: relative;
     text-align: center;
@@ -238,5 +219,64 @@ export const PopupListWrapper = styled.div`
         color: #346cb9;
       }
     }
+  }
+`
+export const ThemeSettingWrapper = styled.div`
+  position: absolute;
+  bottom: ${px2vw(48)};
+  left: 0;
+  z-index: 190;
+  width: 100%;
+  height: ${px2vw(90)};
+  box-shadow: 0 -8px 8px rgba(0, 0, 0, 0.15);
+  background-color: rgba(242, 243, 244, 0.9);
+  ${slideUp()}
+  .setting-theme {
+    height: 100%;
+    display: flex;
+    .setting-theme-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: ${px2vw(5)};
+      box-sizing: border-box;
+      .preview {
+        flex: 1;
+        border: ${px2vw(1)} solid #ccc;
+        box-sizing: border-box;
+        border: none;
+        &.selected {
+          box-shadow: 0 ${px2vw(4)} ${px2vw(6)} 0 rgba(0, 0, 0, 0.1);
+          border: ${px2vw(2)} solid #5e6369;
+        }
+      }
+      .text {
+        flex: 0 0 ${px2vw(20)};
+        font-size: ${px2vw(14)};
+        ${mixin.center()}
+      }
+    }
+  }
+`
+export const ThemeItemWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: ${px2vw(5)};
+  box-sizing: border-box;
+  .preview {
+    flex: 1;
+    border: ${px2vw(1)} solid #ccc;
+    box-sizing: border-box;
+    border: none;
+    &.selected {
+      box-shadow: 0 ${px2vw(4)} ${px2vw(6)} 0 rgba(0, 0, 0, 0.1);
+      border: ${px2vw(2)} solid #5e6369;
+    }
+  }
+  .text {
+    flex: 0 0 ${px2vw(20)};
+    font-size: ${px2vw(14)};
+    ${mixin.center()}
   }
 `
