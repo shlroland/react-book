@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { actionCreators as actions } from '../store'
@@ -16,7 +16,7 @@ import {
   saveFontFamily,
   getFontSize,
   saveFontSize,
-  getTheme
+  getTheme,
 } from '@/utils/localStorage'
 import { genThemeList } from '@/utils/book'
 import { useTranslation } from 'react-i18next'
@@ -28,9 +28,12 @@ const EbookReader = () => {
   const { t } = useTranslation('book')
   const { fileName } = useParams()
 
-  const { menuVisible, currentBook, defaultFontFamily,defaultTheme } = useSelector((state) =>
-    state.get('ebook').toJS()
-  )
+  const {
+    menuVisible,
+    currentBook,
+    defaultFontFamily,
+    defaultFontSize,
+  } = useSelector((state) => state.get('ebook').toJS())
 
   const rendition = useRef(null)
   const themeList = useRef(genThemeList(t))
@@ -62,7 +65,8 @@ const EbookReader = () => {
     touchStartTime.current = e.timeStamp
   }, [])
 
-  const registerTouchEnd = useCallback((e) => {
+  const registerTouchEnd = useCallback(
+    (e) => {
       const offsetX = e.changedTouches[0].clientX - touchStartX.current
       const time = e.timeStamp - touchStartTime.current
       if (time < 500 && offsetX > 40) {
@@ -82,6 +86,16 @@ const EbookReader = () => {
     },
     [menuVisible, nextPage, prevPage, toggleMenuVisible]
   )
+
+  const getDefaultFontSize = useMemo(() => {
+    let font = getFontSize(fileName)
+    return font ? font : defaultFontSize
+  }, [defaultFontSize, fileName])
+
+  const getDefaultFontFamily = useMemo(() => {
+    let font = getFontFamily(fileName)
+    return font ? font : defaultFontFamily
+  }, [defaultFontFamily, fileName])
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BOOK_URL}/${fileName
@@ -117,35 +131,50 @@ const EbookReader = () => {
     }
   }, [currentBook, dispatch])
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   if (currentBook) {
+  //     const font = getFontFamily(fileName)
+  //     const fontSize = getFontSize(fileName)
+  //     if (!font) {
+  //       saveFontFamily(fileName, defaultFontFamily)
+  //       saveFontSize(fileName, fontSize)
+  //     } else {
+  //       rendition.current.themes.font(font)
+  //       rendition.current.themes.fontSize(fontSize)
+  //       dispatch(changeDefaultFontFamily(font))
+  //       dispatch(changeDefaultFontSize(fontSize))
+  //     }
+  //   }
+  // }, [currentBook, defaultFontFamily, dispatch, fileName])
+  useEffect(() => { // initFontSize
     if (currentBook) {
-      const font = getFontFamily(fileName)
-      const fontSize = getFontSize(fileName)
-      if (!font) {
-        saveFontFamily(fileName, defaultFontFamily)
-        saveFontSize(fileName, fontSize)
-      } else {
-        rendition.current.themes.font(font)
-        rendition.current.themes.fontSize(fontSize)
-        dispatch(changeDefaultFontFamily(font))
-        dispatch(changeDefaultFontSize(fontSize))
-      }
+      saveFontSize(fileName, getDefaultFontSize)
+      rendition.current.themes.fontSize(getDefaultFontSize)
+      dispatch(changeDefaultFontSize(getDefaultFontSize))
     }
-  }, [currentBook, defaultFontFamily, dispatch, fileName])
+  }, [currentBook, dispatch, fileName, getDefaultFontSize])
 
-  useEffect(() => {
+  useEffect(() => { // initFontFamily
     if (currentBook) {
-    let defaultTheme = getTheme(fileName)
-    if (!defaultTheme) {
-      defaultTheme = themeList.current[0].name
-      dispatch(changeDefaultTheme(defaultTheme))
+      saveFontFamily(fileName, getDefaultFontFamily)
+      rendition.current.themes.font(getDefaultFontFamily)
+      dispatch(changeDefaultFontFamily(getDefaultFontFamily))
     }
-      themeList.current.forEach(theme=>{
-        rendition.current.themes.register(theme.name,theme.style)
+  }, [currentBook, dispatch, fileName, getDefaultFontFamily])
+
+  useEffect(() => { //initTheme
+    if (currentBook) {
+      let defaultTheme = getTheme(fileName)
+      if (!defaultTheme) {
+        defaultTheme = themeList.current[0].name
+      }
+      dispatch(changeDefaultTheme(defaultTheme))
+      themeList.current.forEach((theme) => {
+        rendition.current.themes.register(theme.name, theme.style)
       })
       rendition.current.themes.select(defaultTheme)
     }
-  }, [currentBook, defaultTheme, dispatch, fileName])
+  }, [currentBook, dispatch, fileName])
 
   useEffect(() => {
     if (currentBook) {
