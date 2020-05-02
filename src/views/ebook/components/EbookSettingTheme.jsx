@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react'
+import React, { useRef, useCallback, useContext } from 'react'
 import { ThemeSettingWrapper, ThemeItemWrapper } from '../style'
 import { CSSTransition } from 'react-transition-group'
 import { useSelector, useDispatch } from 'react-redux'
@@ -7,9 +7,13 @@ import { saveTheme } from '@/utils/localStorage'
 import { useTranslation } from 'react-i18next'
 import classnames from 'classnames'
 import { changeDefaultTheme } from '../store/actionCreators'
+import ThemeContext from '../Context'
+import { genGlobalThemeList } from '@/utils/book'
 
 const ThemeItem = (props) => {
   const dispatch = useDispatch()
+  const { setInitTheme } = useContext(ThemeContext)
+
   const { theme } = props
 
   const defaultTheme = useSelector((state) =>
@@ -22,17 +26,18 @@ const ThemeItem = (props) => {
 
   const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
 
-  const setFontTheme = useCallback(
+  const setTheme = useCallback(
     (name) => {
       dispatch(changeDefaultTheme(name))
       saveTheme(fileName, name)
-      currentBook.rendition.themes.select(defaultTheme)
+      currentBook.rendition.themes.select(name)
+      setInitTheme(genGlobalThemeList(name))
     },
-    [currentBook, defaultTheme, dispatch, fileName]
+    [currentBook, dispatch, fileName, setInitTheme]
   )
 
   return (
-    <ThemeItemWrapper onClick={()=>setFontTheme(theme.name)}>
+    <ThemeItemWrapper onClick={() => setTheme(theme.name)}>
       <div
         className={classnames({
           preview: true,

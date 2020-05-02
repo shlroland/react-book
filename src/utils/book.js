@@ -1,4 +1,9 @@
 import { realPx } from './utils'
+import Default from '@/assets/style/theme/Default'
+import Gold from '@/assets/style/theme/Gold'
+import Eye from '@/assets/style/theme/Eye'
+import Night from '@/assets/style/theme/Night'
+
 export const FONT_SIZE_LIST = [
   { fontSize: 12 },
   { fontSize: 14 },
@@ -24,72 +29,95 @@ export function genThemeList(t) {
       name: 'Default',
       style: {
         body: {
-          'color': '#4c5059',
-          'background': '#f2f3f4',
+          color: '#4c5059',
+          background: '#f2f3f4',
           'padding-top': `${realPx(48)}px!important`,
-          'padding-bottom': `${realPx(48)}px!important`
+          'padding-bottom': `${realPx(48)}px!important`,
         },
         img: {
-          'width': '100%'
+          width: '100%',
         },
         '.epubjs-hl': {
-          'fill': 'red', 'fill-opacity': '0.3', 'mix-blend-mode': 'multiply'
-        }
-      }
+          fill: 'red',
+          'fill-opacity': '0.3',
+          'mix-blend-mode': 'multiply',
+        },
+      },
     },
     {
       alias: t('themeGold'),
       name: 'Gold',
       style: {
         body: {
-          'color': '#5c5b56',
-          'background': '#c6c2b6',
+          color: '#5c5b56',
+          background: '#c6c2b6',
           'padding-top': `${realPx(48)}px!important`,
-          'padding-bottom': `${realPx(48)}px!important`
+          'padding-bottom': `${realPx(48)}px!important`,
         },
         img: {
-          'width': '100%'
+          width: '100%',
         },
         '.epubjs-hl': {
-          'fill': 'red', 'fill-opacity': '0.3', 'mix-blend-mode': 'multiply'
-        }
-      }
+          fill: 'red',
+          'fill-opacity': '0.3',
+          'mix-blend-mode': 'multiply',
+        },
+      },
     },
     {
       alias: t('themeEye'),
       name: 'Eye',
       style: {
         body: {
-          'color': '#404c42',
-          'background': '#a9c1a9',
+          color: '#404c42',
+          background: '#a9c1a9',
           'padding-top': `${realPx(48)}px!important`,
-          'padding-bottom': `${realPx(48)}px!important`
+          'padding-bottom': `${realPx(48)}px!important`,
         },
         img: {
-          'width': '100%'
+          width: '100%',
         },
         '.epubjs-hl': {
-          'fill': 'red', 'fill-opacity': '0.3', 'mix-blend-mode': 'multiply'
-        }
-      }
+          fill: 'red',
+          'fill-opacity': '0.3',
+          'mix-blend-mode': 'multiply',
+        },
+      },
     },
     {
       alias: t('themeNight'),
       name: 'Night',
       style: {
         body: {
-          'color': '#cecece',
-          'background': '#000000',
+          color: '#cecece',
+          background: '#000000',
           'padding-top': `${realPx(48)}px!important`,
-          'padding-bottom': `${realPx(48)}px!important`
+          'padding-bottom': `${realPx(48)}px!important`,
         },
         img: {
-          'width': '100%'
+          width: '100%',
         },
         '.epubjs-hl': {
-          'fill': 'red', 'fill-opacity': '0.3', 'mix-blend-mode': 'multiply'
-        }
-      }
-    }
+          fill: 'red',
+          'fill-opacity': '0.3',
+          'mix-blend-mode': 'multiply',
+        },
+      },
+    },
   ]
+}
+
+export function genGlobalThemeList(name = 'Default') {
+  switch (name) {
+    case 'Default':
+      return Default
+    case 'Gold':
+      return Gold
+    case 'Eye':
+      return Eye
+    case 'Night':
+      return Night
+    default:
+      return Default
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react'
+import React, { useEffect, useRef, useCallback, useMemo,useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { actionCreators as actions } from '../store'
@@ -20,6 +20,8 @@ import {
 } from '@/utils/localStorage'
 import { genThemeList } from '@/utils/book'
 import { useTranslation } from 'react-i18next'
+import ThemeContext from '../Context'
+import { genGlobalThemeList } from '@/utils/book'
 
 const { changeFileName, changeMenuVisible } = actions
 
@@ -27,6 +29,7 @@ const EbookReader = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation('book')
   const { fileName } = useParams()
+  const { setInitTheme } = useContext(ThemeContext)
 
   const {
     menuVisible,
@@ -131,21 +134,6 @@ const EbookReader = () => {
     }
   }, [currentBook, dispatch])
 
-  // useEffect(() => {
-  //   if (currentBook) {
-  //     const font = getFontFamily(fileName)
-  //     const fontSize = getFontSize(fileName)
-  //     if (!font) {
-  //       saveFontFamily(fileName, defaultFontFamily)
-  //       saveFontSize(fileName, fontSize)
-  //     } else {
-  //       rendition.current.themes.font(font)
-  //       rendition.current.themes.fontSize(fontSize)
-  //       dispatch(changeDefaultFontFamily(font))
-  //       dispatch(changeDefaultFontSize(fontSize))
-  //     }
-  //   }
-  // }, [currentBook, defaultFontFamily, dispatch, fileName])
   useEffect(() => { // initFontSize
     if (currentBook) {
       saveFontSize(fileName, getDefaultFontSize)
@@ -173,8 +161,9 @@ const EbookReader = () => {
         rendition.current.themes.register(theme.name, theme.style)
       })
       rendition.current.themes.select(defaultTheme)
+      setInitTheme(genGlobalThemeList(defaultTheme))
     }
-  }, [currentBook, dispatch, fileName])
+  }, [currentBook, dispatch, fileName, setInitTheme])
 
   useEffect(() => {
     if (currentBook) {

@@ -10,7 +10,8 @@ export const EbookTitleWrapper = styled.div`
   display: flex;
   width: 100%;
   height: ${px2vw(48)};
-  background-color: rgba(242, 243, 244, 0.9);
+  background-color: ${(props) => props.theme.backgroundColor};
+  color: ${(props) => props.theme.textColor};
   box-shadow: 0 ${px2vw(8)} ${px2vw(8)} rgba(0, 0, 0, 0.15);
   font-size: ${px2vw(22)};
   ${slideDown()}
@@ -36,7 +37,8 @@ export const EbookMenuWrapper = styled.div`
   display: flex;
   width: 100%;
   height: ${px2vw(48)};
-  background-color: rgba(242, 243, 244, 0.9);
+  background-color: ${(props) => props.theme.backgroundColor};
+  color: ${(props) => props.theme.textColor};
   box-shadow: ${(props) => {
     return props.hideBoxShadow ? 'none' : '0 -8px 8px rgba(0, 0, 0, 0.15)'
   }};
@@ -63,7 +65,8 @@ export const FontSettingWrapper = styled.div`
   width: 100%;
   height: ${px2vw(90)};
   box-shadow: 0 -8px 8px rgba(0, 0, 0, 0.15);
-  background-color: rgba(242, 243, 244, 0.9);
+  background-color: ${(props) => props.theme.backgroundColor};
+  color: ${(props) => props.theme.textColor};
   ${slideUp()}
   .setting-font-size {
     flex: 2;
@@ -147,7 +150,8 @@ export const FontFamilySettingWrapper = styled.div`
   width: 100%;
   font-size: 0;
   box-shadow: 0 ${px2vw(-4)} ${px2vw(6)} rgba(0, 0, 0, 0.1);
-  background-color: rgba(242, 243, 244, 1);
+  background-color: ${(props) => props.theme.backgroundColor};
+  color: ${(props) => props.theme.textColor};
   ${popupSlideUp()}
   .ebook-popup-title {
     position: relative;
@@ -229,7 +233,8 @@ export const ThemeSettingWrapper = styled.div`
   width: 100%;
   height: ${px2vw(90)};
   box-shadow: 0 -8px 8px rgba(0, 0, 0, 0.15);
-  background-color: rgba(242, 243, 244, 0.9);
+  background-color: ${(props) => props.theme.backgroundColor};
+  color: ${(props) => props.theme.textColor};
   ${slideUp()}
   .setting-theme {
     height: 100%;
