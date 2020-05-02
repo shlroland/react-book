@@ -7,6 +7,7 @@ import { EbookMenuWrapper } from '../style'
 import EbookSettingFont from './EbookSettingFont'
 import EbookSettingFontPopup from './EbookSettingFontPopup'
 import EbookSettingTheme from './EbookSettingTheme'
+import EbookSettingProgress from './EbookSettingProgress'
 
 const EbookMenu = () => {
   const dispatch = useDispatch()
@@ -35,13 +36,20 @@ const EbookMenu = () => {
         unmountOnExit
       >
         <EbookMenuWrapper hideBoxShadow={hideBoxShadow}>
-          <div className="icon-wrapper">
+          <div
+            className="icon-wrapper"
+            onClick={() => toggleSettingVisibleDispatch(3)}
+          >
             <span className="icon-menu"></span>
           </div>
-          <div className="icon-wrapper">
+          <div
+            className="icon-wrapper"
+            onClick={() => toggleSettingVisibleDispatch(2)}
+          >
             <span className="icon-progress"></span>
           </div>
-          <div className="icon-wrapper"
+          <div
+            className="icon-wrapper"
             onClick={() => toggleSettingVisibleDispatch(1)}
           >
             <span className="icon-bright"></span>
@@ -57,6 +65,7 @@ const EbookMenu = () => {
       <EbookSettingFont></EbookSettingFont>
       <EbookSettingFontPopup></EbookSettingFontPopup>
       <EbookSettingTheme></EbookSettingTheme>
+      <EbookSettingProgress></EbookSettingProgress>
     </>
   )
 }

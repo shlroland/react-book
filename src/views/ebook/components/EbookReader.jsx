@@ -10,6 +10,7 @@ import {
   changeDefaultFontFamily,
   changeDefaultFontSize,
   changeDefaultTheme,
+  changeBookAvailable,
 } from '../store/actionCreators'
 import {
   getFontFamily,
@@ -165,7 +166,7 @@ const EbookReader = () => {
     }
   }, [currentBook, dispatch, fileName, setInitTheme])
 
-  useEffect(() => {
+  useEffect(() => { //initGesture
     if (currentBook) {
       rendition.current.on('touchstart', registerTouchStart)
       rendition.current.on('touchend', registerTouchEnd)
@@ -177,6 +178,16 @@ const EbookReader = () => {
       }
     }
   }, [currentBook, registerTouchEnd, registerTouchStart])
+
+  useEffect(()=>{
+    if (currentBook) {
+      currentBook.ready.then(()=>{
+       return currentBook.locations.generate(750 * (window.innerWidth / 375) * (getFontSize(fileName) / 16)) 
+      }).then(locations => {
+        dispatch(changeBookAvailable(true))
+      })
+    }
+  },[currentBook, dispatch, fileName])
 
   return (
     <>
