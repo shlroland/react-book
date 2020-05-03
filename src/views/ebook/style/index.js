@@ -321,7 +321,7 @@ export const ProgressSettingWrapper = styled.div`
           -webkit-appearance: none;
           height: ${px2vw(2)};
           background: -webkit-linear-gradient(#5d6268, #5d6268) no-repeat, #b4b5b7;
-          background-size: 0 100%;
+          background-size: ${props=> props.progress}% 100%;
           margin: 0 ${px2vw(10)};
           &:focus {
             outline: none;

@@ -66,3 +66,27 @@ export function getTheme(fileName) {
 export function saveTheme(fileName, theme) {
   setBookObject(fileName, 'theme', theme)
 }
+
+export function getLocation(fileName) {
+  return getBookObject(fileName, 'location')
+}
+
+export function saveLocation(fileName, location) {
+  setBookObject(fileName, 'location', location)
+}
+
+export function getReadTime(fileName) {
+  return getBookObject(fileName, 'time')
+}
+
+export function saveReadTime(fileName, theme) {
+  setBookObject(fileName, 'time', theme)
+}
+
+export function getProgress(fileName) {
+  return getBookObject(fileName, 'progress')
+}
+
+export function saveProgress(fileName, progress) {
+  setBookObject(fileName, 'progress', progress)
+}

@@ -1,4 +1,5 @@
 import { realPx } from './utils'
+import { getReadTime } from './localStorage'
 import Default from '@/assets/style/theme/Default'
 import Gold from '@/assets/style/theme/Gold'
 import Eye from '@/assets/style/theme/Eye'
@@ -119,5 +120,13 @@ export function genGlobalThemeList(name = 'Default') {
       return Night
     default:
       return Default
+  }
+}
+
+export function getReadTimeByMinute(fileName) {
+  if (!getReadTime(fileName)) {
+    return 0
+  } else {
+    return Math.ceil(getReadTime(fileName) / 60)
   }
 }

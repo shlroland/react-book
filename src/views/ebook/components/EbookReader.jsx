@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useMemo,useContext } from 'react'
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useContext,
+} from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { actionCreators as actions } from '../store'
@@ -23,6 +29,8 @@ import { genThemeList } from '@/utils/book'
 import { useTranslation } from 'react-i18next'
 import ThemeContext from '../Context'
 import { genGlobalThemeList } from '@/utils/book'
+import { getLocation } from '../../../utils/localStorage'
+import { useDisplay,useRefreshLocation } from '../hooks'
 
 const { changeFileName, changeMenuVisible } = actions
 
@@ -44,17 +52,24 @@ const EbookReader = () => {
   const touchStartX = useRef(0)
   const touchStartTime = useRef(0)
 
+  const display = useDisplay()
+  const refreshLocation = useRefreshLocation()
+
   const prevPage = useCallback(() => {
     if (rendition.current) {
-      rendition.current.prev()
+      rendition.current.prev().then(()=>{
+        refreshLocation()
+      })
     }
-  }, [])
+  }, [refreshLocation])
 
   const nextPage = useCallback(() => {
     if (rendition.current) {
-      rendition.current.next()
+      rendition.current.next().then(()=>{
+        refreshLocation()
+      })
     }
-  }, [])
+  }, [refreshLocation])
 
   const toggleMenuVisible = useCallback(() => {
     if (menuVisible) {
@@ -131,11 +146,18 @@ const EbookReader = () => {
           `${process.env.REACT_APP_BASE_URL}/fonts/cabin.css`
         )
       })
-      rendition.current.display()
+      // const location = getLocation()
+      // rendition.current.display()
     }
   }, [currentBook, dispatch])
 
-  useEffect(() => { // initFontSize
+  useEffect(() => {
+    const location = getLocation(fileName)
+    display(location)
+  }, [display, fileName])
+
+  useEffect(() => {
+    // initFontSize
     if (currentBook) {
       saveFontSize(fileName, getDefaultFontSize)
       rendition.current.themes.fontSize(getDefaultFontSize)
@@ -143,7 +165,8 @@ const EbookReader = () => {
     }
   }, [currentBook, dispatch, fileName, getDefaultFontSize])
 
-  useEffect(() => { // initFontFamily
+  useEffect(() => {
+    // initFontFamily
     if (currentBook) {
       saveFontFamily(fileName, getDefaultFontFamily)
       rendition.current.themes.font(getDefaultFontFamily)
@@ -151,7 +174,8 @@ const EbookReader = () => {
     }
   }, [currentBook, dispatch, fileName, getDefaultFontFamily])
 
-  useEffect(() => { //initTheme
+  useEffect(() => {
+    //initTheme
     if (currentBook) {
       let defaultTheme = getTheme(fileName)
       if (!defaultTheme) {
@@ -166,7 +190,8 @@ const EbookReader = () => {
     }
   }, [currentBook, dispatch, fileName, setInitTheme])
 
-  useEffect(() => { //initGesture
+  useEffect(() => {
+    //initGesture
     if (currentBook) {
       rendition.current.on('touchstart', registerTouchStart)
       rendition.current.on('touchend', registerTouchEnd)
@@ -179,15 +204,19 @@ const EbookReader = () => {
     }
   }, [currentBook, registerTouchEnd, registerTouchStart])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (currentBook) {
-      currentBook.ready.then(()=>{
-       return currentBook.locations.generate(750 * (window.innerWidth / 375) * (getFontSize(fileName) / 16)) 
-      }).then(locations => {
-        dispatch(changeBookAvailable(true))
-      })
+      currentBook.ready
+        .then(() => {
+          return currentBook.locations.generate(
+            750 * (window.innerWidth / 375) * (getFontSize(fileName) / 16)
+          )
+        })
+        .then((locations) => {
+          dispatch(changeBookAvailable(true))
+        })
     }
-  },[currentBook, dispatch, fileName])
+  }, [currentBook, dispatch, fileName])
 
   return (
     <>
