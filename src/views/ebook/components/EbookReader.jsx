@@ -7,16 +7,14 @@ import React, {
 } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { actionCreators as actions } from '../store'
 import Epub from 'epubjs'
 import {
-  changeSettingVisible,
   changeCurrentBook,
-  changeFontFamilyVisible,
   changeDefaultFontFamily,
   changeDefaultFontSize,
   changeDefaultTheme,
   changeBookAvailable,
+  changeFileName
 } from '../store/actionCreators'
 import {
   getFontFamily,
@@ -30,9 +28,7 @@ import { useTranslation } from 'react-i18next'
 import ThemeContext from '../Context'
 import { genGlobalThemeList } from '@/utils/book'
 import { getLocation } from '../../../utils/localStorage'
-import { useDisplay,useRefreshLocation } from '../hooks'
-
-const { changeFileName, changeMenuVisible } = actions
+import { useDisplay,useRefreshLocation,useToggleMenuVisible } from '../hooks'
 
 const EbookReader = () => {
   const dispatch = useDispatch()
@@ -54,6 +50,7 @@ const EbookReader = () => {
 
   const display = useDisplay()
   const refreshLocation = useRefreshLocation()
+  const toggleMenuVisible = useToggleMenuVisible()
 
   const prevPage = useCallback(() => {
     if (rendition.current) {
@@ -71,13 +68,13 @@ const EbookReader = () => {
     }
   }, [refreshLocation])
 
-  const toggleMenuVisible = useCallback(() => {
-    if (menuVisible) {
-      dispatch(changeSettingVisible(-1))
-      dispatch(changeFontFamilyVisible(false))
-    }
-    dispatch(changeMenuVisible(!menuVisible))
-  }, [dispatch, menuVisible])
+  // const toggleMenuVisible = useCallback(() => {
+  //   if (menuVisible) {
+  //     dispatch(changeSettingVisible(-1))
+  //     dispatch(changeFontFamilyVisible(false))
+  //   }
+  //   dispatch(changeMenuVisible(!menuVisible))
+  // }, [dispatch, menuVisible])
 
   const registerTouchStart = useCallback((e) => {
     touchStartX.current = e.changedTouches[0].clientX
