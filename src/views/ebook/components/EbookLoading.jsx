@@ -90,11 +90,9 @@ const EbookLoading = () => {
         <div className="ebook-loading-item">
           <div className="ebook-loading-line-wrapper">
             <div className="ebook-loading-line col-1"></div>
-            {/* <div class="ebook-loading-mask"></div> */}
           </div>
           <div className="ebook-loading-line-wrapper">
             <div className="ebook-loading-line col-2"></div>
-            {/* <div class="ebook-loading-mask"></div> */}
           </div>
           <div className="ebook-loading-line-wrapper">
             <div className="ebook-loading-line col-3"></div>
