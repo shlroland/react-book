@@ -8,6 +8,7 @@ import EbookSettingFont from './EbookSettingFont'
 import EbookSettingFontPopup from './EbookSettingFontPopup'
 import EbookSettingTheme from './EbookSettingTheme'
 import EbookSettingProgress from './EbookSettingProgress'
+import EbookSlide from './EbookSlide'
 
 const EbookMenu = () => {
   const dispatch = useDispatch()
@@ -66,6 +67,7 @@ const EbookMenu = () => {
       <EbookSettingFontPopup></EbookSettingFontPopup>
       <EbookSettingTheme></EbookSettingTheme>
       <EbookSettingProgress></EbookSettingProgress>
+      <EbookSlide></EbookSlide>
     </>
   )
 }

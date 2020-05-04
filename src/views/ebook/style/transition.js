@@ -42,6 +42,27 @@ export const slideDown = () => {
     `
 }
 
+export const slideRight = () => {
+  return `
+    &.slide-right-enter,
+    &.slide-right-appear {
+      transform: translate3d(-100%,0,0);
+    }
+    &.slide-right-enter-active,
+    &.slide-right-appear-active {
+      transition: transform 0.5s;
+      transform: translate3d(0, 0, 0);
+    }
+    &.slide-right-exit {
+      transform: translate3d(0, 0, 0);
+    }
+    &.slide-right-exit-active {
+      transition: transform 0.5s;
+      transform: translate3d(-100%, 0, 0);
+    }
+    `
+}
+
 export const popupSlideUp = () => {
   return `
   &.popup-slide-up-enter,
@@ -66,3 +87,26 @@ export const popupSlideUp = () => {
   }
   `
 }
+
+export const fade = () => {
+  return `
+  &.fade-enter,
+  &.fade-appear {
+    opacity: 0;
+  }
+  &.fade-enter-active,
+  &.fade-appear-active {
+    transition: all 0.5s linear;
+    opacity: 1;
+  }
+  &.fade-exit {
+    opacity: 1;
+  }
+  &.fade-exit-active {
+    transition: all 0.5s linear;
+    opacity: 0;
+  }
+  `
+}
+
+

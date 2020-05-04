@@ -90,3 +90,11 @@ export function getProgress(fileName) {
 export function saveProgress(fileName, progress) {
   setBookObject(fileName, 'progress', progress)
 }
+
+export function getMetadata(fileName) {
+  return getBookObject(fileName, 'metadata')
+}
+
+export function saveMetadata(fileName, metadata) {
+  setBookObject(fileName, 'metadata', metadata)
+}

@@ -1,7 +1,15 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useCallback } from 'react'
-import { changeProgress, changeSection } from '../store/actionCreators'
-import { saveLocation, saveProgress,getProgress } from '@/utils/localStorage'
+import { useCallback, useMemo } from 'react'
+import {
+  changeProgress,
+  changeSection,
+  changeSettingVisible,
+  changeFontFamilyVisible,
+  changeMenuVisible,
+} from '../store/actionCreators'
+import { saveLocation, saveProgress, getProgress } from '@/utils/localStorage'
+import { getReadTimeByMinute } from '@/utils/book'
+import { useTranslation } from 'react-i18next'
 
 export const useRefreshLocation = () => {
   const dispatch = useDispatch()
@@ -20,7 +28,7 @@ export const useRefreshLocation = () => {
         dispatch(changeProgress(Math.floor(cacheProgress * 100)))
       } else if (startProgress > 0) {
         dispatch(changeProgress(Math.floor(startProgress * 100)))
-        saveProgress(fileName,startProgress)
+        saveProgress(fileName, startProgress)
       }
       saveLocation(fileName, startCfi)
     }
@@ -34,18 +42,28 @@ export const useDisplay = () => {
   )
   const refreshLocation = useRefreshLocation()
   const display = useCallback(
-    (target, cb) => {
+    (target, highlight = false,cb) => {
       if (currentBook) {
         if (target) {
           currentBook.rendition.display(target).then(() => {
+            if (highlight) {
+              if (target.startsWith('epubcfi')) {
+                currentBook.getRange(target).then(() => {
+                  currentBook.rendition.annotations.highlight(
+                    target,
+                    {},
+                    (e) => {}
+                  )
+                })
+              }
+            }
             refreshLocation()
-            if (cb) cb()
+            if(cb) cb()
           })
         } else {
-          console.log(currentBook)
           currentBook.rendition.display().then(() => {
             refreshLocation()
-            if (cb) cb()
+            if(cb) cb()
           })
         }
       }
@@ -53,4 +71,33 @@ export const useDisplay = () => {
     [currentBook, refreshLocation]
   )
   return display
+}
+
+export const useToggleMenuVisible = () => {
+  const dispatch = useDispatch()
+  const menuVisible = useSelector((state) =>
+    state.getIn(['ebook', 'menuVisible'])
+  )
+  const toggleMenuVisible = useCallback(() => {
+    if (menuVisible) {
+      dispatch(changeSettingVisible(-1))
+      dispatch(changeFontFamilyVisible(false))
+    }
+    dispatch(changeMenuVisible(!menuVisible))
+  }, [dispatch, menuVisible])
+  return toggleMenuVisible
+}
+
+export const useGetReadTime = () => {
+  const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
+  const settingVisible = useSelector((state) =>
+    state.getIn(['ebook', 'settingVisible'])
+  )
+  const { t } = useTranslation('book')
+  const getReadTime = useMemo(() => {
+    const time = getReadTimeByMinute(fileName)
+    return t('haveRead', { time })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fileName, t, settingVisible])
+  return getReadTime
 }

@@ -14,7 +14,12 @@ import {
   changeDefaultFontSize,
   changeDefaultTheme,
   changeBookAvailable,
-  changeFileName
+  changeFileName,
+  changeMetadata,
+  changeCover,
+  changeNavigation,
+  changePagelist,
+  changeIsPaginating,
 } from '../store/actionCreators'
 import {
   getFontFamily,
@@ -22,13 +27,14 @@ import {
   getFontSize,
   saveFontSize,
   getTheme,
+  saveMetadata,
 } from '@/utils/localStorage'
 import { genThemeList } from '@/utils/book'
 import { useTranslation } from 'react-i18next'
 import ThemeContext from '../Context'
 import { genGlobalThemeList } from '@/utils/book'
 import { getLocation } from '../../../utils/localStorage'
-import { useDisplay,useRefreshLocation,useToggleMenuVisible } from '../hooks'
+import { useDisplay, useRefreshLocation, useToggleMenuVisible } from '../hooks'
 
 const EbookReader = () => {
   const dispatch = useDispatch()
@@ -41,12 +47,16 @@ const EbookReader = () => {
     currentBook,
     defaultFontFamily,
     defaultFontSize,
+    isPaginating,
   } = useSelector((state) => state.get('ebook').toJS())
 
   const rendition = useRef(null)
   const themeList = useRef(genThemeList(t))
   const touchStartX = useRef(0)
   const touchStartTime = useRef(0)
+  const navItems = useRef(null)
+  const pageItems = useRef(null)
+  // const [locations, setLocations] = useState(null)
 
   const display = useDisplay()
   const refreshLocation = useRefreshLocation()
@@ -54,7 +64,7 @@ const EbookReader = () => {
 
   const prevPage = useCallback(() => {
     if (rendition.current) {
-      rendition.current.prev().then(()=>{
+      rendition.current.prev().then(() => {
         refreshLocation()
       })
     }
@@ -62,19 +72,11 @@ const EbookReader = () => {
 
   const nextPage = useCallback(() => {
     if (rendition.current) {
-      rendition.current.next().then(()=>{
+      rendition.current.next().then(() => {
         refreshLocation()
       })
     }
   }, [refreshLocation])
-
-  // const toggleMenuVisible = useCallback(() => {
-  //   if (menuVisible) {
-  //     dispatch(changeSettingVisible(-1))
-  //     dispatch(changeFontFamilyVisible(false))
-  //   }
-  //   dispatch(changeMenuVisible(!menuVisible))
-  // }, [dispatch, menuVisible])
 
   const registerTouchStart = useCallback((e) => {
     touchStartX.current = e.changedTouches[0].clientX
@@ -124,6 +126,7 @@ const EbookReader = () => {
 
   useEffect(() => {
     if (currentBook) {
+      console.log('rendition')
       rendition.current = currentBook.renderTo('read', {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -143,8 +146,6 @@ const EbookReader = () => {
           `${process.env.REACT_APP_BASE_URL}/fonts/cabin.css`
         )
       })
-      // const location = getLocation()
-      // rendition.current.display()
     }
   }, [currentBook, dispatch])
 
@@ -203,17 +204,87 @@ const EbookReader = () => {
 
   useEffect(() => {
     if (currentBook) {
+      currentBook.loaded.metadata.then((metadata) => {
+        dispatch(changeMetadata(metadata))
+        saveMetadata(metadata)
+      })
+      currentBook.loaded.cover.then((cover) => {
+        currentBook.archive.createUrl(cover).then((url) => {
+          dispatch(changeCover(url))
+        })
+      })
+    }
+  }, [currentBook, dispatch])
+
+  useEffect(() => {
+    // 解析目录
+    if (currentBook) {
+      currentBook.loaded.navigation.then((nav) => {
+        const navItem = (function flatten(arr) {
+          return [].concat(...arr.map((v) => [v, ...flatten(v.subitems)]))
+        })(nav.toc)
+        function find(item, v = 0) {
+          const parent = navItem.filter((it) => it.id === item.parent)[0]
+          return !item.parent ? v : parent ? find(parent, ++v) : v
+        }
+        navItem.forEach((item) => {
+          item.level = find(item)
+          item.total = 0
+          item.pagelist = []
+          if (item.href.match(/^(.*)\.html$/)) {
+            item.idhref = item.href.match(/^(.*)\.html$/)[1]
+          } else if (item.href.match(/^(.*)\.xhtml$/)) {
+            item.idhref = item.href.match(/^(.*)\.xhtml$/)[1]
+          }
+        })
+        navItems.current = navItem
+      })
+    }
+  }, [currentBook, dispatch])
+
+  useEffect(() => {
+    // pagination
+    if (currentBook) {
       currentBook.ready
         .then(() => {
+          console.log('pagination')
           return currentBook.locations.generate(
             750 * (window.innerWidth / 375) * (getFontSize(fileName) / 16)
           )
         })
         .then((locations) => {
+          pageItems.current = locations
+          dispatch(changeIsPaginating(false))
           dispatch(changeBookAvailable(true))
         })
     }
   }, [currentBook, dispatch, fileName])
+
+  useEffect(() => {
+    if (!isPaginating) {
+      const navigation = navItems.current
+      const pagelist = pageItems.current
+      pagelist.forEach((location) => {
+        const loc = location.match(/\[(.*)\]!/)[1]
+        navigation.forEach((item) => {
+          if (item.idhref && item.idhref.indexOf(loc) >= 0) {
+            item.pagelist.push(location)
+          }
+        })
+        let currentPage = 1
+        navigation.forEach((item, index) => {
+          if (index === 0) {
+            item.page = 1
+          } else {
+            item.page = currentPage
+          }
+          currentPage += item.pagelist.length + 1
+        })
+      })
+      dispatch(changeNavigation(navigation))
+      dispatch(changePagelist(pagelist))
+    }
+  }, [dispatch, isPaginating])
 
   return (
     <>

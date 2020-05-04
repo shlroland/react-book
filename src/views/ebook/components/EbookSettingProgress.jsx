@@ -4,8 +4,7 @@ import { CSSTransition } from 'react-transition-group'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { changeProgress, changeSection } from '../store/actionCreators'
-import { getReadTimeByMinute } from '@/utils/book'
-import {  useDisplay } from '../hooks'
+import { useDisplay, useGetReadTime } from '../hooks'
 
 const EbookSettingProgress = () => {
   const dispatch = useDispatch()
@@ -25,37 +24,37 @@ const EbookSettingProgress = () => {
 
   const section = useSelector((state) => state.getIn(['ebook', 'section']))
 
-  const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
+  const navigation = useSelector((state) =>
+    state.getIn(['ebook', 'navigation'])
+  )
 
   const currentBook = useSelector((state) =>
     state.getIn(['ebook', 'currentBook'])
   )
 
   const getSectionName = useMemo(() => {
-    if (section) {
+    if (section && navigation) {
       const sectionInfo = currentBook.section(section)
       if (
         sectionInfo &&
         sectionInfo.href &&
-        currentBook &&
-        currentBook.navigation
+        currentBook.navigation &&
+        navigation
       ) {
-        console.log(currentBook.navigation.get(sectionInfo.href))
-
-        return currentBook.navigation.get(sectionInfo.href)
-          ? currentBook.navigation.get(sectionInfo.href).label
-          : ''
+        return navigation[section].label
       }
     }
-  }, [section, currentBook])
+  }, [currentBook, navigation, section])
 
-  const getReadTime = useMemo(() => {
-    const time = getReadTimeByMinute(fileName)
-    return t('haveRead', { time })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileName, t,settingVisible])
+  // const getReadTime = useMemo(() => {
+  //   const time = getReadTimeByMinute(fileName)
+  //   return t('haveRead', { time })
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [fileName, t,settingVisible])
 
-//   const refreshLocation = useRefreshLocation()
+  const getReadTime = useGetReadTime()
+
+  //   const refreshLocation = useRefreshLocation()
   const display = useDisplay()
 
   const displayProgress = useCallback(
@@ -78,7 +77,7 @@ const EbookSettingProgress = () => {
         //   if (cb) cb()
         // })
         display(sectionInfo.href)
-          if (cb) cb()
+        if (cb) cb()
       }
     },
     [currentBook, display]
@@ -92,7 +91,7 @@ const EbookSettingProgress = () => {
     [dispatch, displayProgress]
   )
 
-  const prevSection = () => {
+  const prevSection = useCallback(() => {
     if (section > 0 && !isProgressLoading.current) {
       isProgressLoading.current = true
       dispatch(changeSection(section - 1))
@@ -100,18 +99,17 @@ const EbookSettingProgress = () => {
         isProgressLoading.current = false
       })
     }
-  }
+  }, [dispatch, displaySection, section])
 
   const nextSection = useCallback(() => {
     if (currentBook.spine.length - 1 > section && !isProgressLoading.current) {
       isProgressLoading.current = true
       dispatch(changeSection(section + 1))
       displaySection(section + 1, () => {
-          console.log(progress)
         isProgressLoading.current = false
       })
     }
-  }, [currentBook, dispatch, displaySection, progress, section])
+  }, [currentBook, dispatch, displaySection, section])
 
   return (
     <CSSTransition
