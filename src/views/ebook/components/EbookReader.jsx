@@ -20,6 +20,7 @@ import {
   changeNavigation,
   changePagelist,
   changeIsPaginating,
+  changeOffsety,
 } from '../store/actionCreators'
 import {
   getFontFamily,
@@ -35,6 +36,8 @@ import ThemeContext from '../Context'
 import { genGlobalThemeList } from '@/utils/book'
 import { getLocation } from '../../../utils/localStorage'
 import { useDisplay, useRefreshLocation, useToggleMenuVisible } from '../hooks'
+import { EbookReaderWrapper } from '../style'
+import Hammer from 'hammerjs'
 
 const EbookReader = () => {
   const dispatch = useDispatch()
@@ -52,11 +55,10 @@ const EbookReader = () => {
 
   const rendition = useRef(null)
   const themeList = useRef(genThemeList(t))
-  const touchStartX = useRef(0)
-  const touchStartTime = useRef(0)
   const navItems = useRef(null)
   const pageItems = useRef(null)
-  // const [locations, setLocations] = useState(null)
+  const maskRef = useRef(null)
+  const firstOffsetY = useRef(0)
 
   const display = useDisplay()
   const refreshLocation = useRefreshLocation()
@@ -66,44 +68,58 @@ const EbookReader = () => {
     if (rendition.current) {
       rendition.current.prev().then(() => {
         refreshLocation()
+        if (menuVisible) {
+          toggleMenuVisible()
+        }
       })
     }
-  }, [refreshLocation])
+  }, [menuVisible, refreshLocation, toggleMenuVisible])
 
   const nextPage = useCallback(() => {
     if (rendition.current) {
       rendition.current.next().then(() => {
+        if (menuVisible) {
+          toggleMenuVisible()
+        }
         refreshLocation()
       })
     }
-  }, [refreshLocation])
+  }, [menuVisible, refreshLocation, toggleMenuVisible])
 
-  const registerTouchStart = useCallback((e) => {
-    touchStartX.current = e.changedTouches[0].clientX
-    touchStartTime.current = e.timeStamp
-  }, [])
-
-  const registerTouchEnd = useCallback(
-    (e) => {
-      const offsetX = e.changedTouches[0].clientX - touchStartX.current
-      const time = e.timeStamp - touchStartTime.current
-      if (time < 500 && offsetX > 40) {
+  const handleTapEvent = useCallback(
+    (ev) => {
+      const padLeft = window.innerWidth * 0.25
+      const padRight = window.innerWidth * 0.75
+      const x = ev.center.x
+      if (x < padLeft) {
         prevPage()
-        if (menuVisible) {
-          toggleMenuVisible()
-        }
-      } else if (time < 500 && offsetX < -40) {
+      } else if (x > padRight) {
         nextPage()
-        if (menuVisible) {
-          toggleMenuVisible()
-        }
       } else {
         toggleMenuVisible()
       }
-      e.stopPropagation()
     },
-    [menuVisible, nextPage, prevPage, toggleMenuVisible]
+    [nextPage, prevPage, toggleMenuVisible]
   )
+
+  const handleSwipeEvent = useCallback(
+    (ev) => {
+      if (ev.type === 'swipeleft') {
+        nextPage()
+      } else if (ev.type === 'swiperight') {
+        prevPage()
+      }
+    },
+    [nextPage, prevPage]
+  )
+
+  const handlePanDownEvent = useCallback((ev)=>{
+    dispatch(changeOffsety(ev.distance))
+  },[dispatch])
+
+  const handlePanEndEvent = useCallback((ev)=>{
+    dispatch(changeOffsety(0))
+  },[dispatch])
 
   const getDefaultFontSize = useMemo(() => {
     let font = getFontSize(fileName)
@@ -189,18 +205,23 @@ const EbookReader = () => {
   }, [currentBook, dispatch, fileName, setInitTheme])
 
   useEffect(() => {
-    //initGesture
     if (currentBook) {
-      rendition.current.on('touchstart', registerTouchStart)
-      rendition.current.on('touchend', registerTouchEnd)
-    }
-    return () => {
-      if (currentBook) {
-        rendition.current.off('touchstart', registerTouchStart)
-        rendition.current.off('touchend', registerTouchEnd)
+      const hammer = new Hammer(maskRef.current)
+      hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+      hammer.on('tap', handleTapEvent)
+      hammer.on('swipeleft swiperight', handleSwipeEvent)
+      hammer.on('pandown', handlePanDownEvent)
+      hammer.on('panend', handlePanEndEvent)
+
+      return () => {
+        hammer.off('tap', handleTapEvent)
+        hammer.off('swipeleft swiperight', handleSwipeEvent)
+        hammer.off('pandown', handlePanDownEvent)
+      hammer.on('panend', handlePanEndEvent)
+
       }
     }
-  }, [currentBook, registerTouchEnd, registerTouchStart])
+  }, [currentBook, handlePanDownEvent, handlePanEndEvent, handleSwipeEvent, handleTapEvent])
 
   useEffect(() => {
     if (currentBook) {
@@ -287,11 +308,12 @@ const EbookReader = () => {
   }, [dispatch, isPaginating])
 
   return (
-    <>
-      <div className="ebookReader">
+    <EbookReaderWrapper>
+      <div className="ebook-reader-mask" ref={maskRef}></div>
+      <div className="read-wrapper">
         <div id="read"></div>
       </div>
-    </>
+    </EbookReaderWrapper>
   )
 }
 export default EbookReader

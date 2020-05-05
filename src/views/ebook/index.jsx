@@ -1,4 +1,4 @@
-import React,{useState,useRef, useEffect} from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { Route } from 'react-router-dom'
 import EbookReader from './components/EbookReader'
 import EbookTitle from './components/EbookTitle'
@@ -7,14 +7,21 @@ import ThemeContext from './Context'
 import { ThemeProvider } from 'styled-components'
 import { genGlobalThemeList } from '@/utils/book'
 import { saveReadTime, getReadTime } from '@/utils/localStorage'
-import {  useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { EbookWrapper } from './style'
 
 const Ebook = () => {
   const [initTheme, setInitTheme] = useState(genGlobalThemeList())
   const task = useRef(null)
   const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
-  
-  useEffect(()=>{
+  const offsetY = useSelector((state) => state.getIn(['ebook', 'offsetY']))
+
+  // const Y = useMemo(()=>{
+  //   console.log(offsetY)
+  //   return 0
+  // },[offsetY])
+
+  useEffect(() => {
     if (fileName) {
       let readTime = getReadTime(fileName)
       if (!readTime) {
@@ -26,18 +33,20 @@ const Ebook = () => {
           saveReadTime(fileName, readTime)
         }
       }, 1000)
-      return ()=>{
+      return () => {
         clearInterval(task.current)
       }
     }
-  },[fileName])
+  }, [fileName])
 
   return (
     <ThemeContext.Provider value={{ initTheme, setInitTheme }}>
       <ThemeProvider theme={initTheme}>
-        <EbookTitle></EbookTitle>
-        <Route path="/ebook/:fileName" component={EbookReader}></Route>
-        <EbookMenu></EbookMenu>
+        <EbookWrapper Y={offsetY}>
+          <EbookTitle></EbookTitle>
+          <Route path="/ebook/:fileName" component={EbookReader}></Route>
+          <EbookMenu></EbookMenu>
+        </EbookWrapper>
       </ThemeProvider>
     </ThemeContext.Provider>
   )

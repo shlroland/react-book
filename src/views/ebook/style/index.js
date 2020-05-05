@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
 import {
   slideDown,
@@ -8,6 +8,29 @@ import {
   slideRight,
 } from './transition'
 
+export const EbookWrapper = styled.div`
+  position: absolute;
+  top: ${(props) => props.Y}px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  transition: ${props=> !(props.Y)? 'all 0.2s linear': ''};
+`
+export const EbookReaderWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  .ebook-reader-mask {
+    position: absolute;
+    z-index: 150;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`
 export const EbookTitleWrapper = styled.div`
   position: absolute;
   top: 0;
