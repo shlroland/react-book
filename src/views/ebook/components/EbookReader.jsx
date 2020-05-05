@@ -51,6 +51,7 @@ const EbookReader = () => {
     defaultFontFamily,
     defaultFontSize,
     isPaginating,
+    settingVisible
   } = useSelector((state) => state.get('ebook').toJS())
 
   const rendition = useRef(null)
@@ -58,7 +59,6 @@ const EbookReader = () => {
   const navItems = useRef(null)
   const pageItems = useRef(null)
   const maskRef = useRef(null)
-  const firstOffsetY = useRef(0)
 
   const display = useDisplay()
   const refreshLocation = useRefreshLocation()
@@ -113,13 +113,24 @@ const EbookReader = () => {
     [nextPage, prevPage]
   )
 
-  const handlePanDownEvent = useCallback((ev)=>{
-    dispatch(changeOffsety(ev.distance))
-  },[dispatch])
+  const handlePanMoveEvent = useCallback(
+    (ev) => {
+      if (settingVisible > 0 || menuVisible) {
+        return
+      }
+      dispatch(
+        changeOffsety(ev.deltaY > 0 ? (ev.deltaY < 150 ? ev.deltaY : 150) : 0)
+      )
+    },
+    [dispatch, menuVisible, settingVisible]
+  )
 
-  const handlePanEndEvent = useCallback((ev)=>{
-    dispatch(changeOffsety(0))
-  },[dispatch])
+  const handlePanEndEvent = useCallback(
+    (ev) => {
+      dispatch(changeOffsety(0))
+    },
+    [dispatch]
+  )
 
   const getDefaultFontSize = useMemo(() => {
     let font = getFontSize(fileName)
@@ -207,21 +218,26 @@ const EbookReader = () => {
   useEffect(() => {
     if (currentBook) {
       const hammer = new Hammer(maskRef.current)
-      hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+      hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL })
       hammer.on('tap', handleTapEvent)
       hammer.on('swipeleft swiperight', handleSwipeEvent)
-      hammer.on('pandown', handlePanDownEvent)
+      hammer.on('pandown panup', handlePanMoveEvent)
       hammer.on('panend', handlePanEndEvent)
 
       return () => {
         hammer.off('tap', handleTapEvent)
         hammer.off('swipeleft swiperight', handleSwipeEvent)
-        hammer.off('pandown', handlePanDownEvent)
-      hammer.on('panend', handlePanEndEvent)
-
+        hammer.off('pandown panup', handlePanMoveEvent)
+        hammer.on('panend', handlePanEndEvent)
       }
     }
-  }, [currentBook, handlePanDownEvent, handlePanEndEvent, handleSwipeEvent, handleTapEvent])
+  }, [
+    currentBook,
+    handlePanEndEvent,
+    handlePanMoveEvent,
+    handleSwipeEvent,
+    handleTapEvent,
+  ])
 
   useEffect(() => {
     if (currentBook) {
@@ -277,9 +293,10 @@ const EbookReader = () => {
           pageItems.current = locations
           dispatch(changeIsPaginating(false))
           dispatch(changeBookAvailable(true))
+          refreshLocation()
         })
     }
-  }, [currentBook, dispatch, fileName])
+  }, [currentBook, dispatch, fileName, refreshLocation])
 
   useEffect(() => {
     if (!isPaginating) {

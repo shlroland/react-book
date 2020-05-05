@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom'
 import EbookReader from './components/EbookReader'
 import EbookTitle from './components/EbookTitle'
 import EbookMenu from './components/EbookMenu'
+import EbookBookMark from './components/EbookBookMark'
 import ThemeContext from './Context'
 import { ThemeProvider } from 'styled-components'
 import { genGlobalThemeList } from '@/utils/book'
@@ -15,11 +16,16 @@ const Ebook = () => {
   const task = useRef(null)
   const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
   const offsetY = useSelector((state) => state.getIn(['ebook', 'offsetY']))
+  const menuVisible = useSelector((state) => state.getIn(['ebook', 'menuVisible']))
+  const bookAvailable = useSelector((state) => state.getIn(['ebook', 'bookAvailable']))
 
-  // const Y = useMemo(()=>{
-  //   console.log(offsetY)
-  //   return 0
-  // },[offsetY])
+  const Y = useMemo(()=>{
+    if (!menuVisible && bookAvailable) {
+      return offsetY
+    } else {
+      return 0
+    }
+  },[bookAvailable, menuVisible, offsetY])
 
   useEffect(() => {
     if (fileName) {
@@ -42,7 +48,8 @@ const Ebook = () => {
   return (
     <ThemeContext.Provider value={{ initTheme, setInitTheme }}>
       <ThemeProvider theme={initTheme}>
-        <EbookWrapper Y={offsetY}>
+        <EbookWrapper Y={Y}>
+          <EbookBookMark></EbookBookMark>
           <EbookTitle></EbookTitle>
           <Route path="/ebook/:fileName" component={EbookReader}></Route>
           <EbookMenu></EbookMenu>

@@ -98,3 +98,11 @@ export function getMetadata(fileName) {
 export function saveMetadata(fileName, metadata) {
   setBookObject(fileName, 'metadata', metadata)
 }
+
+export function getBookmark(fileName) {
+  return getBookObject(fileName, 'bookmark')
+}
+
+export function saveBookmark(fileName, bookmark) {
+  setBookObject(fileName, 'bookmark', bookmark)
+}

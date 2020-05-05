@@ -6,8 +6,14 @@ import {
   changeSettingVisible,
   changeFontFamilyVisible,
   changeMenuVisible,
+  changeIsBookmark,
 } from '../store/actionCreators'
-import { saveLocation, saveProgress, getProgress } from '@/utils/localStorage'
+import {
+  saveLocation,
+  saveProgress,
+  getProgress,
+  getBookmark,
+} from '@/utils/localStorage'
 import { getReadTimeByMinute } from '@/utils/book'
 import { useTranslation } from 'react-i18next'
 
@@ -30,6 +36,17 @@ export const useRefreshLocation = () => {
         dispatch(changeProgress(Math.floor(startProgress * 100)))
         saveProgress(fileName, startProgress)
       }
+      const cfistart = currentLocation.start.cfi
+      const bookmark = getBookmark(fileName)
+      if (bookmark) {
+        if (bookmark.some((item) => item.cfi === cfistart)) {
+          dispatch(changeIsBookmark(true))
+        } else {
+          dispatch(changeIsBookmark(false))
+        }
+      } else {
+        dispatch(changeIsBookmark(false))
+      }
       saveLocation(fileName, startCfi)
     }
   }, [currentBook, dispatch, fileName])
@@ -42,7 +59,7 @@ export const useDisplay = () => {
   )
   const refreshLocation = useRefreshLocation()
   const display = useCallback(
-    (target, highlight = false,cb) => {
+    (target, highlight = false, cb) => {
       if (currentBook) {
         if (target) {
           currentBook.rendition.display(target).then(() => {
@@ -58,12 +75,12 @@ export const useDisplay = () => {
               }
             }
             refreshLocation()
-            if(cb) cb()
+            if (cb) cb()
           })
         } else {
           currentBook.rendition.display().then(() => {
             refreshLocation()
-            if(cb) cb()
+            if (cb) cb()
           })
         }
       }

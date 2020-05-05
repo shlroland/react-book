@@ -20,7 +20,7 @@ const defaultState = fromJS({
   paginate: '',
   pagelist: null,
   offsetY: 0,
-  isBookmark: null,
+  isBookmark: false,
   speakingIconBottom: 58,
 })
 
