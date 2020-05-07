@@ -1,13 +1,13 @@
 import styled from 'styled-components'
-import { px2vw, mixin } from '@assets/style'
+import {px2vw, mixin} from '@assets/style'
 import {
-  slideDown,
-  slideUp,
-  popupSlideUp,
-  fade,
-  slideRight,
+    slideDown,
+    slideUp,
+    popupSlideUp,
+    fade,
+    slideRight,
 } from './transition'
-import { realPx } from '@/utils/utils'
+import {realPx} from '@/utils/utils'
 
 export const EbookWrapper = styled.div`
   position: absolute;
@@ -17,7 +17,7 @@ export const EbookWrapper = styled.div`
   bottom: 0;
   width: 100%;
   height: 100%;
-  transition: ${props=> !(props.Y)? 'all 0.2s linear': ''};
+  transition: ${props => !(props.Y) ? 'all 0.2s linear' : ''};
 `
 export const EbookReaderWrapper = styled.div`
   width: 100%;
@@ -71,7 +71,7 @@ export const EbookMenuWrapper = styled.div`
   color: ${(props) => props.theme.textColor};
   box-shadow: ${(props) => {
     return props.hideBoxShadow ? 'none' : '0 -8px 8px rgba(0, 0, 0, 0.15)'
-  }};
+}};
   font-size: ${px2vw(22)};
   ${slideUp()}
   .icon-wrapper {
@@ -336,8 +336,8 @@ export const ProgressSettingWrapper = styled.div`
         top: 0;
         width: 100%;
         height: ${px2vw(40)};
-        ${mixin.center()}
         font-size: ${px2vw(12)};
+        ${mixin.center()}
       }
       .progress-wrapper {
         width: 100%;
@@ -617,9 +617,9 @@ export const SlideContentsItemWrapper = styled.div`
     flex: 1;
     font-size: ${px2vw(14)};
     line-height: ${px2vw(16)};
-    margin-left: ${({ level }) => {
-      return `${px2vw(level * 8)}`
-    }};
+    margin-left: ${({level}) => {
+    return `${px2vw(level * 8)}`
+}};
     ${mixin.ellipsis()};
     &.selected {
       color: ${(props) => props.theme.slideLightTextColor};
@@ -660,13 +660,13 @@ export const EbookBookMarkWrapper = styled.div`
         color: white;
         transition: all .2s linear;
         ${mixin.center()};
-        transform: ${props=>{
-          if (props.top>= realPx(35) && props.top < realPx(55)) {
-            return 'rotate(0deg)'
-          } else if(props.top > realPx(55)) {
-            return 'rotate(180deg)'
-          }
-        }};
+        transform: ${props => {
+    if (props.top >= realPx(35) && props.top < realPx(55)) {
+        return 'rotate(0deg)'
+    } else if (props.top > realPx(55)) {
+        return 'rotate(180deg)'
+    }
+}};
       }
       .ebook-bookmark-text {
         font-size: ${px2vw(14)};
@@ -683,6 +683,45 @@ export const EbookBookMarkWrapper = styled.div`
         right:0px;
         top:0px;
         z-index: 210;
+      }
+    }
+`
+export const SlideBookmark = styled.div`
+  width: 100%;
+    .slide-bookmark-title {
+      width: 100%;
+      height: ${px2vw(48)};
+      font-size: ${px2vw(14)};
+      font-weight: bold;
+      padding: 0 ${px2vw(15)};
+      box-sizing: border-box;
+      ${mixin.left()};
+    }
+    .slide-bookmark-list {
+      padding: 0 ${px2vw(15)};
+      box-sizing: border-box;
+      .slide-bookmark-item {
+        display: flex;
+        padding: ${px2vw(15)} 0;
+        box-sizing: border-box;
+        .slide-bookmark-item-icon {
+          flex: 0 0 ${px2vw(29)};
+          ${mixin.left()}
+          .icon-bookmark {
+            width: ${px2vw(20)};
+            height: ${px2vw(20)};
+            font-size: ${px2vw(12)};
+            border-radius: 50%;
+            background: #bbb;
+            ${mixin.center()}
+          }
+        }
+        .slide-bookmark-item-text {
+          font-size: ${px2vw(14)};
+          line-height: ${px2vw(15)};
+          max-height: ${px2vw(45)};
+          ${mixin.ellipsis2(3)};
+        }
       }
     }
 `

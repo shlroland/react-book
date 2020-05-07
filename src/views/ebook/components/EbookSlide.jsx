@@ -6,6 +6,7 @@ import { useToggleMenuVisible } from '../hooks'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import EbookSlideContent from './EbookSlideContent'
+import EbookSlideBookMark from './EbookSlideBookMark'
 import KeepAlive from 'react-activation'
 import { ThemeContext, ThemeProvider } from 'styled-components'
 import EbookLoading from './EbookLoading'
@@ -52,7 +53,11 @@ const EbookSlide = () => {
               <div className="content-page">
                 <KeepAlive>
                   <ThemeProvider theme={themeContext}>
-                    <EbookSlideContent></EbookSlideContent>
+                    {tab === 1 ? (
+                      <EbookSlideContent></EbookSlideContent>
+                    ) : (
+                      <EbookSlideBookMark></EbookSlideBookMark>
+                    )}
                   </ThemeProvider>
                 </KeepAlive>
               </div>
