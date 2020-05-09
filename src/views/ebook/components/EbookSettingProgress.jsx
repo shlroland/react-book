@@ -1,10 +1,10 @@
-import React, { useRef, useCallback, useMemo } from 'react'
+import React, { useRef, useCallback } from 'react'
 import { ProgressSettingWrapper } from '../style'
 import { CSSTransition } from 'react-transition-group'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { changeProgress, changeSection } from '../store/actionCreators'
-import { useDisplay, useGetReadTime } from '../hooks'
+import { useDisplay, useGetReadTime,useSectionName } from '../hooks'
 
 const EbookSettingProgress = () => {
   const dispatch = useDispatch()
@@ -24,33 +24,11 @@ const EbookSettingProgress = () => {
 
   const section = useSelector((state) => state.getIn(['ebook', 'section']))
 
-  const navigation = useSelector((state) =>
-    state.getIn(['ebook', 'navigation'])
-  )
-
   const currentBook = useSelector((state) =>
     state.getIn(['ebook', 'currentBook'])
   )
 
-  const getSectionName = useMemo(() => {
-    if (section && navigation) {
-      const sectionInfo = currentBook.section(section)
-      if (
-        sectionInfo &&
-        sectionInfo.href &&
-        currentBook.navigation &&
-        navigation
-      ) {
-        return navigation[section].label
-      }
-    }
-  }, [currentBook, navigation, section])
-
-  // const getReadTime = useMemo(() => {
-  //   const time = getReadTimeByMinute(fileName)
-  //   return t('haveRead', { time })
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [fileName, t,settingVisible])
+  const sectionName = useSectionName()
 
   const getReadTime = useGetReadTime()
 
@@ -61,9 +39,6 @@ const EbookSettingProgress = () => {
     (progress) => {
       const cfi = currentBook.locations.cfiFromPercentage(progress / 100)
       display(cfi)
-      //   currentBook.rendition.display(cfi).then(() => {
-      //     refreshLocation()
-      //   })
     },
     [currentBook, display]
   )
@@ -150,7 +125,7 @@ const EbookSettingProgress = () => {
             </div>
           </div>
           <div className="text-wrapper">
-            <span className="progress-section-text">{getSectionName}</span>
+            <span className="progress-section-text">{sectionName}</span>
             <span className="progress-text">
               {bookAvailable ? progress + '%' : t('loading')}
             </span>

@@ -3,17 +3,17 @@ import { SlideBookmark } from '../style'
 import { useTranslation } from 'react-i18next'
 import { getBookmark } from '@/utils/localStorage'
 import { useSelector } from 'react-redux'
-import { useDisplay } from '../hooks'
+import { useDisplay,useToggleMenuVisible } from '../hooks'
 import Scroll from '@/common/scroll'
 
 const EbookSlideBookMark = () => {
   const { t } = useTranslation('book')
   const fileName = useSelector((state) => state.getIn(['ebook', 'fileName']))
   const display = useDisplay()
+  const toggleMenuVisible =  useToggleMenuVisible()
 
   const bookmark = getBookmark(fileName)
 
-  console.log(bookmark)
   return (
     <SlideBookmark>
       <div className="slide-bookmark-title">
@@ -26,7 +26,7 @@ const EbookSlideBookMark = () => {
                 <div
                   className="slide-bookmark-item"
                   key={index}
-                  onClick={() => display(item.cfi)}
+                  onClick={() => display(item.cfi,false,toggleMenuVisible)}
                 >
                   <div className="slide-bookmark-item-icon">
                     <div className="icon-bookmark" />

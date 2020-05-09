@@ -4,6 +4,8 @@ import EbookReader from './components/EbookReader'
 import EbookTitle from './components/EbookTitle'
 import EbookMenu from './components/EbookMenu'
 import EbookBookMark from './components/EbookBookMark'
+import EbookHeader from './components/EbookHeader'
+import EbookFooter from './components/EbookFooter'
 import ThemeContext from './Context'
 import { ThemeProvider } from 'styled-components'
 import { genGlobalThemeList } from '@/utils/book'
@@ -50,9 +52,11 @@ const Ebook = () => {
       <ThemeProvider theme={initTheme}>
         <EbookWrapper Y={Y}>
           <EbookBookMark></EbookBookMark>
+          <EbookHeader></EbookHeader>
           <EbookTitle></EbookTitle>
           <Route path="/ebook/:fileName" component={EbookReader}></Route>
           <EbookMenu></EbookMenu>
+          <EbookFooter></EbookFooter>
         </EbookWrapper>
       </ThemeProvider>
     </ThemeContext.Provider>
