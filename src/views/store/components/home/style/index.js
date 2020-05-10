@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
-import {title} from './transition'
-
+import { title,hotSearch } from './transition'
+import { realPx } from '@/utils/utils'
 export const SearchBarWrapper = styled.div`
   .title-search-wrapper {
     position: relative;
@@ -119,6 +119,7 @@ export const SearchBarWrapper = styled.div`
     overflow-x: hidden;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+    ${hotSearch()};
     &::-webkit-scrollbar {
       display: none;
     }
@@ -129,4 +130,65 @@ export const SearchBarWrapper = styled.div`
       margin: ${px2vw(10)} 0;
     }
   }
+`
+export const HotSearchWrapper = styled.div`
+  .hot-search-title {
+ display: flex;
+    width: 100%;
+    font-size: ${px2vw(13)};
+    padding: ${px2vw(10)};
+    box-sizing: border-box;
+    .label {
+      flex: 1;
+      text-align: left;
+      font-weight: bold;
+      color: #666;
+    }
+    .btn {
+      flex: 1;
+      text-align: right;
+      font-weight: bold;
+      color: #409EFF;
+    }
+  }
+  .hot-search-list {
+    width: 100%;
+    padding: 0 ${px2vw(10)};
+    box-sizing: border-box;
+    .hot-search-item {
+      padding: ${px2vw(10)} 0;
+      display: flex;
+      .icon-wrapper {
+        flex: 0 0 ${px2vw(40)};
+        ${mixin.center()};
+        .icon-book {
+          font-size: ${px2vw(16)};
+        }
+        .icon-search {
+          font-size: ${px2vw(16)};
+        }
+      }
+      .hot-search-text-wrapper {
+        flex: 1;
+        height: ${px2vw(35)};
+        ${mixin.columnLeft()};
+        .text {
+          flex: 1;
+          height: 100%;
+          ${mixin.ellipsis()};
+          ${mixin.left()};
+          width: ${() => {
+            return window.innerWidth - realPx(20) - realPx(40) + 'px'
+          }};
+          font-size: ${px2vw(14)};
+          font-weight: bold;
+          color: #666;
+        }
+        .num {
+          font-size: ${px2vw(12)};
+          color: #999;
+          margin-top: ${px2vw(5)};
+        }
+      }
+    }
 `

@@ -1,22 +1,56 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { SearchBarWrapper } from './style'
 import { useTranslation } from 'react-i18next'
 import classnames from 'classnames'
 import { CSSTransition } from 'react-transition-group'
+import HotSearch from './HotSearch'
+import { searchList } from '@/utils/store'
+import Scroll from '@/common/scroll'
 
-const SearchBar = ({ offsetY }) => {
+const SearchBar = ({ offsetY: homeY }) => {
   const { t } = useTranslation('home')
   const [showSearchPage, setShowSearchPage] = useState(false)
   const [showShadow, setShowShadow] = useState(false)
+  const [showHotSearch, setShowHotSearch] = useState(false)
+  const [hotSearchY, setHotSearchY] = useState(0)
+
+  const showSearchPageAndHotSearch = useCallback(() => {
+    setShowSearchPage(true)
+    setShowShadow(false)
+    setShowHotSearch(true)
+  }, [])
+
+  const back = useCallback(() => {
+    if (showSearchPage) {
+      if (homeY <= 0) {
+        setShowSearchPage(false)
+      } else {
+        if (showHotSearch) {
+          setShowHotSearch(false)
+          setShowSearchPage(false)
+          setShowShadow(true)
+        }
+      }
+    }
+  }, [homeY, showHotSearch, showSearchPage])
 
   useEffect(() => {
-    if (offsetY > 0) {
+    if (homeY > 0) {
       setShowSearchPage(true)
-      setShowShadow(false)
+      setShowShadow(true)
     } else {
       setShowSearchPage(false)
+      setShowShadow(true)
     }
-  }, [offsetY])
+  }, [homeY])
+
+  useEffect(() => {
+    if (hotSearchY > 0) {
+      setShowShadow(true)
+    } else {
+      setShowShadow(false)
+    }
+  }, [hotSearchY])
 
   return (
     <SearchBarWrapper>
@@ -27,7 +61,6 @@ const SearchBar = ({ offsetY }) => {
           'hide-shadow': !showShadow,
         })}
       >
-        {' '}
         <CSSTransition
           in={!showSearchPage}
           timeout={250}
@@ -46,6 +79,7 @@ const SearchBar = ({ offsetY }) => {
             'icon-back-wrapper': true,
             'show-search': showSearchPage,
           })}
+          onClick={() => back()}
         >
           <span className="icon-back icon"></span>
         </div>
@@ -71,15 +105,37 @@ const SearchBar = ({ offsetY }) => {
           </div>
           <div className="search-bg">
             <span className="icon-search icon"></span>
-            <input type="text" className="search" placeholder={t('hint')} />
+            <input
+              type="text"
+              className="search"
+              placeholder={t('hint')}
+              onClick={() => showSearchPageAndHotSearch()}
+            />
           </div>
         </div>
       </div>
-      {/* <div className="hot-search-wrapper" >
-            <hot-search ></hot-search>
+      <CSSTransition
+        in={showSearchPage && showHotSearch}
+        timeout={500}
+        classNames="hotSearch"
+        unmountOnExit
+      >
+        <Scroll top={52} onScroll={(Y) => setHotSearchY(Y)}>
+          <div className="hot-search-wrapper">
+            <HotSearch
+              label={t('hotSearch')}
+              btn={t('change')}
+              hotSearch={searchList.hotSearch}
+            ></HotSearch>
             <div className="line"></div>
-            <hot-search ></hot-search>
-          </div> */}
+            <HotSearch
+              label={t('historySearch')}
+              btn={t('clear')}
+              hotSearch={searchList.historySearch}
+            ></HotSearch>
+          </div>
+        </Scroll>
+      </CSSTransition>
     </SearchBarWrapper>
   )
 }

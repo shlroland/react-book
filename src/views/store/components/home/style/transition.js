@@ -24,3 +24,28 @@ export const title = () => {
     }
     `
 }
+
+export const hotSearch = () => {
+  return `
+    &.title-enter{
+        transform: translate3d(0, -${px2vw(50)}, 0);
+        opacity: 0;
+    }
+    &.title-enter-active{
+      transition: all 0.5s linear;
+    }
+    &.title-enter-done{
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+    &.title-exit {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+    &.title-exit-active {
+      transition: all 0.5s linear;
+      transform: translate3d(0, ${px2vw(50)}, 0);
+      opacity: 0;
+    }
+    `
+}

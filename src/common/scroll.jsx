@@ -33,11 +33,12 @@ const Scroll = (props) => {
     return window.innerHeight - realPx(top) - realPx(bottom)
   }, [bottom, top])
 
-  useEffect(() => {
-    const scrollWrapper = scrollWrapperDom.current
-    scrollWrapper.addEventListener('scroll', handleScroll)
-    return () => scrollWrapper.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+  // useEffect(() => {
+  //   const scrollWrapper = document.getElementsByClassName(`class-${id}`)[0]
+  //   // console.log(scrollWrapper)
+  //   scrollWrapper.addEventListener('scroll', handleScroll)
+  //   return () => scrollWrapper.removeEventListener('scroll', handleScroll)
+  // }, [handleScroll, id])
 
   // const refresh = useCallback(() => {
   //   if (scrollWrapperDom) {
@@ -52,6 +53,8 @@ const Scroll = (props) => {
     <ScrollWrapper
       height={computedHeight}
       className={classnames(...className)}
+
+      onScroll={(e) => handleScroll(e)}
       ref={scrollWrapperDom}
     >
       {props.children}
