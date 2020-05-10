@@ -118,3 +118,30 @@ export const useGetReadTime = () => {
   }, [fileName, t, settingVisible])
   return getReadTime
 }
+
+export const useSectionName = () => {
+  const section = useSelector((state) => state.getIn(['ebook', 'section']))
+  const navigation = useSelector((state) =>
+    state.getIn(['ebook', 'navigation'])
+  )
+
+  const currentBook = useSelector((state) =>
+  state.getIn(['ebook', 'currentBook'])
+)
+
+  const sectionName = useMemo(() => {
+    if (section && navigation) {
+      const sectionInfo = currentBook.section(section)
+      if (
+        sectionInfo &&
+        sectionInfo.href &&
+        currentBook.navigation &&
+        navigation
+      ) {
+        return navigation[section].label
+      }
+    }
+  }, [currentBook, navigation, section])
+
+  return sectionName
+}

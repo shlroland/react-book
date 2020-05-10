@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react'
+import React, { useRef, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { mixin } from '@assets/style'
 import PropTypes from 'prop-types'
@@ -21,13 +21,23 @@ const Scroll = (props) => {
 
   const scrollWrapperDom = useRef(null)
 
-  // const handleScroll = useCallback((e) => {
-  //   const offsetY =
-  //     e.target.scrollTop || window.pageYOffset || document.body.scrollTop
-  // }, [])
+  const handleScroll = useCallback(
+    (e) => {
+      const offsetY =
+        e.target.scrollTop || window.pageYOffset || document.body.scrollTop
+      onScroll(offsetY)
+    },
+    [onScroll]
+  )
   const computedHeight = useMemo(() => {
     return window.innerHeight - realPx(top) - realPx(bottom)
   }, [bottom, top])
+
+  useEffect(() => {
+    const scrollWrapper = scrollWrapperDom.current
+    scrollWrapper.addEventListener('scroll', handleScroll)
+    return () => scrollWrapper.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
 
   // const refresh = useCallback(() => {
   //   if (scrollWrapperDom) {

@@ -84,7 +84,7 @@ const EbookSettingPopup = () => {
   return (
     <CSSTransition
       in={fontFamilyVisible}
-      timeout={300}
+      timeout={500}
       classNames="popup-slide-up"
       appear={true}
       unmountOnExit

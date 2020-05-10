@@ -8,6 +8,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 import Ebook from './views/ebook'
+import Store from './views/store'
 import { Provider } from 'react-redux'
 import store from './store'
 import { AliveScope } from 'react-activation'
@@ -35,7 +36,8 @@ function App() {
           <AppWrapper>
             <Switch>
               <Route path="/ebook" component={Ebook}></Route>
-              <Redirect from="/" to="/ebook"></Redirect>
+              <Route path="/book-store" component={Store}></Route>
+              <Redirect from="/" to="/book-store"></Redirect>
             </Switch>
           </AppWrapper>
         </AliveScope>
