@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import SearchBar from './SearchBar'
+import FlapCard from './FlapCard'
 import Scroll from '@/common/scroll'
+import { useSelector } from 'react-redux'
 
 const BookHome = () => {
   const [offsetY, setOffsetY] = useState(0)
   const [height, setHeight] = useState(94)
+  const showFlapCard = useSelector((state) =>
+    state.getIn(['bookHome', 'showFlapCard'])
+  )
 
   const handleBookListScroll = (Y) => {
     setOffsetY(Y)
@@ -119,6 +124,7 @@ const BookHome = () => {
         <div>12312312223123123123123</div>
         <div>12312312223123123123123</div>
       </Scroll>
+      {showFlapCard ? <FlapCard></FlapCard> : null}
     </>
   )
 }

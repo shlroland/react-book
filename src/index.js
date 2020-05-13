@@ -1,7 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
 import './i18n'
+import 'web-animations-js'
 // import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
