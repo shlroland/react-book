@@ -130,3 +130,54 @@ export function getReadTimeByMinute(fileName) {
     return Math.ceil(getReadTime(fileName) / 60)
   }
 }
+
+export function categoryText(category, t) {
+  switch (category) {
+    case 1:
+      return t('computerScience')
+    case 2:
+      return t('socialSciences')
+    case 3:
+      return t('economics')
+    case 4:
+      return t('education')
+    case 5:
+      return t('engineering')
+    case 6:
+      return t('environment')
+    case 7:
+      return t('geography')
+    case 8:
+      return t('history')
+    case 9:
+      return t('laws')
+    case 10:
+      return t('lifeSciences')
+    case 11:
+      return t('literature')
+    case 12:
+      return t('biomedicine')
+    case 13:
+      return t('businessandManagement')
+    case 14:
+      return t('earthSciences')
+    case 15:
+      return t('materialsScience')
+    case 16:
+      return t('mathematics')
+    case 17:
+      return t('medicineAndPublicHealth')
+    case 18:
+      return t('philosophy')
+    case 19:
+      return t('physics')
+    case 20:
+      return t('politicalScienceAndInternationalRelations')
+    case 21:
+      return t('psychology')
+    case 22:
+      return t('statistics')
+    default:
+      return '暂无标题'
+  }
+}

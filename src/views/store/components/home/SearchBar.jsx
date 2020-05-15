@@ -6,12 +6,9 @@ import { CSSTransition } from 'react-transition-group'
 import HotSearch from './HotSearch'
 import { searchList } from '@/utils/store'
 import Scroll from '@/common/scroll'
-import { useDispatch } from 'react-redux'
-import { changeShowFlapCard } from './store/actionCreators'
 
-const SearchBar = ({ offsetY: homeY }) => {
+const SearchBar = ({ offsetY: homeY, handleShowFlapCard }) => {
   const { t } = useTranslation('home')
-  const dispatch = useDispatch()
   const [showSearchPage, setShowSearchPage] = useState(false)
   const [showShadow, setShowShadow] = useState(false)
   const [showHotSearch, setShowHotSearch] = useState(false)
@@ -37,9 +34,9 @@ const SearchBar = ({ offsetY: homeY }) => {
     }
   }, [homeY, showHotSearch, showSearchPage])
 
-  const showFlapCard = useCallback(()=>{
-    dispatch(changeShowFlapCard(true))
-  },[dispatch])
+  const showFlapCard = useCallback(() => {
+    handleShowFlapCard()
+  }, [handleShowFlapCard])
 
   useEffect(() => {
     if (homeY > 0) {
@@ -76,7 +73,7 @@ const SearchBar = ({ offsetY: homeY }) => {
         >
           <div className="title-search-page-wrapper">
             <span className="title-text">{t('title')}</span>
-            <div className="icon-shake-wrapper" onClick={()=>showFlapCard()}>
+            <div className="icon-shake-wrapper" onClick={() => showFlapCard()}>
               <span className="icon-shake icon"></span>
             </div>
           </div>

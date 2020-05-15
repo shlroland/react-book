@@ -314,12 +314,11 @@ export const FlapCardWrapper = styled.div`
   .book-card {
     position: relative;
     width: 65%;
-    // height: 70%;
     box-sizing: border-box;
     border-radius: ${px2vw(15)};
     background: white;
     &.animation {
-      animation: scale $bookShowTime ease-in both;
+      animation: scale 0.3s ease-in both;
       @keyframes scale {
         0% {
           transform: scale(0);
@@ -379,7 +378,7 @@ export const FlapCardWrapper = styled.div`
         text-align: center;
         color: white;
         font-size: ${px2vw(14)};
-        background: $color-blue;
+        background: #4aabff;
       }
     }
   }

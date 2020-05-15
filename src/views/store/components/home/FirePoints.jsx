@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from 'react'
+import React, { useMemo, useRef, useEffect,memo } from 'react'
 import styled from 'styled-components'
 import { mixin } from '@assets/style'
 import move from '@/assets/style/flapCard'
@@ -64,4 +64,4 @@ const FirePoints = () => {
   )
 }
 
-export default FirePoints
+export default memo(FirePoints)
