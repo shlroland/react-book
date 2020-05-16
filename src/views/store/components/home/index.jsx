@@ -2,6 +2,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import SearchBar from './SearchBar'
 import FlapCard from './FlapCard'
 import GuessYouLike from './GuessYouLike'
+import Recommend from './Recommend'
+import Featured from './Featured'
+import CategoryBook from './CategoryBook'
+import Category from './Category'
 import Scroll from '@/common/scroll'
 import { useSelector, useDispatch } from 'react-redux'
 import { getHome, saveHome } from '@/utils/localStorage'
@@ -15,7 +19,11 @@ const BookHome = () => {
   const [height, setHeight] = useState(94)
   const [bannerStyle, setBannerStyle] = useState(null)
   const [randomList, setRandomList] = useState(null)
-  const [guessYouLikeList, setGuessYouLikeList] = useState(null);
+  const [guessYouLikeList, setGuessYouLikeList] = useState(null)
+  const [recommendList, setRecommendList] = useState(null)
+  const [featuredList, setFeaturedList] = useState(null)
+  const [categoryList, setCategoryList] = useState(null)
+  const [categoriesList, setCategoriesList] = useState(null);
   const flapCardRef = useRef(null)
   const showFlapCard = useSelector((state) =>
     state.getIn(['bookHome', 'showFlapCard'])
@@ -37,6 +45,10 @@ const BookHome = () => {
   const parseHomeData = useCallback((data) => {
     setRandomList(data.random)
     setGuessYouLikeList(data.guessYouLike)
+    setRecommendList(data.recommend)
+    setFeaturedList(data.featured)
+    setCategoryList(data.categoryList)
+    setCategoriesList(data.categories)
     setBannerStyle({
       backgroundImage: 'url(' + data.banner + ')',
     })
@@ -79,6 +91,17 @@ const BookHome = () => {
           <div className="banner" style={bannerStyle}></div>
         </div>
         <GuessYouLike data={guessYouLikeList}></GuessYouLike>
+        <Recommend data={recommendList}></Recommend>
+        <Featured data={featuredList}></Featured>
+        {categoryList &&
+          categoryList.map((item) => {
+            return (
+              <div className="category-list-wrapper" key={item.category}>
+                <CategoryBook data={item} key={item.category}></CategoryBook>
+              </div>
+            )
+          })}
+          <Category data={categoriesList}></Category>
       </Scroll>
       {showFlapCard ? <FlapCard ref={flapCardRef}></FlapCard> : null}
     </BookHomeWrapper>

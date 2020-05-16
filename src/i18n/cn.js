@@ -12,7 +12,7 @@ const messages = {
       readPercent: '阅读{{result}}的人，{{percent}}都在读',
       recommend: '热门推荐',
       seeAll: '查看全部',
-      readers: '$1人同时在读',
+      readers: '{{renders}}人同时在读',
       featured: '精选',
       category: '分类',
       books: '本书',

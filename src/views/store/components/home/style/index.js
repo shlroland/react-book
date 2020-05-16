@@ -323,14 +323,6 @@ export const FlapCardWrapper = styled.div`
         ${mixin.absCenter()};
         z-index: 3000;
         border-radius: 50%;
-        /* transform: scale(0); */
-        /* &.animation {
-          @for $i from 1 to length($moves) + 1 {
-            &:nth-child(#{$i}) {
-              @include move($i);
-            }
-          }
-        } */
       }
     }
   }
@@ -454,6 +446,174 @@ export const GuessYouLikeWrapper = styled.div`
           margin-top: ${px2vw(5)};
         }
         ${mixinTitle()}
+      }
+    }
+  }
+`
+export const RecommendWrapper = styled.div`
+margin-top: ${px2vw(20)};
+    .recommend-list {
+      width: 100%;
+      ${mixin.top()}
+      padding: 0 ${px2vw(5)};
+      box-sizing: border-box;
+      .recommend-item {
+        flex: 0 0 33.33%;
+        width: 33.33%;
+        padding: 0 ${px2vw(5)};
+        box-sizing: border-box;
+        .img-wrapper {
+          ${mixin.center()}
+          .img {
+            width: 80%;
+          }
+        }
+        .content-wrapper {
+          width: 100%;
+          margin-top: ${px2vw(10)};
+          ${mixin.columnCenter()}
+          .title {
+            text-align: center;
+          }
+          .num {
+            margin-top: ${px2vw(5)};
+          }
+        ${mixinTitle()}
+        }
+      }
+    }
+`
+export const FeaturedWrapper = styled.div`
+  margin-top: ${px2vw(20)};
+  .featured-list {
+    width: 100%;
+    padding: 0 ${px2vw(10)};
+    box-sizing: border-box;
+    .featured-item-wrapper {
+      width: 100%;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      .featured-item {
+        flex: 0 0 50%;
+        width: 50%;
+        padding: ${px2vw(5)} 0;
+        ${mixin.top()};
+        .img-wrapper {
+          flex: 0 0 30%;
+          width: 30%;
+          .img {
+            width: 100%;
+          }
+        }
+        .content-wrapper {
+          flex: 1;
+          width: ${px2vw(117.5)};
+          padding: 0 ${px2vw(5)};
+          box-sizing: border-box;
+          .author {
+            margin-top: ${px2vw(15)};
+          }
+          .category {
+            margin-top: ${px2vw(5)};
+          }
+          ${mixinTitle()}
+        }
+      }
+    }
+  }
+`
+export const CategoryBookWrapper = styled.div`
+  .category-book-list {
+    width: 100%;
+    ${mixin.top()};
+    padding: 0 ${px2vw(5)};
+    box-sizing: border-box;
+    .category-book-item {
+      flex: 0 0 25%;
+      width: 25%;
+      padding: 0 ${px2vw(5)};
+      box-sizing: border-box;
+      .img-wrapper {
+        ${mixin.center()};
+        .img {
+          width: 100%;
+        }
+      }
+      .content-wrapper {
+        width: 100%;
+        margin-top: ${px2vw(10)};
+        .num {
+          margin-top: ${px2vw(5)};
+        }
+        ${mixinTitle()}
+      }
+    }
+  }
+`
+export const CategoryWrapper = styled.div`
+  margin-top: ${px2vw(20)};
+  .category-list {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    .category-item-wrapper {
+      flex: 0 0 50%;
+      width: 50%;
+      padding: 0 ${px2vw(5)} ${px2vw(10)} ${px2vw(5)};
+      box-sizing: border-box;
+      &:nth-child(odd) {
+        padding-left: ${px2vw(10)};
+      }
+      &:nth-child(even) {
+        padding-right: ${px2vw(10)};
+      }
+      .category-item {
+        display: flex;
+        width: 100%;
+        background: #eee;
+        .img-wrapper {
+          flex: 0 0 50%;
+          width: 50%;
+          padding: ${px2vw(20)} ${px2vw(10)};
+          box-sizing: border-box;
+          .img-group {
+            position: relative;
+            width: 100%;
+            height: ${px2vw(60)};
+            ${mixin.left()};
+            .img {
+              position: absolute;
+              left: 0;
+              top: 0;
+              z-index: 100;
+              width: ${px2vw(45)};
+              height: ${px2vw(60)};
+            }
+            .img2 {
+              position: absolute;
+              left: ${px2vw(30)};
+              top: ${px2vw(7.5)};
+              z-index: 99;
+              width: ${px2vw(30)};
+              height: ${px2vw(45)};
+            }
+          }
+        }
+        .content-wrapper {
+          flex: 0 0 50%;
+          width: 50%;
+          ${mixin.columnCenter()};
+          .title {
+            text-align: center;
+          }
+          .num {
+            text-align: center;
+            margin-top: ${px2vw(5)};
+          }
+          ${mixinTitle()}
+        }
       }
     }
   }
