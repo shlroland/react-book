@@ -14,11 +14,11 @@ import { useTranslation } from 'react-i18next'
 import { changeShowFlapCard } from './store/actionCreators'
 import FirePoints from './FirePoints'
 import classnames from 'classnames'
-import {categoryText} from '@/utils/book'
+import { categoryText } from '@/utils/book'
 
 const FlapCard = forwardRef((_props, ref) => {
   const dispatch = useDispatch()
-  const {t} = useTranslation(['category','home'])
+  const { t } = useTranslation(['category', 'home'])
   const [showFlapCardAnimation, setShowFlapCardAnimation] = useState(true)
   const [showBookCard, setShowBookCard] = useState(false)
   const [showFirePoints, setShowFirePoints] = useState(true)
@@ -30,6 +30,8 @@ const FlapCard = forwardRef((_props, ref) => {
   const frontRef = useRef(0)
   const backRef = useRef(1)
   const FlapCardAnimationTask = useRef(null)
+  const showFirePointsAnimationTask = useRef(null)
+  const showFlapCardTask = useRef(null)
 
   const random = useSelector((state) =>
     state.getIn(['bookHome', 'random'])
@@ -121,6 +123,8 @@ const FlapCard = forwardRef((_props, ref) => {
     reset()
     dispatch(changeShowFlapCard(false))
     clearInterval(FlapCardAnimationTask.current)
+    showFirePointsAnimationTask.current && clearTimeout(showFirePointsAnimationTask.current)
+    showFlapCardTask.current && clearTimeout(showFlapCardTask.current)
   }, [dispatch, reset])
 
   useEffect(() => {
@@ -137,10 +141,10 @@ const FlapCard = forwardRef((_props, ref) => {
   }, [])
 
   useEffect(() => {
-    setTimeout(() => {
+    showFirePointsAnimationTask.current = setTimeout(() => {
       setShowFirePoints(false)
     }, 1001)
-    setTimeout(() => {
+  showFlapCardTask.current = setTimeout(() => {
       clearInterval(FlapCardAnimationTask.current)
       setShowFlapCardAnimation(false)
       setShowBookCard(true)
@@ -149,38 +153,38 @@ const FlapCard = forwardRef((_props, ref) => {
   }, [])
   return (
     <FlapCardWrapper>
-      {showFlapCardAnimation ? (
-        <div
-          className={classnames({
-            'flap-card-bg': true,
-            animation: runFlapCardAnimation,
-          })}
-        >
-          {flapCardList.map((item, index) => {
-            return (
-              <div
-                className="flap-card"
-                key={index}
-                ref={(el) => (cardsRef.current[index] = el)}
-              >
-                <div className="flap-card-semi-circle">
-                  <div
-                    className="flap-card-semi-circle-left"
-                    style={semiCircleStyle(item, 'left')}
-                    ref={(el) => (leftItemsRef.current[index] = el)}
-                  ></div>
-                  <div
-                    className="flap-card-semi-circle-right"
-                    style={semiCircleStyle(item, 'right')}
-                    ref={(el) => (rightItemsRef.current[index] = el)}
-                  ></div>
-                </div>
+      <div
+        className={classnames({
+          'flap-card-bg': true,
+          animation: runFlapCardAnimation,
+        })}
+        style={{ display: showFlapCardAnimation ? 'block' : 'none' }}
+      >
+        {flapCardList.map((item, index) => {
+          return (
+            <div
+              className="flap-card"
+              key={index}
+              ref={(el) => (cardsRef.current[index] = el)}
+            >
+              <div className="flap-card-semi-circle">
+                <div
+                  className="flap-card-semi-circle-left"
+                  style={semiCircleStyle(item, 'left')}
+                  ref={(el) => (leftItemsRef.current[index] = el)}
+                ></div>
+                <div
+                  className="flap-card-semi-circle-right"
+                  style={semiCircleStyle(item, 'right')}
+                  ref={(el) => (rightItemsRef.current[index] = el)}
+                ></div>
               </div>
-            )
-          })}
-          {showFirePoints ? <FirePoints></FirePoints> : null}
-        </div>
-      ) : null}
+            </div>
+          )
+        })}
+        {showFirePoints ? <FirePoints></FirePoints> : null}
+      </div>
+
       {showBookCard ? (
         <div
           className={classnames({
@@ -190,12 +194,12 @@ const FlapCard = forwardRef((_props, ref) => {
         >
           <div className="book-card-wrapper">
             <div className="img-wrapper">
-              <img className="img" alt="#" src={random.cover}/>
+              <img className="img" alt="#" src={random.cover} />
             </div>
             <div className="content-wrapper">
               <div className="title">{random.title}</div>
               <div className="author sub-title-medium">{random.author}</div>
-              <div className="category">{categoryText(random.category,t)}</div>
+              <div className="category">{categoryText(random.category, t)}</div>
             </div>
             <div className="read-btn">{t('home:readNow')}</div>
           </div>

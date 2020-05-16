@@ -2,6 +2,7 @@ import styled, { keyframes } from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
 import { title, hotSearch } from './transition'
 import { realPx } from '@/utils/utils'
+import { mixinTitle } from './home'
 
 const flapCardMove = keyframes`
       0% {
@@ -22,6 +23,46 @@ const flapCardMove = keyframes`
       }
 `
 
+export const BookHomeWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  font-size: ${px2vw(16)};
+  color: #666;
+  .book-list-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .banner-wrapper {
+      width: 100%;
+      padding: ${px2vw(10)};
+      box-sizing: border-box;
+      .banner {
+        width: 100%;
+        height: ${px2vw(150)};
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+    .recommend {
+      margin-top: ${px2vw(20)};
+    }
+    .featured {
+      margin-top: ${px2vw(20)};
+    }
+    .category-list-wrapper {
+      margin-top: ${px2vw(20)};
+    }
+    .category {
+      margin-top: ${px2vw(20)};
+    }
+  }
+`
 export const SearchBarWrapper = styled.div`
   .title-search-wrapper {
     position: relative;
@@ -235,24 +276,6 @@ export const FlapCardWrapper = styled.div`
     &.animation {
       animation: ${flapCardMove} 0.3s ease-in both;
     }
-    /* @keyframes flap-card-move {
-      0% {
-        transform: scale(0);
-        opacity: 0;
-      }
-      50% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
-      75% {
-        transform: scale(0.9);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    } */
     .flap-card {
       position: absolute;
       top: 0;
@@ -398,6 +421,40 @@ export const FlapCardWrapper = styled.div`
       background: #333;
       border-radius: 50%;
       ${mixin.center()};
+    }
+  }
+`
+export const GuessYouLikeWrapper = styled.div`
+  .guess-you-like-list {
+    width: 100%;
+    padding: 0 ${px2vw(10)};
+    box-sizing: border-box;
+    .guess-you-like-item {
+      display: flex;
+      margin-top: ${px2vw(15)};
+      &:first-child {
+        margin-top: ${px2vw(5)};
+      }
+      .img-wrapper {
+        flex: 0 0 20%;
+        padding: ${px2vw(10)} ${px2vw(10)} ${px2vw(10)} 0;
+        box-sizing: border-box;
+        .img {
+          width: 100%;
+        }
+      }
+      .content-wrapper {
+        flex: 1;
+        padding: ${px2vw(10)} 0;
+        box-sizing: border-box;
+        .author {
+          margin-top: ${px2vw(15)};
+        }
+        .result {
+          margin-top: ${px2vw(5)};
+        }
+        ${mixinTitle()}
+      }
     }
   }
 `

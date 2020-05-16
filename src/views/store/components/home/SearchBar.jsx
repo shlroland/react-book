@@ -44,7 +44,7 @@ const SearchBar = ({ offsetY: homeY, handleShowFlapCard }) => {
       setShowShadow(true)
     } else {
       setShowSearchPage(false)
-      setShowShadow(true)
+      setShowShadow(false)
     }
   }, [homeY])
 

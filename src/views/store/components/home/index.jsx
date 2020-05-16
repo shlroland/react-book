@@ -1,17 +1,21 @@
-import React, { useState, useEffect,useCallback,useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import SearchBar from './SearchBar'
 import FlapCard from './FlapCard'
+import GuessYouLike from './GuessYouLike'
 import Scroll from '@/common/scroll'
-import { useSelector,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { getHome, saveHome } from '@/utils/localStorage'
 import { home } from '@/api/book'
 import { changeShowFlapCard, changeRandom } from './store/actionCreators'
+import { BookHomeWrapper } from './style'
 
 const BookHome = () => {
   const dispatch = useDispatch()
   const [offsetY, setOffsetY] = useState(0)
   const [height, setHeight] = useState(94)
-  const [randomList, setRandomList] = useState(null);
+  const [bannerStyle, setBannerStyle] = useState(null)
+  const [randomList, setRandomList] = useState(null)
+  const [guessYouLikeList, setGuessYouLikeList] = useState(null);
   const flapCardRef = useRef(null)
   const showFlapCard = useSelector((state) =>
     state.getIn(['bookHome', 'showFlapCard'])
@@ -21,21 +25,22 @@ const BookHome = () => {
     setOffsetY(Y)
   }
 
-  const handleShowFlapCard = useCallback(()=>{
+  const handleShowFlapCard = useCallback(() => {
     const randomNumber = parseInt(Math.random() * randomList.length)
     dispatch(changeRandom(randomList[randomNumber]))
     dispatch(changeShowFlapCard(true))
-    setTimeout(()=>{
-     flapCardRef.current.startFlapCardAnimation()
-    },0)
+    setTimeout(() => {
+      flapCardRef.current.startFlapCardAnimation()
+    }, 0)
+  }, [dispatch, randomList])
 
-  },[dispatch, randomList])
-
-  const parseHomeData = useCallback((data)=>{
+  const parseHomeData = useCallback((data) => {
     setRandomList(data.random)
-  },[])
-
-
+    setGuessYouLikeList(data.guessYouLike)
+    setBannerStyle({
+      backgroundImage: 'url(' + data.banner + ')',
+    })
+  }, [])
 
   useEffect(() => {
     if (offsetY > 0) {
@@ -50,7 +55,7 @@ const BookHome = () => {
     if (data) {
       parseHomeData(data)
     } else {
-      home().then(res=>{
+      home().then((res) => {
         if (res.status === 200 && res.data) {
           parseHomeData(res.data)
           saveHome(res.data)
@@ -60,109 +65,23 @@ const BookHome = () => {
   }, [parseHomeData])
 
   return (
-    <>
-      <SearchBar offsetY={offsetY} handleShowFlapCard={handleShowFlapCard}></SearchBar>
-      <Scroll top={height} onScroll={(Y) => handleBookListScroll(Y)}>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
-        <div>12312312223123123123123</div>
+    <BookHomeWrapper>
+      <SearchBar
+        offsetY={offsetY}
+        handleShowFlapCard={handleShowFlapCard}
+      ></SearchBar>
+      <Scroll
+        top={height}
+        onScroll={(Y) => handleBookListScroll(Y)}
+        className={['book-list-wrapper']}
+      >
+        <div className="banner-wrapper">
+          <div className="banner" style={bannerStyle}></div>
+        </div>
+        <GuessYouLike data={guessYouLikeList}></GuessYouLike>
       </Scroll>
-      {/* <FlapCard style={{display: showFlapCard? 'block' : 'none'}}></FlapCard> */}
       {showFlapCard ? <FlapCard ref={flapCardRef}></FlapCard> : null}
-    </>
+    </BookHomeWrapper>
   )
 }
 
