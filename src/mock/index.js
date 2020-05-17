@@ -13,4 +13,4 @@ Mock.mock(/\/book\/shelf/, 'get', BookShelfApi)
 Mock.mock(/\/book\/list/, 'get', BookHomeList)
 Mock.mock(/\/book\/flat-list/, 'get', BookFlatList)
 
-export default Mock
+// export default Mock

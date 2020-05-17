@@ -1,4 +1,10 @@
-import React, { useRef, useMemo, useCallback, useEffect } from 'react'
+import React, {
+  useRef,
+  useMemo,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import styled from 'styled-components'
 import { mixin } from '@assets/style'
 import PropTypes from 'prop-types'
@@ -16,7 +22,7 @@ const ScrollWrapper = styled.div`
   }
 `
 
-const Scroll = (props) => {
+const Scroll = forwardRef((props, ref) => {
   const { top, bottom, ifNoScroll, initPosition, onScroll, className } = props
 
   const scrollWrapperDom = useRef(null)
@@ -25,7 +31,9 @@ const Scroll = (props) => {
     (e) => {
       const offsetY =
         e.target.scrollTop || window.pageYOffset || document.body.scrollTop
-      onScroll(offsetY)
+      if (onScroll) {
+        onScroll(offsetY)
+      }
     },
     [onScroll]
   )
@@ -40,27 +48,28 @@ const Scroll = (props) => {
   //   return () => scrollWrapper.removeEventListener('scroll', handleScroll)
   // }, [handleScroll, id])
 
-  // const refresh = useCallback(() => {
-  //   if (scrollWrapperDom) {
-  //     scrollWrapperDom.current.style.height =
-  //       window.innerHeight - realPx(top) - realPx(bottom)
-  //     scrollWrapperDom.current.addEventListener('scroll', handleScroll, {
-  //       passive: true,
-  //     })
-  //   }
-  // }, [bottom, handleScroll, top])
+  const refresh = useCallback(() => {
+    if (scrollWrapperDom) {
+      scrollWrapperDom.current.style.height =
+        window.innerHeight - realPx(top) - realPx(bottom)
+    }
+  }, [bottom, top])
+
+  useImperativeHandle(ref, () => ({
+    refresh,
+  }))
+
   return (
     <ScrollWrapper
       height={computedHeight}
       className={classnames(...className)}
-
       onScroll={(e) => handleScroll(e)}
       ref={scrollWrapperDom}
     >
       {props.children}
     </ScrollWrapper>
   )
-}
+})
 
 Scroll.defaultProps = {
   top: 0,
