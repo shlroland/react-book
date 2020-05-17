@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { categoryText } from '@/utils/book'
 import { FeaturedWrapper } from './style'
 
-const Featured = ({data}) => {
+const Featured = ({data,titleText,btnText}) => {
   const { t } = useTranslation(['category', 'home'])
   return (
     <FeaturedWrapper>
-      <TitleView label={t('home:featured')} btn={t('home:seeAll')}></TitleView>
+      <TitleView label={titleText} btn={btnText}></TitleView>
       <div className="featured-list">
         <div className="featured-item-wrapper">
           {data &&
@@ -32,5 +32,9 @@ const Featured = ({data}) => {
       </div>
     </FeaturedWrapper>
   )
+}
+
+Featured.defaultProps = {
+  titleVisible : true
 }
 export default Featured

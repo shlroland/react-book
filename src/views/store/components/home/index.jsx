@@ -12,9 +12,11 @@ import { getHome, saveHome } from '@/utils/localStorage'
 import { home } from '@/api/book'
 import { changeShowFlapCard, changeRandom } from './store/actionCreators'
 import { BookHomeWrapper } from './style'
+import { useTranslation } from 'react-i18next'
 
 const BookHome = () => {
   const dispatch = useDispatch()
+  const {t} = useTranslation()
   const [offsetY, setOffsetY] = useState(0)
   const [height, setHeight] = useState(94)
   const [bannerStyle, setBannerStyle] = useState(null)
@@ -92,7 +94,7 @@ const BookHome = () => {
         </div>
         <GuessYouLike data={guessYouLikeList}></GuessYouLike>
         <Recommend data={recommendList}></Recommend>
-        <Featured data={featuredList}></Featured>
+        <Featured data={featuredList} titleText={t('home:featured')} btnText={t('home:seeAll')}></Featured>
         {categoryList &&
           categoryList.map((item) => {
             return (

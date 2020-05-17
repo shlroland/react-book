@@ -17,7 +17,7 @@ const messages = {
       category: '分类',
       books: '本书',
       readNow: '立即阅读',
-      allBook: '共 $1 本图书'
+      allBook: '共{{$1}}本图书'
     },
     category: {
       computerScience: '计算机科学',
