@@ -3,7 +3,7 @@ import { Route ,Redirect} from 'react-router-dom'
 import BookHome from './components/home'
 import BookDetail from './components/detail'
 import BookList from './components/list'
-
+import BookShelf from './components/shelf'
 
 const Store = () => {
     return (
@@ -11,7 +11,8 @@ const Store = () => {
         <Route path="/book-store/home" component={BookHome} exact></Route>
         <Route path="/book-store/detail/:fileName" component={BookDetail} exact></Route>
         <Route path="/book-store/list" component={BookList} exact></Route>
-        <Redirect from="/book-store" to="/book-store/home"></Redirect>
+        <Route path="/book-store/shelf" component={BookShelf} exact></Route>
+        <Redirect from="/book-store" to="/book-store/shelf"></Redirect>
         </>
     )
 }

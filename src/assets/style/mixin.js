@@ -1,4 +1,5 @@
 import { css } from 'styled-components'
+import px2vw from './px2vw'
 
 export const center = () => css`
   display: flex;
@@ -106,22 +107,22 @@ export const ellipsis2 = ($line) => css`
 
 export const shelfImgHeight = css`
   @media screen and (max-width: 414px) {
-    height: px2rem(115);
+    height: ${px2vw(123)};
   }
   @media screen and (min-width: 415px) and (max-width: 500px) {
-    height: px2rem(115);
+    height: ${px2vw(135)};
   }
   @media screen and (min-width: 501px) and (max-width: 600px) {
-    height: px2rem(125);
+    height: ${px2vw(155)};
   }
   @media screen and (min-width: 601px) and (max-width: 700px) {
-    height: px2rem(155);
+    height: ${px2vw(155)};
   }
   @media screen and (min-width: 701px) and (max-width: 800px) {
-    height: px2rem(155);
+    height: ${px2vw(155)};
   }
   @media screen and (min-width: 801px) {
-    height: px2rem(155);
+    height: ${px2vw(155)};
   }
 `
 export const variableColor = {
