@@ -1,19 +1,31 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useCallback, memo } from 'react'
 import { ShelfTitleWrapper } from './style'
 import { useTranslation } from 'react-i18next'
+import { useSelector, useDispatch } from 'react-redux'
+import { changeIsEditMode } from './store/actionCreators'
 
 const ShelfTitle = ({
-  isEditMode,
   ifShowBack,
   ifShowClear,
   ifGroupEmpty,
-  data,
   title,
   category,
 }) => {
+  const dispatch = useDispatch()
   const { t } = useTranslation('shelf')
-
   const [isHideShadow, setIsHideShadow] = useState(true)
+
+  const isEditMode = useSelector((state) =>
+    state.getIn(['bookShelf', 'isEditMode'])
+  )
+  const data = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
+
+  const handleChangeMode = useCallback(() => {
+    console.log(isEditMode)
+    dispatch(changeIsEditMode(!isEditMode))
+  }, [dispatch, isEditMode])
 
   const selectedNumber = useMemo(() => {
     if (category && category.itemList) {
@@ -33,6 +45,10 @@ const ShelfTitle = ({
       : t('haveSelectedBooks', { $1: selectedNumber })
   }, [selectedNumber, t])
 
+  // useBookList().then((res) => {
+  //   setData(res)
+  // })
+
   return (
     <ShelfTitleWrapper className={isHideShadow ? 'hide-shadow' : ''}>
       <div className="title">
@@ -46,7 +62,7 @@ const ShelfTitle = ({
       </div>
       {!ifGroupEmpty ? (
         <div className="btn-text-wrapper">
-          <span className="btn-text">
+          <span className="btn-text" onClick={() => handleChangeMode()}>
             {isEditMode ? t('cancel') : t('edit')}
           </span>
         </div>
@@ -93,4 +109,4 @@ const ShelfTitle = ({
   )
 }
 
-export default ShelfTitle
+export default memo(ShelfTitle)

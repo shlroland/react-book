@@ -1,49 +1,98 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ShelfWrapper } from './style'
 import classnames from 'classnames'
 import ShelfImage from './ShelfImage'
 import ShelfCategory from './ShelfCategory'
+import { useSelector,useDispatch } from 'react-redux'
+import { useShowBookDetail } from '../../hooks'
+import { useHistory } from 'react-router-dom'
+import { changeBookList, getSelectedList } from './store/actionCreators'
+
 
 const Shelf = (props) => {
-  const { className: classNameWrapper, data, showType, isEditMode } = props
+    const dispatch = useDispatch()
+  const { className: classNameWrapper, showType } = props
+  const isEditMode = useSelector((state) =>
+    state.getIn(['bookShelf', 'isEditMode'])
+  )
+
+  const data = useSelector((state) =>
+  state.getIn(['bookShelf', 'bookList']).toJS()
+)
+
+  const { t } = useTranslation('shelf')
+  const history = useHistory()
+
+  const showBookDetail = useShowBookDetail()
+
   const bookData = useMemo(() => {
-    console.log(data)
     if (showType === 0) {
       return data
     } else if (showType === 1) {
       return data
     }
   }, [data, showType])
-  const { t } = useTranslation('shelf')
+  
+  const onBookClick = useCallback(
+    (book, index) => {
+      if (book.type === 3) {
+        history.push('/book-store/home')
+      } else if (book.type === 1) {
+        if (isEditMode) {
+          data[index].selected = !data[index].selected
+          dispatch(changeBookList(data))
+          dispatch(getSelectedList(data))
+        } else {
+          showBookDetail(book)
+        }
+      } else if (book.type === 2) {
+        if (!isEditMode) {
+        }
+      }
+    },
+    [data, dispatch, history, isEditMode, showBookDetail]
+  )
+
+
   return (
     <ShelfWrapper className={classNameWrapper}>
       <div id="book-shelf-list">
-        {bookData.map((item, index) => {
-          return (
-            <div className="book-shelf-item" key={item.id}>
+        {bookData &&
+          bookData.map((item, index) => {
+            return (
               <div
-                className={classnames({
-                  'book-img-wrapper': true,
-                  'add-book': item.type === 3,
-                  'category-book': item.type === 2,
-                })}
+                className="book-shelf-item"
+                key={item.id}
+                onClick={() => onBookClick(item, index)}
               >
-                {item.type === 1 ? (
-                  <ShelfImage data={item} isEditMode={isEditMode}></ShelfImage>
-                ) : item.type === 2 ? (
+                <div
+                  className={classnames({
+                    'book-img-wrapper': true,
+                    'add-book': item.type === 3,
+                    'category-book': item.type === 2,
+                  })}
+                >
+                  {item.type === 1 ? (
+                    <ShelfImage
+                      data={item}
+                      isEditMode={isEditMode}
+                    ></ShelfImage>
+                  ) : item.type === 2 ? (
                     <ShelfCategory
                       data={item}
                       isEditMode={isEditMode}
                     ></ShelfCategory>
-                  ) : <span className="icon-add icon"></span>}
+                  ) : (
+                    <span className="icon-add icon"></span>
+                  )}
+                </div>
+                <div className="book-title-wrapper">
+                  <span className="book-title title-small">{item.title}</span>
+                </div>
               </div>
-              <div className="book-title-wrapper">
-                <span className="book-title title-small">{item.title}</span>
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
         {/* <div
           className="book-shelf-item"
           v-for="(item, index) in bookData"

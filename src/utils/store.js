@@ -150,3 +150,4 @@ export const flapCardList = [
     rotateDegree: 0
   }
 ]
+
