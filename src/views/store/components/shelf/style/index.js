@@ -229,7 +229,7 @@ export const ShelfWrapper = styled.div`
   width: 100%;
   overflow: auto;
   font-size: 0;
-  #book-shelf-list {
+  .book-shelf-content-list {
     display: flex;
     flex-flow: row wrap;
     width: 100%;
@@ -240,11 +240,12 @@ export const ShelfWrapper = styled.div`
       width: 33.33%;
       padding: ${px2vw(15)};
       box-sizing: border-box;
-      &.list-move {
-        transition: transform 0.5s;
+      &.item-exit {
+        opacity: 1;
       }
-      &.list-leave-active {
-        display: none;
+      &.list-exit-active {
+        transition: all 5s linear;
+        opacity: 0;
       }
       .book-img-wrapper {
         width: 100%;

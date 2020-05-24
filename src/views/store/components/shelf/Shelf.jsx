@@ -1,6 +1,8 @@
 import React, { useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ShelfWrapper } from './style'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { Flipper, Flipped } from 'react-flip-toolkit'
 import classnames from 'classnames'
 import ShelfImage from './ShelfImage'
 import ShelfCategory from './ShelfCategory'
@@ -21,8 +23,6 @@ const Shelf = (props) => {
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
 
-  console.log(data)
-
   const { t } = useTranslation('shelf')
   const history = useHistory()
 
@@ -35,6 +35,16 @@ const Shelf = (props) => {
       return data
     }
   }, [data, showType])
+
+  const flipNum = useMemo(() => {
+    if (bookData.length > 0) {
+      return bookData.reduce((acc, cur) => {
+        return acc + cur.id
+      }, 0)
+    } else {
+      return 0
+    }
+  }, [bookData])
 
   const publicNumber = useMemo(() => {
     if (data) {
@@ -54,23 +64,23 @@ const Shelf = (props) => {
     }
   }, [data])
 
-  const privateNumber = useMemo(()=>{
+  const privateNumber = useMemo(() => {
     if (data) {
-        let number = 0
-        data.filter(item => {
-          if (item.private && item.type === 1) {
-            number++
-          } else if (item.type === 2 && item.itemList.length > 0) {
-            number += item.itemList.filter(subItem => {
-              return subItem.private && subItem.type === 1
-            }).length
-          }
-        })
-        return number
-      } else {
-        return 0
-      }
-  },[data])
+      let number = 0
+      data.filter((item) => {
+        if (item.private && item.type === 1) {
+          number++
+        } else if (item.type === 2 && item.itemList.length > 0) {
+          number += item.itemList.filter((subItem) => {
+            return subItem.private && subItem.type === 1
+          }).length
+        }
+      })
+      return number
+    } else {
+      return 0
+    }
+  }, [data])
 
   const onBookClick = useCallback(
     (book, index) => {
@@ -94,43 +104,52 @@ const Shelf = (props) => {
 
   return (
     <ShelfWrapper className={classNameWrapper}>
-      <div id="book-shelf-list">
-        {bookData &&
-          bookData.map((item, index) => {
-            return (
-              <div
-                className="book-shelf-item"
-                key={item.id}
-                onClick={() => onBookClick(item, index)}
-              >
-                <div
-                  className={classnames({
-                    'book-img-wrapper': true,
-                    'add-book': item.type === 3,
-                    'category-book': item.type === 2,
-                  })}
+      {showType === 0 || showType === 1 ? (
+        <Flipper className="book-shelf-content-list" flipKey={flipNum}>
+          {bookData &&
+            bookData.map((item, index) => {
+              return (
+                <Flipped
+                  classNames="item"
+                  key={item.id}
+                  flipId={item.id}
                 >
-                  {item.type === 1 ? (
-                    <ShelfImage
-                      data={item}
-                      isEditMode={isEditMode}
-                    ></ShelfImage>
-                  ) : item.type === 2 ? (
-                    <ShelfCategory
-                      data={item}
-                      isEditMode={isEditMode}
-                    ></ShelfCategory>
-                  ) : (
-                    <span className="icon-add icon"></span>
-                  )}
-                </div>
-                <div className="book-title-wrapper">
-                  <span className="book-title title-small">{item.title}</span>
-                </div>
-              </div>
-            )
-          })}
-      </div>
+                  <div
+                    className="book-shelf-item"
+                    onClick={() => onBookClick(item, index)}
+                  >
+                    <div
+                      className={classnames({
+                        'book-img-wrapper': true,
+                        'add-book': item.type === 3,
+                        'category-book': item.type === 2,
+                      })}
+                    >
+                      {item.type === 1 ? (
+                        <ShelfImage
+                          data={item}
+                          isEditMode={isEditMode}
+                        ></ShelfImage>
+                      ) : item.type === 2 ? (
+                        <ShelfCategory
+                          data={item}
+                          isEditMode={isEditMode}
+                        ></ShelfCategory>
+                      ) : (
+                        <span className="icon-add icon"></span>
+                      )}
+                    </div>
+                    <div className="book-title-wrapper">
+                      <span className="book-title title-small">
+                        {item.title}
+                      </span>
+                    </div>
+                  </div>
+                </Flipped>
+              )
+            })}
+        </Flipper>
+      ) : null}
       <div
         className="book-shelf-label-list-wrapper"
         v-if="showType === 2 || showType === 3"
