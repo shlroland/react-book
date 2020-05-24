@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useCallback, memo } from 'react'
 import { ShelfTitleWrapper } from './style'
 import { useTranslation } from 'react-i18next'
-import { useSelector, useDispatch } from 'react-redux'
-import { changeIsEditMode } from './store/actionCreators'
+import { useSelector } from 'react-redux'
+import { useEditClick } from '../../hooks/index'
 
 const ShelfTitle = ({
   ifShowBack,
@@ -11,9 +11,10 @@ const ShelfTitle = ({
   title,
   category,
 }) => {
-  const dispatch = useDispatch()
   const { t } = useTranslation('shelf')
   const [isHideShadow, setIsHideShadow] = useState(true)
+
+  const editClick = useEditClick()
 
   const isEditMode = useSelector((state) =>
     state.getIn(['bookShelf', 'isEditMode'])
@@ -23,9 +24,12 @@ const ShelfTitle = ({
   )
 
   const handleChangeMode = useCallback(() => {
-    console.log(isEditMode)
-    dispatch(changeIsEditMode(!isEditMode))
-  }, [dispatch, isEditMode])
+    if (isEditMode) {
+      editClick(false)
+    }else {
+      editClick(true)
+    }
+  }, [editClick, isEditMode])
 
   const selectedNumber = useMemo(() => {
     if (category && category.itemList) {

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ShelfWrapper } from './style'
 import classnames from 'classnames'
@@ -12,6 +12,7 @@ import { changeBookList, getSelectedList } from './store/actionCreators'
 const Shelf = (props) => {
   const dispatch = useDispatch()
   const { className: classNameWrapper, showType } = props
+
   const isEditMode = useSelector((state) =>
     state.getIn(['bookShelf', 'isEditMode'])
   )
@@ -19,6 +20,8 @@ const Shelf = (props) => {
   const data = useSelector((state) =>
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
+
+  console.log(data)
 
   const { t } = useTranslation('shelf')
   const history = useHistory()

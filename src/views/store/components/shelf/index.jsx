@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import React, {  useState, useEffect, useMemo } from 'react'
 import ScrollView from '@/common/scroll'
 import ShelfTitle from './ShelfTitle'
 import ShelfSearch from './ShelfSearch'
 import Shelf from './Shelf'
 import ShelfFooter from './ShelfFooter'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import { getLocalStorage } from '@/utils/localStorage'
 import { initBookShelf } from '@/utils/shelf'
 import { getBookList, changeBookList } from './store/actionCreators'
@@ -14,19 +14,21 @@ import { BookShelfWrapper } from './style'
 const BookShelf = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation('shelf')
-  const [scrollBottom, setScrollBottom] = useState(0)
+//   const [scrollBottom, setScrollBottom] = useState(0)
   const [showType, setShowType] = useState(0)
   const storageBookList = useMemo(() => {
     return getLocalStorage('bookShelf')
   }, [])
 
+  const scrollBottom = useSelector((state) =>
+  state.getIn(['bookShelf', 'scrollBottom'])
+)
+
   useEffect(() => {
     if (storageBookList) {
-      console.log('s')
       initBookShelf(storageBookList)
       dispatch(changeBookList(storageBookList))
     } else {
-      console.log('r')
       dispatch(getBookList())
     }
   }, [dispatch, storageBookList])

@@ -9,6 +9,11 @@ export const changeIsEditMode = (data) => ({
   data,
 })
 
+export const changeScrollBottom = (data) => ({
+  type: actionTypes.CHANGE_SCROLL_BOTTOM,
+  data,
+})
+
 export const changeBookList = (data) => ({
   type: actionTypes.CHANGE_BOOK_LIST,
   data: fromJS(data),

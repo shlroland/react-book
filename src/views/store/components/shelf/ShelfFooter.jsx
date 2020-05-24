@@ -1,18 +1,14 @@
-import React, { useMemo, useState, useRef } from 'react'
+import React, { useMemo, useState, useRef,useCallback } from 'react'
 import { ShelfFooterWrapper } from './style'
 import { useTranslation } from 'react-i18next'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import classnames from 'classnames'
-import { useCallback } from 'react'
 import Popup from './Popup'
 import Toast from '@/common/toast'
 import ShelfGroupDialog from './ShelfGroupDialog'
-import { changeBookList } from './store/actionCreators'
-import { setLocalStorage } from '@/utils/localStorage'
-import { useSetPrivate } from '../../hooks'
+import { useSetPrivate, useRemoveBook } from '../../hooks'
 
 const ShelfFooter = (props) => {
-  const dispatch = useDispatch()
   const { className, category } = props
   const { t } = useTranslation('shelf')
   const isEditMode = useSelector((state) =>
@@ -22,14 +18,9 @@ const ShelfFooter = (props) => {
     state.getIn(['bookShelf', 'selectedList']).toJS()
   )
 
-  const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
-  )
-
   const [popTitle, setPopTitle] = useState('')
   const [confirmText, setConfirmText] = useState('')
   const [isRemoveText, setIsRemoveText] = useState(false)
-  //   const [onConfirm, setOnConfirm] = useState(null)
   const [toastText, setToastText] = useState('')
 
   const popupRef = useRef(null)
@@ -59,7 +50,7 @@ const ShelfFooter = (props) => {
     if (!isSelected) {
       return false
     } else {
-      selectedList.every((item) => {
+      return selectedList.every((item) => {
         return item.cache
       })
     }
@@ -107,7 +98,7 @@ const ShelfFooter = (props) => {
     toastRef.current.show()
   }, [])
 
-  const removeBook = useCallback(() => {}, [])
+  
 
   const showPopup = useCallback(
     (title, confirmText, confirm, isRemoveText = false) => {
@@ -120,6 +111,7 @@ const ShelfFooter = (props) => {
     []
   )
   const setPrivate = useSetPrivate(showToast, t)
+  const removeBook = useRemoveBook()
   //   const setPrivate = useCallback(
   //     (v) => {
   //       return () => {
@@ -198,100 +190,96 @@ const ShelfFooter = (props) => {
   )
 
   return (
-    <>
-      {isEditMode ? (
-        <ShelfFooterWrapper className={className}>
-          {tabs.map((item, index) => {
-            return (
+    <ShelfFooterWrapper
+      className={className}
+      style={{ display: isEditMode ? 'flex' : 'none' }}
+    >
+      {tabs.map((item, index) => {
+        return (
+          <div
+            className="book-shelf-tab-wrapper"
+            key={index}
+            onClick={() => onTabClick(item)}
+          >
+            <div className="book-shelf-tab">
+              {item.index === 1 && !isPrivate ? (
+                <div
+                  className={classnames({
+                    'icon-private': true,
+                    'tab-icon': true,
+                    'is-selected': isSelected,
+                  })}
+                ></div>
+              ) : null}
+              {item.index === 1 && isPrivate ? (
+                <div
+                  className={classnames({
+                    'icon-private-see': true,
+                    'tab-icon': true,
+                    'is-selected': isSelected,
+                  })}
+                ></div>
+              ) : null}
+              {item.index === 2 && !isDownload ? (
+                <div
+                  className={classnames({
+                    'icon-download': true,
+                    'tab-icon': true,
+                    'is-selected': isSelected,
+                  })}
+                ></div>
+              ) : null}
+              {item.index === 2 && isDownload ? (
+                <div
+                  className={classnames({
+                    'icon-download-remove': true,
+                    'tab-icon': true,
+                    'is-selected': isSelected,
+                  })}
+                ></div>
+              ) : null}
+              {item.index === 3 ? (
+                <div
+                  className={classnames({
+                    'icon-move': true,
+                    'tab-icon': true,
+                    'is-selected': isSelected,
+                  })}
+                ></div>
+              ) : null}
+              {item.index === 4 ? (
+                <div
+                  className={classnames({
+                    'icon-shelf': true,
+                    'tab-icon': true,
+                    'is-selected': isSelected,
+                  })}
+                ></div>
+              ) : null}
               <div
-                className="book-shelf-tab-wrapper"
-                key={index}
-                onClick={() => onTabClick(item)}
+                className={classnames({
+                  'tab-text': true,
+                  'remove-text': item.index === 4,
+                  'is-selected': isSelected,
+                })}
               >
-                <div className="book-shelf-tab">
-                  {item.index === 1 && !isPrivate ? (
-                    <div
-                      className={classnames({
-                        'icon-private': true,
-                        'tab-icon': true,
-                        'is-selected': isSelected,
-                      })}
-                    ></div>
-                  ) : null}
-                  {item.index === 1 && isPrivate ? (
-                    <div
-                      className={classnames({
-                        'icon-private-see': true,
-                        'tab-icon': true,
-                        'is-selected': isSelected,
-                      })}
-                    ></div>
-                  ) : null}
-                  {item.index === 2 && !isDownload ? (
-                    <div
-                      className={classnames({
-                        'icon-download': true,
-                        'tab-icon': true,
-                        'is-selected': isSelected,
-                      })}
-                    ></div>
-                  ) : null}
-                  {item.index === 2 && isDownload ? (
-                    <div
-                      className={classnames({
-                        'icon-download-remove': true,
-                        'tab-icon': true,
-                        'is-selected': isSelected,
-                      })}
-                    ></div>
-                  ) : null}
-                  {item.index === 3 ? (
-                    <div
-                      className={classnames({
-                        'icon-move': true,
-                        'tab-icon': true,
-                        'is-selected': isSelected,
-                      })}
-                    ></div>
-                  ) : null}
-                  {item.index === 4 ? (
-                    <div
-                      className={classnames({
-                        'icon-shelf': true,
-                        'tab-icon': true,
-                        'is-selected': isSelected,
-                      })}
-                    ></div>
-                  ) : null}
-                  <div
-                    className={classnames({
-                      'tab-text': true,
-                      'remove-text': item.index === 4,
-                      'is-selected': isSelected,
-                    })}
-                  >
-                    {label(item)}
-                  </div>
-                </div>
+                {label(item)}
               </div>
-            )
-          })}
-          <Popup
-            ref={popupRef}
-            title={popTitle}
-            confirmText={confirmText}
-            isRemoveText={isRemoveText}
-            confirm={onConfirm.current}
-            cancelText={t('cancel')}
-          ></Popup>
-          <ShelfGroupDialog
-            ref={dialogRef}
-            category={category}
-          ></ShelfGroupDialog>
-          <Toast text={toastText} ref={toastRef}></Toast>
-        </ShelfFooterWrapper>
-      ) : null}
-    </>
+            </div>
+          </div>
+        )
+      })}
+      <Popup
+        ref={popupRef}
+        title={popTitle}
+        confirmText={confirmText}
+        isRemoveText={isRemoveText}
+        confirm={onConfirm.current}
+        cancelText={t('cancel')}
+      ></Popup>
+      <ShelfGroupDialog ref={dialogRef} category={category}></ShelfGroupDialog>
+      <Toast text={toastText} ref={toastRef}></Toast>
+    </ShelfFooterWrapper>
   )
 }
 
