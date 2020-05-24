@@ -4,22 +4,21 @@ import { ShelfWrapper } from './style'
 import classnames from 'classnames'
 import ShelfImage from './ShelfImage'
 import ShelfCategory from './ShelfCategory'
-import { useSelector,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useShowBookDetail } from '../../hooks'
 import { useHistory } from 'react-router-dom'
 import { changeBookList, getSelectedList } from './store/actionCreators'
 
-
 const Shelf = (props) => {
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const { className: classNameWrapper, showType } = props
   const isEditMode = useSelector((state) =>
     state.getIn(['bookShelf', 'isEditMode'])
   )
 
   const data = useSelector((state) =>
-  state.getIn(['bookShelf', 'bookList']).toJS()
-)
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
 
   const { t } = useTranslation('shelf')
   const history = useHistory()
@@ -33,7 +32,43 @@ const Shelf = (props) => {
       return data
     }
   }, [data, showType])
-  
+
+  const publicNumber = useMemo(() => {
+    if (data) {
+      let number = 0
+      data.filter((item) => {
+        if (!item.private && item.type === 1) {
+          number++
+        } else if (item.type === 2 && item.itemList.length > 0) {
+          number += item.itemList.filter((subItem) => {
+            return !subItem.private && subItem.type === 1
+          }).length
+        }
+      })
+      return number
+    } else {
+      return 0
+    }
+  }, [data])
+
+  const privateNumber = useMemo(()=>{
+    if (data) {
+        let number = 0
+        data.filter(item => {
+          if (item.private && item.type === 1) {
+            number++
+          } else if (item.type === 2 && item.itemList.length > 0) {
+            number += item.itemList.filter(subItem => {
+              return subItem.private && subItem.type === 1
+            }).length
+          }
+        })
+        return number
+      } else {
+        return 0
+      }
+  },[data])
+
   const onBookClick = useCallback(
     (book, index) => {
       if (book.type === 3) {
@@ -53,7 +88,6 @@ const Shelf = (props) => {
     },
     [data, dispatch, history, isEditMode, showBookDetail]
   )
-
 
   return (
     <ShelfWrapper className={classNameWrapper}>
@@ -93,33 +127,6 @@ const Shelf = (props) => {
               </div>
             )
           })}
-        {/* <div
-          className="book-shelf-item"
-          v-for="(item, index) in bookData"
-          key="item.id"
-          click="onBookClick(item, index)"
-        >
-          <div
-            className="book-img-wrapper"
-            className="{'add-book': item.type === 3, 'category-book': item.type ===2}"
-            ref="bookImg"
-          >
-            <shelf-image
-              data="item"
-              isEditMode="isEditMode"
-              v-if="item.type === 1"
-            ></shelf-image>
-            <shelf-category
-              data="item"
-              isEditMode="isEditMode"
-              v-else-if="item.type === 2"
-            ></shelf-category>
-            <span className="icon-add icon" v-else></span>
-          </div>
-          <div className="book-title-wrapper">
-            <span className="book-title title-small">{item.title}</span>
-          </div>
-        </div> */}
       </div>
       <div
         className="book-shelf-label-list-wrapper"
@@ -166,9 +173,12 @@ const Shelf = (props) => {
           </div>
         </div>
       </div>
-      {/* <div className="book-shelf-statistics" v-show="showType === 0">
+      <div
+        className="book-shelf-statistics"
+        style={{ display: showType === 0 ? 'block' : 'none' }}
+      >
         {t('statistic', { $1: publicNumber, $2: privateNumber })}
-      </div> */}
+      </div>
     </ShelfWrapper>
   )
 }

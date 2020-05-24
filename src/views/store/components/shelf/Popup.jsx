@@ -1,16 +1,45 @@
-import React, { useState, forwardRef, useImperativeHandle,useCallback } from 'react'
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+} from 'react'
 import { PopupWrapper } from './style'
 import classnames from 'classnames'
+import { CSSTransition } from 'react-transition-group'
 
-const Popup = (props, ref) => {
-  const { title, confirmText, isRemoveText, cancelText, thirdText } = props
+const Popup = forwardRef((props, ref) => {
+  const {
+    title,
+    confirmText,
+    isRemoveText,
+    cancelText,
+    thirdText,
+    confirm,
+  } = props
   const [visible, setVisible] = useState(false)
   const [popupVisible, setPopupVisible] = useState(false)
 
-  const show = useCallback(()=>{
+  // console.log(title, confirmText, isRemoveText, cancelText, confirm)
+
+  const show = useCallback(() => {
     setVisible(true)
     setPopupVisible(true)
-  },[])
+  }, [])
+
+  const hide = useCallback(() => {
+    setPopupVisible(false)
+    setTimeout(() => {
+      setVisible(false)
+    }, 200)
+  }, [])
+
+  const handleConfirm = useCallback(()=>{
+    hide()
+    setTimeout(()=>{
+      confirm()
+    },[])
+  },[confirm, hide])
 
   useImperativeHandle(ref, () => ({
     show,
@@ -19,8 +48,27 @@ const Popup = (props, ref) => {
     <>
       {visible ? (
         <PopupWrapper>
-          {popupVisible ? <div className="popup-bg"></div> : null}
-          {popupVisible ? (
+          <div
+            className="popup-bg"
+            style={{
+              display: popupVisible ? 'block' : 'none',
+            }}
+            onClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              hide()
+            }}
+            onTouchMove={(e) => {
+              e.preventDefault()
+            }}
+          ></div>
+          <CSSTransition
+            in={popupVisible}
+            timeout={500}
+            classNames="popup-slide-up"
+            appear={true}
+            unmountOnExit
+          >
             <div className="popup-wrapper">
               {title && title.length > 0 ? (
                 <div className="popup-title">{title}</div>
@@ -33,16 +81,19 @@ const Popup = (props, ref) => {
                   'popup-confirm-btn': true,
                   'is-remove': isRemoveText,
                 })}
+                onClick={() => handleConfirm()}
               >
                 {confirmText}
               </div>
-              <div className="popup-cancel-btn">{cancelText}</div>
+              <div className="popup-cancel-btn" onClick={() => hide()}>
+                {cancelText}
+              </div>
             </div>
-          ) : null}
+          </CSSTransition>
         </PopupWrapper>
       ) : null}
     </>
   )
-}
+})
 
-export default forwardRef(Popup)
+export default Popup

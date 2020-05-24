@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
-import { fade } from './transition'
+import { fade,popupSlideUp } from './transition'
 
 export const BookShelfWrapper = styled.div`
   position: relative;
@@ -42,7 +42,7 @@ export const BookShelfWrapper = styled.div`
 `
 export const ShelfTitleWrapper = styled.div`
   position: relative;
-  z-index: 130;
+  z-index: 120;
   width: 100%;
   height: ${px2vw(42)};
   background: white;
@@ -520,7 +520,7 @@ export const PopupWrapper = styled.div`
   .popup-bg {
     width: 100%;
     height: 100%;
-    ${fade()}
+    /* ${fade()} */
   }
   .popup-wrapper {
     position: fixed;
@@ -529,6 +529,7 @@ export const PopupWrapper = styled.div`
     z-index: 2000;
     width: 100%;
     background: white;
+    ${popupSlideUp()}
     .popup-title {
       width: 100%;
       height: ${px2vw(44)};

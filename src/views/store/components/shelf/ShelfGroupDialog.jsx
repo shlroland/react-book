@@ -1,16 +1,17 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo,forwardRef,useImperativeHandle } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ShelfGroupDialogWrapper } from './style'
 import classnames from 'classnames'
 import { CSSTransition } from 'react-transition-group'
 
-const ShelfGroupDialog = (props) => {
-  const { visible, isInGroup, category, isEditGroupName } = props
+const ShelfGroupDialog = (props,ref) => {
+  const { isInGroup, category, isEditGroupName } = props
   const bookList = useSelector((state) =>
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
   const { t } = useTranslation('shelf')
+  const [visible, setVisible] = useState(false);
   const [selectGroupDialogVisible, setSelectGroupDialogVisible] = useState(true)
   const [newGroupDialogVisible, setNewGroupDialogVisible] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
@@ -32,12 +33,18 @@ const ShelfGroupDialog = (props) => {
     return [...defaultCategory, ...list]
   }, [bookList, defaultCategory])
 
+  useImperativeHandle(ref,()=>({
+    show(){
+      setVisible(true)
+    }
+  }))
+
   return (
     <CSSTransition
       in={visible}
       timeout={500}
       classNames="fade"
-      // appear={true}
+      appear={true}
       unmountOnExit
     >
       <ShelfGroupDialogWrapper>
@@ -50,7 +57,7 @@ const ShelfGroupDialog = (props) => {
               <div className="dialog-list-wrapper">
                 {categoryList.map((item, index) => {
                   return (
-                    <>
+                    <div key={index}>
                       {(item.edit === 2 && isInGroup) ||
                       item.edit !== 2 ||
                       !item.edit ? (
@@ -59,7 +66,6 @@ const ShelfGroupDialog = (props) => {
                             'dialog-list-item': true,
                             'is-add': item.edit ? item.edit === 1 : false,
                           })}
-                          key={index}
                         >
                           <div className="dialog-list-item-text">
                             {item.title}
@@ -73,7 +79,7 @@ const ShelfGroupDialog = (props) => {
                           ) : null}
                         </div>
                       ) : null}
-                    </>
+                    </div>
                   )
                 })}
               </div>
@@ -128,8 +134,5 @@ const ShelfGroupDialog = (props) => {
   )
 }
 
-ShelfGroupDialog.defaultProps = {
-  isEditGroupName: false,
-}
 
-export default ShelfGroupDialog
+export default forwardRef(ShelfGroupDialog)

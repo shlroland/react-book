@@ -9,18 +9,7 @@ import { useDispatch } from 'react-redux'
 import { getLocalStorage } from '@/utils/localStorage'
 import { initBookShelf } from '@/utils/shelf'
 import { getBookList, changeBookList } from './store/actionCreators'
-// import { shelf } from '@/api/book'
-// import {
-//   getLocalStorage,
-//   setLocalStorage,
-//   clearLocalStorage,
-// } from '@/utils/localStorage'
-// import { useEffect } from 'react'
 import { BookShelfWrapper } from './style'
-// import { useBookList } from './hooks'
-// import { getBookList, changeBookList } from './store/actionCreators'
-
-// const BOOK_SHELF_KEY = 'bookShelf'
 
 const BookShelf = () => {
   const dispatch = useDispatch()
@@ -41,81 +30,12 @@ const BookShelf = () => {
       dispatch(getBookList())
     }
   }, [dispatch, storageBookList])
-  //   useBookList()
-  //   const storeBookList = useSelector((state) =>
-  //     state.getIn(['bookShelf', 'bookList']).toJS()
-  //   )
-  //   console.log(storeBookList)
 
-  //   const saveBookShelfToLocalStorage = useCallback((list) => {
-  //     setLocalStorage(BOOK_SHELF_KEY, list)
-  //   }, [])
-  //   const getBookShelfFromLocalStorage = useCallback(() => {
-  //     return getLocalStorage(BOOK_SHELF_KEY)
-  //   }, [])
-  //   const appendAddToBookList = useCallback(() => {
-  //     if (storeBookList) {
-  //       //   storeBookList.push({
-  //       //     cover: '',
-  //       //     title: '',
-  //       //     type: 3,
-  //       //     id: Number.MAX_SAFE_INTEGER,
-  //       //   })
-  //       dispatch(
-  //         changeBookList(
-  //           [...storeBookList].push({
-  //             cover: '',
-  //             title: '',
-  //             type: 3,
-  //             id: Number.MAX_SAFE_INTEGER,
-  //           })
-  //         )
-  //       )
-  //     }
-  //   }, [dispatch, storeBookList])
-  //   const initBookShelf = useCallback((list) => {
-  //     list.forEach((item) => {
-  //       item.selected = false
-  //     })
-  //     // storeBookList.forEach((item) => {
-  //     //   item.selected = false
-  //     // })
-  //     // dispatch(changeBookList(storeBookList))
-  //   }, [])
-  //   useEffect(() => {
-  //     const list = getBookShelfFromLocalStorage()
-  //     if (!list) {
-  //       //   shelf().then((response) => {
-  //       // const fetchList = response.data.bookList
-  //       // console.log(response)
-  //       dispatch(getBookList()).then(() => {
-  //         appendAddToBookList()
-  //         initBookShelf()
-  //       })
-  //       //   if (!fetchList) {
-  //       //     //   setBookList([])
-  //       //   } else {
-  //       //   setBookList(fetchList)
-  //       //   }
-  //       // saveBookShelfToLocalStorage(fetchList)
-  //       //   })
-  //     }
-  //     // else {
-  //     //   initBookShelf(list)
-  //     //   //   setBookList(list)
-  //     // }
-  //   }, [
-  //     appendAddToBookList,
-  //     dispatch,
-  //     getBookShelfFromLocalStorage,
-  //     initBookShelf,
-  //   ])
   return (
     <BookShelfWrapper>
       <ShelfTitle
         className="shelf-title"
         title={t('title')}
-        // data={bookList}
         ifShowBack={false}
         ifShowClear={true}
       ></ShelfTitle>
@@ -127,13 +47,11 @@ const BookShelf = () => {
         <ShelfSearch></ShelfSearch>
         <Shelf
           className="book-shelf-list"
-          //   data={bookList}
           isEditMode={false}
           showType={showType}
         ></Shelf>
       </ScrollView>
       <ShelfFooter className={'book-shelf-footer'}></ShelfFooter>
-      {/* <toast :text="toastText" ref="toast"></toast> */}
     </BookShelfWrapper>
   )
 }

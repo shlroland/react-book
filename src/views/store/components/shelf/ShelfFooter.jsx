@@ -1,14 +1,19 @@
 import React, { useMemo, useState, useRef } from 'react'
 import { ShelfFooterWrapper } from './style'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import classnames from 'classnames'
 import { useCallback } from 'react'
 import Popup from './Popup'
+import Toast from '@/common/toast'
 import ShelfGroupDialog from './ShelfGroupDialog'
+import { changeBookList } from './store/actionCreators'
+import { setLocalStorage } from '@/utils/localStorage'
+import { useSetPrivate } from '../../hooks'
 
 const ShelfFooter = (props) => {
-  const { className,category } = props
+  const dispatch = useDispatch()
+  const { className, category } = props
   const { t } = useTranslation('shelf')
   const isEditMode = useSelector((state) =>
     state.getIn(['bookShelf', 'isEditMode'])
@@ -16,11 +21,21 @@ const ShelfFooter = (props) => {
   const selectedList = useSelector((state) =>
     state.getIn(['bookShelf', 'selectedList']).toJS()
   )
+
+  const bookList = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
+
   const [popTitle, setPopTitle] = useState('')
   const [confirmText, setConfirmText] = useState('')
   const [isRemoveText, setIsRemoveText] = useState(false)
+  //   const [onConfirm, setOnConfirm] = useState(null)
+  const [toastText, setToastText] = useState('')
 
   const popupRef = useRef(null)
+  const dialogRef = useRef(null)
+  const toastRef = useRef(null)
+  const onConfirm = useRef(null)
 
   const isSelected = useMemo(() => {
     if (selectedList.length === 0) {
@@ -34,7 +49,7 @@ const ShelfFooter = (props) => {
     if (!isSelected) {
       return false
     } else {
-      selectedList.every((item) => {
+      return selectedList.every((item) => {
         return item.private
       })
     }
@@ -87,53 +102,100 @@ const ShelfFooter = (props) => {
     [isDownload, isPrivate]
   )
 
+  const showToast = useCallback((text) => {
+    setToastText(text)
+    toastRef.current.show()
+  }, [])
+
+  const removeBook = useCallback(() => {}, [])
+
   const showPopup = useCallback(
-    (title, confirmText, onConfirm, isRemoveText = false) => {
+    (title, confirmText, confirm, isRemoveText = false) => {
       setPopTitle(title)
       setConfirmText(confirmText)
       setIsRemoveText(isRemoveText)
+      onConfirm.current = confirm
       popupRef.current.show()
     },
     []
   )
+  const setPrivate = useSetPrivate(showToast, t)
+  //   const setPrivate = useCallback(
+  //     (v) => {
+  //       return () => {
+  //         bookList.forEach((item) => {
+  //           if (item.selected) {
+  //             item.private = v
+  //           }
+  //         })
+  //         if (v) {
+  //           showToast(t('setPrivateSuccess'))
+  //         } else {
+  //           showToast(t('closePrivateSuccess'))
+  //         }
+  //         dispatch(changeBookList(bookList))
+  //         setLocalStorage('bookShelf', bookList)
+  //       }
+  //     },
+  //     [bookList, dispatch, showToast, t]
+  //   )
 
   const showPrivate = useCallback(() => {
     if (isSelected) {
       if (!isPrivate) {
-        showPopup(t('setPrivateTitle'), t('open'))
+        showPopup(t('setPrivateTitle'), t('open'), () => {
+          setPrivate(true)
+        })
       } else {
-        showPopup(t('closePrivateTitle'), t('close'))
+        showPopup(t('closePrivateTitle'), t('close'), () => {
+          setPrivate(false)
+        })
       }
     }
-  }, [isPrivate, isSelected, showPopup, t])
+  }, [isPrivate, isSelected, setPrivate, showPopup, t])
 
   const showDownload = useCallback(() => {
     if (isSelected) {
-        if (!isDownload) {
-          showPopup(t('setDownloadTitle'), t('open'))
-        } else {
-          showPopup(t('removeDownloadTitle'), t('delete'))
-        }
+      if (!isDownload) {
+        showPopup(t('setDownloadTitle'), t('open'))
+      } else {
+        showPopup(t('removeDownloadTitle'), t('delete'))
       }
+    }
   }, [isDownload, isSelected, showPopup, t])
 
   const showGroupDialog = useCallback(() => {
-
-  }, [])
-
-  const showRemove = useCallback(() => {}, [])
-
-  const onTabClick = useCallback((item) => {
-    if (item.index === 1) {
-      showPrivate()
-    } else if (item.index === 2) {
-      showDownload()
-    } else if (item.index === 3) {
-      showGroupDialog()
-    } else if (item.index === 4) {
-      showRemove()
+    if (isSelected) {
+      dialogRef.current.show()
     }
-  }, [showDownload, showGroupDialog, showPrivate, showRemove])
+  }, [isSelected])
+
+  const showRemove = useCallback(() => {
+    if (isSelected) {
+      let msg
+      if (selectedList.length === 1) {
+        msg = t('removeBookTitle', { $1: `《${selectedList[0].title}》` })
+      } else {
+        msg = t('removeBookTitle', { $1: t('selectedBooks') })
+      }
+      showPopup(msg, t('removeBook'), removeBook, true)
+    }
+  }, [isSelected, removeBook, selectedList, showPopup, t])
+
+  const onTabClick = useCallback(
+    (item) => {
+      if (item.index === 1) {
+        showPrivate()
+      } else if (item.index === 2) {
+        showDownload()
+      } else if (item.index === 3) {
+        showGroupDialog()
+      } else if (item.index === 4) {
+        showRemove()
+      }
+    },
+    [showDownload, showGroupDialog, showPrivate, showRemove]
+  )
 
   return (
     <>
@@ -219,9 +281,14 @@ const ShelfFooter = (props) => {
             title={popTitle}
             confirmText={confirmText}
             isRemoveText={isRemoveText}
+            confirm={onConfirm.current}
             cancelText={t('cancel')}
           ></Popup>
-          <ShelfGroupDialog category={category}></ShelfGroupDialog>
+          <ShelfGroupDialog
+            ref={dialogRef}
+            category={category}
+          ></ShelfGroupDialog>
+          <Toast text={toastText} ref={toastRef}></Toast>
         </ShelfFooterWrapper>
       ) : null}
     </>
