@@ -8,6 +8,7 @@ import {
 } from '../components/shelf/store/actionCreators'
 import { setLocalStorage } from '../../../utils/localStorage'
 import { useCallback } from 'react'
+import { downloadBook, removeBookCache } from '../../../utils/shelf'
 export const useShowBookDetail = () => {
   const history = useHistory()
   return (book) => {
@@ -96,7 +97,66 @@ export const useRemoveBook = () => {
       return !item.selected
     })
     dispatch(changeBookList(list))
-      setLocalStorage('bookShelf', list)
+    setLocalStorage('bookShelf', list)
   }, [bookList, dispatch])
+  return cb
+}
+
+export const useSetDownload = (
+  showToast,
+  showContinueToast,
+  hideToast,
+  t,
+  setToastText
+) => {
+  const dispatch = useDispatch()
+  const bookList = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
+  const editClick = useEditClick()
+  const cb = useCallback(
+    async (needDownload) => {
+      showContinueToast(t('startDownload'))
+      for (let i = 0; i < bookList.length; i++) {
+        const item = bookList[i]
+        if (needDownload && item.selected) {
+          await downloadBook(item, showContinueToast, t).then(() => {
+            // hideToast()
+            showToast(t('setDownloadSuccess'))
+            item.cache = needDownload
+          })
+        } else if (!needDownload && item.selected) {
+          await removeBookCache(item.fileName).then(() => {
+            item.cache = needDownload
+          })
+        }
+        if (item.itemList) {
+          for (let i = 0; i < item.length; i++) {
+            const subItem = item.itemList[i]
+            if (needDownload && subItem.selected) {
+              await downloadBook(subItem, showContinueToast, t).then(() => {
+                subItem.cache = needDownload
+              })
+            } else if (!needDownload && subItem.selected) {
+              await removeBookCache(subItem.fileName).then(() => {
+                subItem.cache = needDownload
+              })
+            }
+          }
+        }
+      }
+      // hideToast()
+      // if (needDownload) {
+      //   showToast(t('setDownloadSuccess'))
+      // } else {
+      //   showToast(t('removeDownloadSuccess'))
+      // }
+      dispatch(changeBookList(bookList))
+      editClick(false)
+      setLocalStorage('bookShelf', bookList)
+      console.log('数据保存成功...')
+    },
+    [bookList, dispatch, editClick, hideToast, showContinueToast, showToast, t]
+  )
   return cb
 }

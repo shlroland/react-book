@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import Popup from './Popup'
 import Toast from '@/common/toast'
 import ShelfGroupDialog from './ShelfGroupDialog'
-import { useSetPrivate, useRemoveBook } from '../../hooks'
+import { useSetPrivate, useRemoveBook, useSetDownload } from '../../hooks'
 
 const ShelfFooter = (props) => {
   const { className, category } = props
@@ -98,7 +98,14 @@ const ShelfFooter = (props) => {
     toastRef.current.show()
   }, [])
 
-  
+  const showContinueToast = useCallback((text)=>{
+      setToastText(text)
+      toastRef.current.continueShow()
+  },[])
+
+  const hideToast = useCallback(()=>{
+    toastRef.current.hide()
+  },[])
 
   const showPopup = useCallback(
     (title, confirmText, confirm, isRemoveText = false) => {
@@ -112,25 +119,7 @@ const ShelfFooter = (props) => {
   )
   const setPrivate = useSetPrivate(showToast, t)
   const removeBook = useRemoveBook()
-  //   const setPrivate = useCallback(
-  //     (v) => {
-  //       return () => {
-  //         bookList.forEach((item) => {
-  //           if (item.selected) {
-  //             item.private = v
-  //           }
-  //         })
-  //         if (v) {
-  //           showToast(t('setPrivateSuccess'))
-  //         } else {
-  //           showToast(t('closePrivateSuccess'))
-  //         }
-  //         dispatch(changeBookList(bookList))
-  //         setLocalStorage('bookShelf', bookList)
-  //       }
-  //     },
-  //     [bookList, dispatch, showToast, t]
-  //   )
+  const setDownload = useSetDownload(showToast, showContinueToast, hideToast, t,setToastText)
 
   const showPrivate = useCallback(() => {
     if (isSelected) {
@@ -149,12 +138,16 @@ const ShelfFooter = (props) => {
   const showDownload = useCallback(() => {
     if (isSelected) {
       if (!isDownload) {
-        showPopup(t('setDownloadTitle'), t('open'))
+        showPopup(t('setDownloadTitle'), t('open'),() => {
+          setDownload(true)
+        })
       } else {
-        showPopup(t('removeDownloadTitle'), t('delete'))
+        showPopup(t('removeDownloadTitle'), t('delete'),() => {
+          setDownload(false)
+        })
       }
     }
-  }, [isDownload, isSelected, showPopup, t])
+  }, [isDownload, isSelected, setDownload, showPopup, t])
 
   const showGroupDialog = useCallback(() => {
     if (isSelected) {
