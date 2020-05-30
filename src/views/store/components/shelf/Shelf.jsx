@@ -1,15 +1,14 @@
 import React, { useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ShelfWrapper } from './style'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { Flipper, Flipped } from 'react-flip-toolkit'
 import classnames from 'classnames'
 import ShelfImage from './ShelfImage'
 import ShelfCategory from './ShelfCategory'
 import { useSelector, useDispatch } from 'react-redux'
-import { useShowBookDetail } from '../../hooks'
+import { useShowBookDetail } from './hooks'
 import { useHistory } from 'react-router-dom'
-import { changeBookList, getSelectedList } from './store/actionCreators'
+import { changeBookList, setSelectedList } from './store/actionCreators'
 
 const Shelf = (props) => {
   const dispatch = useDispatch()
@@ -90,7 +89,7 @@ const Shelf = (props) => {
         if (isEditMode) {
           data[index].selected = !data[index].selected
           dispatch(changeBookList(data))
-          dispatch(getSelectedList(data))
+          dispatch(setSelectedList(data))
         } else {
           showBookDetail(book)
         }

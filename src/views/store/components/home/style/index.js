@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
 import { title, hotSearch } from './transition'
 import { realPx } from '@/utils/utils'
-import { mixinTitle } from './home'
+import { mixinTitle } from '@/assets/style/home'
 
 const flapCardMove = keyframes`
       0% {

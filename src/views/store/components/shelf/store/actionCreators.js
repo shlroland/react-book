@@ -37,8 +37,10 @@ export const getBookList = () => {
   }
 }
 
-export const getSelectedList = (data) => {
+export const setSelectedList = (data) => {
   return (dispatch) => {
     dispatch(changeSelectedList(data.filter((item) => item.selected === true)))
   }
 }
+
+

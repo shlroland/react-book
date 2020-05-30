@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { ShelfSearchWrapper } from './style'
 import classnames from 'classnames'
 import { saveLocale } from '@/utils/localStorage'
-import { set } from 'immutable'
 
 const ShelfSearch = () => {
   const { t, i18n } = useTranslation('shelf')

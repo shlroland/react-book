@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import Popup from './Popup'
 import Toast from '@/common/toast'
 import ShelfGroupDialog from './ShelfGroupDialog'
-import { useSetPrivate, useRemoveBook, useSetDownload } from '../../hooks'
+import { useSetPrivate, useRemoveBook, useSetDownload } from './hooks'
 
 const ShelfFooter = (props) => {
   const { className, category } = props

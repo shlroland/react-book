@@ -5,10 +5,10 @@ import {
   changeScrollBottom,
   changeIsEditMode,
   changeSelectedList,
-} from '../components/shelf/store/actionCreators'
-import { setLocalStorage } from '../../../utils/localStorage'
+} from '../store/actionCreators'
+import { setLocalStorage } from '@/utils/localStorage'
 import { useCallback } from 'react'
-import { downloadBook, removeBookCache } from '../../../utils/shelf'
+import { downloadBook, removeBookCache } from '@/utils/shelf'
 export const useShowBookDetail = () => {
   const history = useHistory()
   return (book) => {
@@ -89,11 +89,6 @@ export const useRemoveBook = () => {
   )
   const cb = useCallback(() => {
     const list = bookList.filter((item) => {
-      if (item.itemList) {
-        item.itemList = item.itemList.filter((subItem) => {
-          return !subItem.selected
-        })
-      }
       return !item.selected
     })
     dispatch(changeBookList(list))
@@ -156,7 +151,61 @@ export const useSetDownload = (
       setLocalStorage('bookShelf', bookList)
       console.log('数据保存成功...')
     },
-    [bookList, dispatch, editClick, hideToast, showContinueToast, showToast, t]
+    [bookList, dispatch, editClick, showContinueToast, showToast, t]
   )
+  return cb
+}
+
+export const useMoveToGroup = () => {
+  const dispatch = useDispatch()
+  const selectedList = useSelector((state) =>
+    state.getIn(['bookShelf', 'selectedList']).toJS()
+  )
+  const bookList = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
+  const cb = useCallback(
+    (group) => {
+      if (group && group.itemList) {
+        group.itemList = [...group.itemList, ...selectedList]
+        group.itemList.forEach((item, index) => {
+          item.id = index + 1
+        })
+      }
+      const index = bookList.findIndex((item) => item.id === group.id)
+      bookList.splice(index, 1, group)
+      const list = bookList.filter((item) => {
+        return !item.selected
+      })
+      dispatch(changeBookList(list))
+      setLocalStorage('bookShelf', list)
+    },
+    [bookList, dispatch, selectedList]
+  )
+  return cb
+}
+
+export const useNewGroup = () => {
+  const dispatch = useDispatch()
+  const bookList = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
+  const cb = useCallback((group) => {
+    let list = bookList.filter((item) => {
+      return item.type !== 3
+    })
+    list.push(group)
+    list = list.filter((item) => {
+      return !item.selected
+    })
+    list.push({
+      cover: '',
+      title: '',
+      type: 3,
+      id: Number.MAX_SAFE_INTEGER
+    })
+    dispatch(changeBookList(list))
+    setLocalStorage('bookShelf', list)
+  }, [bookList, dispatch])
   return cb
 }

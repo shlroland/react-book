@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback, memo } from 'react'
 import { ShelfTitleWrapper } from './style'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useEditClick } from '../../hooks/index'
+import { useEditClick } from './hooks'
 
 const ShelfTitle = ({
   ifShowBack,

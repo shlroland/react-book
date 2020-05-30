@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { px2vw, mixin } from '@assets/style'
-import { fade,popupSlideUp } from './transition'
+import { fade, popupSlideUp } from './transition'
+import { mixinTitle } from '@/assets/style/home'
 
 export const BookShelfWrapper = styled.div`
   position: relative;
@@ -279,6 +280,7 @@ export const ShelfWrapper = styled.div`
         }
       }
     }
+    ${mixinTitle()}
   }
   .book-shelf-statistics {
     margin: ${px2vw(30)} 0 ${px2vw(20)} 0;
@@ -364,6 +366,7 @@ export const ShelfWrapper = styled.div`
             .book-title {
               margin-top: ${px2vw(10)};
             }
+            ${mixinTitle()}
           }
         }
       }
