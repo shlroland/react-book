@@ -6,7 +6,6 @@ import {
   changeIsEditMode,
   changeSelectedList,
 } from '../store/actionCreators'
-import { setLocalStorage } from '@/utils/localStorage'
 import { useCallback } from 'react'
 import { downloadBook, removeBookCache } from '@/utils/shelf'
 export const useShowBookDetail = () => {
@@ -21,7 +20,7 @@ export const useShowBookDetail = () => {
 export const useEditClick = () => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
+    state.getIn(['bookCategory', 'bookList']).toJS()
   )
   // console.log(bookList)
   const cb = useCallback(
@@ -56,7 +55,7 @@ export const useEditClick = () => {
 export const useSetPrivate = (showToast, t) => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
+    state.getIn(['bookCategory', 'bookList']).toJS()
   )
   const editClick = useEditClick()
   const cb = useCallback(
@@ -71,9 +70,9 @@ export const useSetPrivate = (showToast, t) => {
       } else {
         showToast(t('closePrivateSuccess'))
       }
-      editClick(false)
+
       dispatch(changeBookList(bookList))
-      setLocalStorage('bookShelf', bookList)
+      editClick(false)
     },
     [bookList, dispatch, editClick, showToast, t]
   )
@@ -84,14 +83,13 @@ export const useSetPrivate = (showToast, t) => {
 export const useRemoveBook = () => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
+    state.getIn(['bookCategory', 'bookList']).toJS()
   )
   const cb = useCallback(() => {
     const list = bookList.filter((item) => {
       return !item.selected
     })
     dispatch(changeBookList(list))
-    setLocalStorage('bookShelf', list)
   }, [bookList, dispatch])
   return cb
 }
@@ -105,7 +103,7 @@ export const useSetDownload = (
 ) => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
+    state.getIn(['bookCategory', 'bookList']).toJS()
   )
   const editClick = useEditClick()
   const cb = useCallback(
@@ -147,7 +145,6 @@ export const useSetDownload = (
       // }
       dispatch(changeBookList(bookList))
       editClick(false)
-      setLocalStorage('bookShelf', bookList)
       console.log('数据保存成功...')
     },
     [bookList, dispatch, editClick, showContinueToast, showToast, t]
@@ -158,10 +155,10 @@ export const useSetDownload = (
 export const useMoveToGroup = () => {
   const dispatch = useDispatch()
   const selectedList = useSelector((state) =>
-    state.getIn(['bookShelf', 'selectedList']).toJS()
+    state.getIn(['bookCategory', 'selectedList']).toJS()
   )
   const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
+    state.getIn(['bookCategory', 'bookList']).toJS()
   )
   const cb = useCallback(
     (group) => {
@@ -177,7 +174,6 @@ export const useMoveToGroup = () => {
         return !item.selected
       })
       dispatch(changeBookList(list))
-      setLocalStorage('bookShelf', list)
     },
     [bookList, dispatch, selectedList]
   )
@@ -187,7 +183,7 @@ export const useMoveToGroup = () => {
 export const useNewGroup = () => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
+    state.getIn(['bookCategory', 'bookList']).toJS()
   )
   const cb = useCallback((group) => {
     let list = bookList.filter((item) => {
@@ -204,7 +200,6 @@ export const useNewGroup = () => {
       id: Number.MAX_SAFE_INTEGER
     })
     dispatch(changeBookList(list))
-    setLocalStorage('bookShelf', list)
   }, [bookList, dispatch])
   return cb
 }

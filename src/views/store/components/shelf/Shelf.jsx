@@ -28,6 +28,7 @@ const Shelf = (props) => {
   const showBookDetail = useShowBookDetail()
 
   const bookData = useMemo(() => {
+    console.log(data)
     if (showType === 0) {
       return data
     } else if (showType === 1) {
@@ -66,6 +67,7 @@ const Shelf = (props) => {
   const privateNumber = useMemo(() => {
     if (data) {
       let number = 0
+      // eslint-disable-next-line array-callback-return
       data.filter((item) => {
         if (item.private && item.type === 1) {
           number++
@@ -95,6 +97,9 @@ const Shelf = (props) => {
         }
       } else if (book.type === 2) {
         if (!isEditMode) {
+          history.push(`/book-store/category/${book.title}`,{
+            category:book
+          })
         }
       }
     },
@@ -108,11 +113,7 @@ const Shelf = (props) => {
           {bookData &&
             bookData.map((item, index) => {
               return (
-                <Flipped
-                  classNames="item"
-                  key={item.id}
-                  flipId={item.id}
-                >
+                <Flipped classNames="item" key={item.id} flipId={item.id}>
                   <div
                     className="book-shelf-item"
                     onClick={() => onBookClick(item, index)}
