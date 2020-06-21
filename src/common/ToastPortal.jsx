@@ -77,6 +77,13 @@ const useToast = (timeout = 1500) => {
     setIsVisible(false)
   }
 
+  const continueShow = (text) => {
+    clearTimeout(task.current)
+    task.current = null
+    setText(text)
+    setIsVisible(true)
+  }
+
   const RenderToast = () => (
     <>
       {isVisible && (
@@ -97,6 +104,7 @@ const useToast = (timeout = 1500) => {
   return {
     showToast,
     hideToast,
+    continueShow,
     RenderToast,
   }
 }
