@@ -20,12 +20,12 @@ export const useShowBookDetail = () => {
 
 export const useEditClick = () => {
   const dispatch = useDispatch()
-  const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
-  )
+  // const bookList = useSelector((state) =>
+  //   state.getIn(['bookShelf', 'bookList']).toJS()
+  // )
   // console.log(bookList)
   const cb = useCallback(
-    (bool) => {
+    (bool,bookList) => {
       if (!bool) {
         bookList.forEach((item) => {
           if (item.bookId) {
@@ -45,10 +45,10 @@ export const useEditClick = () => {
       }
       dispatch(changeSelectedList([]))
       dispatch(changeIsEditMode(bool))
-      dispatch(changeBookList(bookList))
+      // dispatch(changeBookList(bookList))
       dispatch(changeScrollBottom(scroll))
     },
-    [bookList, dispatch]
+    [dispatch]
   )
   return cb
 }
@@ -72,7 +72,7 @@ export const useSetPrivate = () => {
       // } else {
       //   showToast(t('closePrivateSuccess'))
       // }
-      editClick(false)
+      editClick(false,bookList)
       dispatch(changeBookList(bookList))
       setLocalStorage('bookShelf', bookList)
     },
@@ -147,12 +147,12 @@ export const useSetDownload = (
       // } else {
       //   showToast(t('removeDownloadSuccess'))
       // }
+      editClick(false,bookList)
       dispatch(changeBookList(bookList))
-      // editClick(false)
       setLocalStorage('bookShelf', bookList)
       console.log('数据保存成功...')
     },
-    [bookList, dispatch, t]
+    [bookList, dispatch, editClick, t]
   )
   return cb
 }

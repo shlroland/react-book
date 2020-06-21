@@ -25,11 +25,11 @@ const ShelfTitle = ({
 
   const handleChangeMode = useCallback(() => {
     if (isEditMode) {
-      editClick(false)
+      editClick(false,data)
     }else {
-      editClick(true)
+      editClick(true,data)
     }
-  }, [editClick, isEditMode])
+  }, [data, editClick, isEditMode])
 
   const selectedNumber = useMemo(() => {
     if (category && category.itemList) {
