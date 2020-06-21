@@ -53,12 +53,13 @@ export const useEditClick = () => {
   return cb
 }
 
-export const useSetPrivate = (showToast, t) => {
+export const useSetPrivate = () => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
   const editClick = useEditClick()
+  // const {} = useToast()
   const cb = useCallback(
     (v) => {
       bookList.forEach((item) => {
@@ -66,16 +67,16 @@ export const useSetPrivate = (showToast, t) => {
           item.private = v
         }
       })
-      if (v) {
-        showToast(t('setPrivateSuccess'))
-      } else {
-        showToast(t('closePrivateSuccess'))
-      }
+      // if (v) {
+      //   showToast(t('setPrivateSuccess'))
+      // } else {
+      //   showToast(t('closePrivateSuccess'))
+      // }
       editClick(false)
       dispatch(changeBookList(bookList))
       setLocalStorage('bookShelf', bookList)
     },
-    [bookList, dispatch, editClick, showToast, t]
+    [bookList, dispatch, editClick]
   )
 
   return cb
@@ -97,11 +98,11 @@ export const useRemoveBook = () => {
 }
 
 export const useSetDownload = (
-  showToast,
-  showContinueToast,
-  hideToast,
-  t,
-  setToastText
+  // showToast,
+  // showContinueToast,
+  // hideToast,
+  t
+  // setToastText
 ) => {
   const dispatch = useDispatch()
   const bookList = useSelector((state) =>
@@ -110,13 +111,13 @@ export const useSetDownload = (
   const editClick = useEditClick()
   const cb = useCallback(
     async (needDownload) => {
-      showContinueToast(t('startDownload'))
+      // showContinueToast(t('startDownload'))
       for (let i = 0; i < bookList.length; i++) {
         const item = bookList[i]
         if (needDownload && item.selected) {
-          await downloadBook(item, showContinueToast, t).then(() => {
+          await downloadBook(item, t).then(() => {
             // hideToast()
-            showToast(t('setDownloadSuccess'))
+            // showToast(t('setDownloadSuccess'))
             item.cache = needDownload
           })
         } else if (!needDownload && item.selected) {
@@ -128,7 +129,7 @@ export const useSetDownload = (
           for (let i = 0; i < item.length; i++) {
             const subItem = item.itemList[i]
             if (needDownload && subItem.selected) {
-              await downloadBook(subItem, showContinueToast, t).then(() => {
+              await downloadBook(subItem, t).then(() => {
                 subItem.cache = needDownload
               })
             } else if (!needDownload && subItem.selected) {
@@ -139,6 +140,7 @@ export const useSetDownload = (
           }
         }
       }
+      // debugger
       // hideToast()
       // if (needDownload) {
       //   showToast(t('setDownloadSuccess'))
@@ -146,11 +148,11 @@ export const useSetDownload = (
       //   showToast(t('removeDownloadSuccess'))
       // }
       dispatch(changeBookList(bookList))
-      editClick(false)
+      // editClick(false)
       setLocalStorage('bookShelf', bookList)
       console.log('数据保存成功...')
     },
-    [bookList, dispatch, editClick, showContinueToast, showToast, t]
+    [bookList, dispatch, t]
   )
   return cb
 }
@@ -164,18 +166,20 @@ export const useMoveToGroup = () => {
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
   const cb = useCallback(
-    (group) => {
+    (group, showToast, t) => {
       if (group && group.itemList) {
         group.itemList = [...group.itemList, ...selectedList]
         group.itemList.forEach((item, index) => {
           item.id = index + 1
         })
       }
+      console.log(group)
       const index = bookList.findIndex((item) => item.id === group.id)
       bookList.splice(index, 1, group)
       const list = bookList.filter((item) => {
         return !item.selected
       })
+      showToast(t('moveBookInSuccess', { $1: group.title }))
       dispatch(changeBookList(list))
       setLocalStorage('bookShelf', list)
     },
@@ -189,22 +193,26 @@ export const useNewGroup = () => {
   const bookList = useSelector((state) =>
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
-  const cb = useCallback((group) => {
-    let list = bookList.filter((item) => {
-      return item.type !== 3
-    })
-    list.push(group)
-    list = list.filter((item) => {
-      return !item.selected
-    })
-    list.push({
-      cover: '',
-      title: '',
-      type: 3,
-      id: Number.MAX_SAFE_INTEGER
-    })
-    dispatch(changeBookList(list))
-    setLocalStorage('bookShelf', list)
-  }, [bookList, dispatch])
+  const cb = useCallback(
+    (group,showToast,t) => {
+      let list = bookList.filter((item) => {
+        return item.type !== 3
+      })
+      list.push(group)
+      list = list.filter((item) => {
+        return !item.selected
+      })
+      list.push({
+        cover: '',
+        title: '',
+        type: 3,
+        id: Number.MAX_SAFE_INTEGER,
+      })
+      showToast(t('moveBookInSuccess', { $1: group.title }))
+      dispatch(changeBookList(list))
+      setLocalStorage('bookShelf', list)
+    },
+    [bookList, dispatch]
+  )
   return cb
 }

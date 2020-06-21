@@ -12,6 +12,7 @@ import { ShelfGroupDialogWrapper } from './style'
 import classnames from 'classnames'
 import { CSSTransition } from 'react-transition-group'
 import { useMoveToGroup, useNewGroup } from './hooks'
+import useToast from '@/common/ToastPortal'
 
 const ShelfGroupDialog = (props, ref) => {
   const { isInGroup, category } = props
@@ -32,6 +33,8 @@ const ShelfGroupDialog = (props, ref) => {
   const [newGroupDialogVisible, setNewGroupDialogVisible] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
   const dialogInput = useRef(null)
+
+  const {showToast:toastShow,RenderToast} =  useToast()
 
   const defaultCategory = useMemo(() => {
     return [
@@ -73,11 +76,11 @@ const ShelfGroupDialog = (props, ref) => {
       } else if (item.edit && item.edit === 1) {
         hide()
       } else {
-        moveToGroup(item)
+        moveToGroup(item,toastShow,t)
         hide()
       }
     },
-    [hide, moveToGroup, showCreateGroupDialog]
+    [hide, moveToGroup, showCreateGroupDialog, t, toastShow]
   )
 
   const createNewGroup = useCallback(() => {
@@ -87,8 +90,8 @@ const ShelfGroupDialog = (props, ref) => {
       selected: false,
       title: newGroupName,
       type: 2,
-    })
-  }, [bookList, newGroup, newGroupName, selectedList])
+    },toastShow,t)
+  }, [bookList, newGroup, newGroupName, selectedList, t, toastShow])
 
   useImperativeHandle(ref, () => ({
     show() {
@@ -98,6 +101,7 @@ const ShelfGroupDialog = (props, ref) => {
   }))
 
   return (
+    <>
     <CSSTransition
       in={visible}
       timeout={500}
@@ -194,6 +198,8 @@ const ShelfGroupDialog = (props, ref) => {
         ) : null}
       </ShelfGroupDialogWrapper>
     </CSSTransition>
+    <RenderToast></RenderToast>
+    </>
   )
 }
 

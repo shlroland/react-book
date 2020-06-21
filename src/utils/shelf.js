@@ -18,7 +18,7 @@ export const appendAddToBookList = (bookList) => {
   })
 }
 
-export const downloadBook = (item, setToastText, t) => {
+export const downloadBook = (item,t) => {
   return new Promise((resolve, reject) => {
     getLocalForage(item.fileName, (err, value) => {
       if (!err && value instanceof Blob) {
@@ -33,16 +33,16 @@ export const downloadBook = (item, setToastText, t) => {
           },
           reject,
           reject,
-          (progressEvent) => {
-            const progress =
-              Math.floor((progressEvent.loaded / progressEvent.total) * 100) +
-              '%'
-            setToastText(
-              t('progressDownload', {
-                $1: `${item.fileName}.epub(${progress})`,
-              })
-            )
-          }
+          // (progressEvent) => {
+          //   const progress =
+          //     Math.floor((progressEvent.loaded / progressEvent.total) * 100) +
+          //     '%'
+          //   setToastText(
+          //     t('progressDownload', {
+          //       $1: `${item.fileName}.epub(${progress})`,
+          //     })
+          //   )
+          // }
         )
       }
     })
