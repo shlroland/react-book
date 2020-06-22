@@ -1,8 +1,9 @@
 import React, { useMemo, useState, useCallback, memo } from 'react'
 import { ShelfTitleWrapper } from './style'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 import { useEditClick } from './hooks'
+import { changeBookList, setSelectedList } from './store/actionCreators'
 
 const ShelfTitle = ({
   ifShowBack,
@@ -11,6 +12,7 @@ const ShelfTitle = ({
   title,
   category,
 }) => {
+  const dispatch = useDispatch()
   const { t } = useTranslation('shelf')
   const [isHideShadow, setIsHideShadow] = useState(true)
 
@@ -26,10 +28,14 @@ const ShelfTitle = ({
   const handleChangeMode = useCallback(() => {
     if (isEditMode) {
       editClick(false,data)
+      dispatch(changeBookList(data))
+      setSelectedList(data)
     }else {
       editClick(true,data)
+      dispatch(changeBookList(data))
+      setSelectedList(data)
     }
-  }, [data, editClick, isEditMode])
+  }, [data, dispatch, editClick, isEditMode])
 
   const selectedNumber = useMemo(() => {
     if (category && category.itemList) {
@@ -48,10 +54,6 @@ const ShelfTitle = ({
       ? t('haveSelectedBook', { $1: selectedNumber })
       : t('haveSelectedBooks', { $1: selectedNumber })
   }, [selectedNumber, t])
-
-  // useBookList().then((res) => {
-  //   setData(res)
-  // })
 
   return (
     <ShelfTitleWrapper className={isHideShadow ? 'hide-shadow' : ''}>
@@ -86,7 +88,7 @@ const ShelfTitle = ({
           <span className="btn-clear">{t('clearCache')}</span>
         </div>
       ) : null}
-      {ifShowBack && !isEditMode ? (
+      {/* {ifShowBack && !isEditMode ? (
         <div className="btn-back-wrapper">
           <span className="icon-back"></span>
         </div>
@@ -95,7 +97,7 @@ const ShelfTitle = ({
         <div className="btn-back-wrapper">
           <span className="btn-text">{t('editGroup')}</span>
         </div>
-      ) : null}
+      ) : null} */}
       {/* <popup ref="popup"
                :title="popupTitle"
                :thirdText="thirdText"
