@@ -14,7 +14,7 @@ import { CSSTransition } from 'react-transition-group'
 import { useMoveToGroup, useNewGroup } from './hooks'
 
 const ShelfGroupDialog = (props, ref) => {
-  const { isInGroup, category } = props
+  const { isInGroup, category, modifyGroupName } = props
 
   const moveToGroup = useMoveToGroup()
   const newGroup = useNewGroup()
@@ -54,13 +54,18 @@ const ShelfGroupDialog = (props, ref) => {
   const hide = useCallback(() => {
     setVisible(false)
     setNewGroupDialogVisible(false)
-    setSelectGroupDialogVisible(true)
+    setSelectGroupDialogVisible(false)
   }, [])
 
-  const showCreateGroupDialog = useCallback(() => {
+  const showCreateGroupDialog = useCallback((newName) => {
+    setVisible(true)
     setNewGroupDialogVisible(true)
     setSelectGroupDialogVisible(false)
-    setNewGroupName('')
+    if (newName) {
+      setNewGroupName(newName)
+    } else {
+      setNewGroupName('')
+    }
     setTimeout(() => {
       dialogInput.current.focus()
     })
@@ -81,20 +86,25 @@ const ShelfGroupDialog = (props, ref) => {
   )
 
   const createNewGroup = useCallback(() => {
-    newGroup({
-      id: bookList[bookList.length - 2].id + 1,
-      itemList: [...selectedList],
-      selected: false,
-      title: newGroupName,
-      type: 2,
-    })
-  }, [bookList, newGroup, newGroupName, selectedList])
+    if (modifyGroupName) {
+      modifyGroupName(newGroupName)
+    } else {
+      newGroup({
+        id: bookList[bookList.length - 2].id + 1,
+        itemList: [...selectedList],
+        selected: false,
+        title: newGroupName,
+        type: 2,
+      })
+    }
+  }, [bookList, modifyGroupName, newGroup, newGroupName, selectedList])
 
   useImperativeHandle(ref, () => ({
     show() {
       setVisible(true)
     },
     hide,
+    showCreateGroupDialog,
   }))
 
   return (

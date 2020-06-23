@@ -374,7 +374,6 @@ export const PopupWrapper = styled.div`
   .popup-bg {
     width: 100%;
     height: 100%;
-    /* ${fade()} */
   }
   .popup-wrapper {
     position: fixed;
@@ -530,6 +529,58 @@ export const ShelfGroupDialogWrapper = styled.div`
             color: #999;
           }
         }
+      }
+    }
+  }
+`
+export const ModalWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2000;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  .modal-bg {
+    width: 100%;
+    height: 100%;
+  }
+  .modal-box {
+    width: ${px2vw(225)};
+    height: ${px2vw(115)};
+    background-color: #fff;
+    ${mixin.absCenter()}
+    ${fade()}
+    .modal-content {
+      width: 100%;
+      height: 65%;
+      border-bottom: 1px solid #eee;
+      color: #999;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size:16px;
+      line-height:18px;
+      ${mixin.center()}
+    }
+    .modal-bottom {
+      height: 35%;
+      display: flex;
+      align-items: center;
+      .modal-bottom-left {
+        width: 50%;
+        ${mixin.center()}
+      }
+      .modal-bottom-right {
+        width: 50%;
+        ${mixin.center()};
+        color: ${mixin.variableColor.$colorPink};
+      }
+      .modal-bottom-gap {
+        height: 80%;
+        width: 1px;
+        background-color: #eee;
       }
     }
   }

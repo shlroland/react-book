@@ -1,20 +1,34 @@
-import React, { useMemo, useState, useCallback, memo } from 'react'
+import React, { useMemo, useState, useCallback, memo, useRef } from 'react'
 import { CategoryTitleWrapper } from './style'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useEditClick } from './hooks'
+import { useHistory } from 'react-router-dom'
+import Popup from './Popup'
+import { changeIsEditMode } from './store/actionCreators'
 
 const ShelfTitle = ({
   ifShowBack,
   ifShowClear,
+  modifyGroupName,
+  deleteGroup,
   ifGroupEmpty,
   title,
   category,
 }) => {
+  const dispatch = useDispatch()
   const { t } = useTranslation('shelf')
   const [isHideShadow, setIsHideShadow] = useState(true)
-
+  const history = useHistory()
   const editClick = useEditClick()
+
+  const [thirdText, setThirdText] = useState('')
+  const [confirmText, setConfirmText] = useState('')
+  const [isRemoveText, setIsRemoveText] = useState(false)
+
+  const popupRef = useRef(null)
+  const onConfirm = useRef(null)
+  const onThird = useRef(null)
 
   const isEditMode = useSelector((state) =>
     state.getIn(['bookCategory', 'isEditMode'])
@@ -23,10 +37,23 @@ const ShelfTitle = ({
     state.getIn(['bookCategory', 'bookList']).toJS()
   )
 
+  const showPopup = useCallback(
+    (thirdText, confirmText, confirm, third, isRemoveText = false) => {
+      editClick(false)
+      setThirdText(thirdText)
+      setConfirmText(confirmText)
+      setIsRemoveText(isRemoveText)
+      onConfirm.current = confirm
+      onThird.current = third
+      popupRef.current.show()
+    },
+    [editClick]
+  )
+
   const handleChangeMode = useCallback(() => {
     if (isEditMode) {
       editClick(false)
-    }else {
+    } else {
       editClick(true)
     }
   }, [editClick, isEditMode])
@@ -49,6 +76,21 @@ const ShelfTitle = ({
       : t('haveSelectedBooks', { $1: selectedNumber })
   }, [selectedNumber, t])
 
+  const handleChangeGroup = useCallback(() => {
+    showPopup(
+      t('editGroupName'),
+      t('deleteGroup'),
+      () => {
+        deleteGroup()
+        dispatch(changeIsEditMode(false))
+      },
+      () => {
+        modifyGroupName()
+        dispatch(changeIsEditMode(false))
+      },
+      true
+    )
+  }, [deleteGroup, dispatch, modifyGroupName, showPopup, t])
 
   return (
     <CategoryTitleWrapper className={isHideShadow ? 'hide-shadow' : ''}>
@@ -72,17 +114,28 @@ const ShelfTitle = ({
           <span className="btn-text">{t('editGroup')}</span>
         </div>
       )}
-      
+
       {!isEditMode ? (
-        <div className="btn-back-wrapper">
+        <div className="btn-back-wrapper" onClick={() => history.goBack()}>
           <span className="icon-back"></span>
         </div>
       ) : null}
       {isEditMode ? (
         <div className="btn-back-wrapper">
-          <span className="btn-text">{t('editGroup')}</span>
+          <span className="btn-text" onClick={() => handleChangeGroup()}>
+            {t('editGroup')}
+          </span>
         </div>
       ) : null}
+      <Popup
+        ref={popupRef}
+        thirdText={thirdText}
+        confirmText={confirmText}
+        isRemoveText={isRemoveText}
+        confirm={onConfirm.current}
+        third={onThird.current}
+        cancelText={t('cancel')}
+      ></Popup>
       {/* <popup ref="popup"
                :title="popupTitle"
                :thirdText="thirdText"

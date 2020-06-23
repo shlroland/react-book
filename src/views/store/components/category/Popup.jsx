@@ -16,12 +16,11 @@ const Popup = forwardRef((props, ref) => {
     cancelText,
     thirdText,
     confirm,
+    third,
   } = props
   const [visible, setVisible] = useState(false)
   const [popupVisible, setPopupVisible] = useState(false)
-
   // console.log(title, confirmText, isRemoveText, cancelText, confirm)
-
   const show = useCallback(() => {
     setVisible(true)
     setPopupVisible(true)
@@ -41,11 +40,17 @@ const Popup = forwardRef((props, ref) => {
     }, 20)
   }, [confirm, hide])
 
+  const handleThird = useCallback(() => {
+    third()
+    setTimeout(() => {
+      hide()
+    }, 20)
+  }, [hide, third])
   useImperativeHandle(ref, () => ({
     show,
   }))
   return (
-    <PopupWrapper style={{display:visible?'block':'none'}}>
+    <PopupWrapper style={{ display: visible ? 'block' : 'none' }}>
       <div
         className="popup-bg"
         style={{
@@ -71,7 +76,9 @@ const Popup = forwardRef((props, ref) => {
             <div className="popup-title">{title}</div>
           ) : null}
           {thirdText && thirdText.length > 0 ? (
-            <div className="popup-confirm-btn">{thirdText}</div>
+            <div className="popup-confirm-btn" onClick={() => handleThird()}>
+              {thirdText}
+            </div>
           ) : null}
           <div
             className={classnames({

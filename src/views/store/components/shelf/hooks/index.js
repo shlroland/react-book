@@ -45,7 +45,6 @@ export const useEditClick = () => {
       }
       dispatch(changeSelectedList([]))
       dispatch(changeIsEditMode(bool))
-      // dispatch(changeBookList(bookList))
       dispatch(changeScrollBottom(scroll))
     },
     [dispatch]
