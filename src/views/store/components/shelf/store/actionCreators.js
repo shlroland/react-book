@@ -14,10 +14,13 @@ export const changeScrollBottom = (data) => ({
   data,
 })
 
-export const changeBookList = (data) => ({
-  type: actionTypes.CHANGE_BOOK_LIST,
-  data: fromJS(data),
-})
+export const changeBookList = (data) => {
+  console.log('change')
+  return {
+    type: actionTypes.CHANGE_BOOK_LIST,
+    data: fromJS(data),
+  }
+}
 
 export const changeSelectedList = (data) => ({
   type: actionTypes.CHANGE_SELECTED_LIST,

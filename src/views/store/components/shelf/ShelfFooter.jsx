@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef,useCallback } from 'react'
+import React, { useMemo, useState, useRef, useCallback } from 'react'
 import { ShelfFooterWrapper } from './style'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -9,7 +9,6 @@ import ShelfGroupDialog from './ShelfGroupDialog'
 import { useSetPrivate, useRemoveBook, useSetDownload } from './hooks'
 import useToast from '@/common/ToastPortal'
 
-
 const ShelfFooter = (props) => {
   const { className, category } = props
   const { t } = useTranslation('shelf')
@@ -19,6 +18,9 @@ const ShelfFooter = (props) => {
   const selectedList = useSelector((state) =>
     state.getIn(['bookShelf', 'selectedList']).toJS()
   )
+  // const bookList = useSelector((state) =>
+  //   state.getIn(['bookShelf', 'bookList']).toJS()
+  // )
 
   const [popTitle, setPopTitle] = useState('')
   const [confirmText, setConfirmText] = useState('')
@@ -27,7 +29,6 @@ const ShelfFooter = (props) => {
 
   const popupRef = useRef(null)
   const dialogRef = useRef(null)
-  // const toastRef = useRef(null)
   const onConfirm = useRef(null)
 
   const isSelected = useMemo(() => {
@@ -95,20 +96,6 @@ const ShelfFooter = (props) => {
     [isDownload, isPrivate]
   )
 
-  // const showToast = useCallback((text) => {
-  //   setToastText(text)
-  //   toastRef.current.show()
-  // }, [])
-
-  // const showContinueToast = useCallback((text)=>{
-  //     setToastText(text)
-  //     toastRef.current.continueShow()
-  // },[])
-
-  // const hideToast = useCallback(()=>{
-  //   toastRef.current.hide()
-  // },[])
-
   const showPopup = useCallback(
     (title, confirmText, confirm, isRemoveText = false) => {
       setPopTitle(title)
@@ -122,18 +109,18 @@ const ShelfFooter = (props) => {
   const setPrivate = useSetPrivate()
   const removeBook = useRemoveBook()
   const setDownload = useSetDownload(t)
-  const {showToast:toastShow,RenderToast} =  useToast()
+  const { showToast: toastShow, RenderToast } = useToast()
 
   const showPrivate = useCallback(() => {
     if (isSelected) {
       if (!isPrivate) {
-        showPopup(t('setPrivateTitle'), t('open'), () => {
-          setPrivate(true)
+        showPopup(t('setPrivateTitle'), t('open'), (bookList) => {
+          setPrivate(true, bookList)
           toastShow(t('setPrivateSuccess'))
         })
       } else {
-        showPopup(t('closePrivateTitle'), t('close'), () => {
-          setPrivate(false)
+        showPopup(t('closePrivateTitle'), t('close'), (bookList) => {
+          setPrivate(false,bookList)
           toastShow(t('closePrivateSuccess'))
         })
       }
@@ -143,13 +130,13 @@ const ShelfFooter = (props) => {
   const showDownload = useCallback(() => {
     if (isSelected) {
       if (!isDownload) {
-        showPopup(t('setDownloadTitle'), t('open'),() => {
-          setDownload(true)
+        showPopup(t('setDownloadTitle'), t('open'), (bookList) => {
+          setDownload(true,bookList)
           toastShow(t('setDownloadSuccess'))
         })
       } else {
-        showPopup(t('removeDownloadTitle'), t('delete'),() => {
-          setDownload(false)
+        showPopup(t('removeDownloadTitle'), t('delete'), (bookList) => {
+          setDownload(false,bookList)
           toastShow(t('removeDownloadSuccess'))
         })
       }

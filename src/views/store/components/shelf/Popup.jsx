@@ -7,6 +7,7 @@ import React, {
 import { PopupWrapper } from './style'
 import classnames from 'classnames'
 import { CSSTransition } from 'react-transition-group'
+import { useSelector } from 'react-redux'
 
 const Popup = forwardRef((props, ref) => {
   const {
@@ -19,7 +20,9 @@ const Popup = forwardRef((props, ref) => {
   } = props
   const [visible, setVisible] = useState(false)
   const [popupVisible, setPopupVisible] = useState(false)
-
+  const bookList = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
   // console.log(title, confirmText, isRemoveText, cancelText, confirm)
 
   const show = useCallback(() => {
@@ -35,17 +38,17 @@ const Popup = forwardRef((props, ref) => {
   }, [])
 
   const handleConfirm = useCallback(() => {
-    confirm()
+    confirm(bookList)
     setTimeout(() => {
       hide()
     }, 20)
-  }, [confirm, hide])
+  }, [bookList, confirm, hide])
 
   useImperativeHandle(ref, () => ({
     show,
   }))
   return (
-    <PopupWrapper style={{display:visible?'block':'none'}}>
+    <PopupWrapper style={{ display: visible ? 'block' : 'none' }}>
       <div
         className="popup-bg"
         style={{

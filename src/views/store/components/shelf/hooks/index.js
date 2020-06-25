@@ -20,10 +20,6 @@ export const useShowBookDetail = () => {
 
 export const useEditClick = () => {
   const dispatch = useDispatch()
-  // const bookList = useSelector((state) =>
-  //   state.getIn(['bookShelf', 'bookList']).toJS()
-  // )
-  // console.log(bookList)
   const cb = useCallback(
     (bool,bookList) => {
       if (!bool) {
@@ -54,30 +50,20 @@ export const useEditClick = () => {
 
 export const useSetPrivate = () => {
   const dispatch = useDispatch()
-  const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
-  )
   const editClick = useEditClick()
-  // const {} = useToast()
   const cb = useCallback(
-    (v) => {
+    (v,bookList) => {
       bookList.forEach((item) => {
         if (item.selected) {
           item.private = v
         }
       })
-      // if (v) {
-      //   showToast(t('setPrivateSuccess'))
-      // } else {
-      //   showToast(t('closePrivateSuccess'))
-      // }
       editClick(false,bookList)
       dispatch(changeBookList(bookList))
       setLocalStorage('bookShelf', bookList)
     },
-    [bookList, dispatch, editClick]
+    [dispatch, editClick]
   )
-
   return cb
 }
 
@@ -97,20 +83,15 @@ export const useRemoveBook = () => {
 }
 
 export const useSetDownload = (
-  // showToast,
-  // showContinueToast,
-  // hideToast,
   t
-  // setToastText
 ) => {
   const dispatch = useDispatch()
-  const bookList = useSelector((state) =>
-    state.getIn(['bookShelf', 'bookList']).toJS()
-  )
+  // const bookList = useSelector((state) =>
+  //   state.getIn(['bookShelf', 'bookList']).toJS()
+  // )
   const editClick = useEditClick()
   const cb = useCallback(
-    async (needDownload) => {
-      // showContinueToast(t('startDownload'))
+    async (needDownload,bookList) => {
       for (let i = 0; i < bookList.length; i++) {
         const item = bookList[i]
         if (needDownload && item.selected) {
@@ -139,19 +120,12 @@ export const useSetDownload = (
           }
         }
       }
-      // debugger
-      // hideToast()
-      // if (needDownload) {
-      //   showToast(t('setDownloadSuccess'))
-      // } else {
-      //   showToast(t('removeDownloadSuccess'))
-      // }
       editClick(false,bookList)
       dispatch(changeBookList(bookList))
       setLocalStorage('bookShelf', bookList)
       console.log('数据保存成功...')
     },
-    [bookList, dispatch, editClick, t]
+    [dispatch, editClick, t]
   )
   return cb
 }
@@ -164,25 +138,27 @@ export const useMoveToGroup = () => {
   const bookList = useSelector((state) =>
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
+  const editClick = useEditClick()
   const cb = useCallback(
     (group, showToast, t) => {
+      console.log(bookList,selectedList)
       if (group && group.itemList) {
         group.itemList = [...group.itemList, ...selectedList]
         group.itemList.forEach((item, index) => {
           item.id = index + 1
         })
       }
-      console.log(group)
       const index = bookList.findIndex((item) => item.id === group.id)
       bookList.splice(index, 1, group)
       const list = bookList.filter((item) => {
         return !item.selected
       })
       showToast(t('moveBookInSuccess', { $1: group.title }))
+      editClick(false,list)
       dispatch(changeBookList(list))
       setLocalStorage('bookShelf', list)
     },
-    [bookList, dispatch, selectedList]
+    [bookList, dispatch, editClick, selectedList]
   )
   return cb
 }
@@ -192,6 +168,7 @@ export const useNewGroup = () => {
   const bookList = useSelector((state) =>
     state.getIn(['bookShelf', 'bookList']).toJS()
   )
+  const editClick = useEditClick()
   const cb = useCallback(
     (group,showToast,t) => {
       let list = bookList.filter((item) => {
@@ -208,10 +185,11 @@ export const useNewGroup = () => {
         id: Number.MAX_SAFE_INTEGER,
       })
       showToast(t('moveBookInSuccess', { $1: group.title }))
+      editClick(false,list)
       dispatch(changeBookList(list))
       setLocalStorage('bookShelf', list)
     },
-    [bookList, dispatch]
+    [bookList, dispatch, editClick]
   )
   return cb
 }

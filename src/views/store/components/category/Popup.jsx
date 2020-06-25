@@ -7,6 +7,7 @@ import React, {
 import { PopupWrapper } from './style'
 import classnames from 'classnames'
 import { CSSTransition } from 'react-transition-group'
+import { useSelector } from 'react-redux'
 
 const Popup = forwardRef((props, ref) => {
   const {
@@ -20,7 +21,9 @@ const Popup = forwardRef((props, ref) => {
   } = props
   const [visible, setVisible] = useState(false)
   const [popupVisible, setPopupVisible] = useState(false)
-  // console.log(title, confirmText, isRemoveText, cancelText, confirm)
+  const bookList = useSelector((state) =>
+    state.getIn(['bookShelf', 'bookList']).toJS()
+  )
   const show = useCallback(() => {
     setVisible(true)
     setPopupVisible(true)
@@ -34,11 +37,11 @@ const Popup = forwardRef((props, ref) => {
   }, [])
 
   const handleConfirm = useCallback(() => {
-    confirm()
+    confirm(bookList)
     setTimeout(() => {
       hide()
     }, 20)
-  }, [confirm, hide])
+  }, [bookList, confirm, hide])
 
   const handleThird = useCallback(() => {
     third()

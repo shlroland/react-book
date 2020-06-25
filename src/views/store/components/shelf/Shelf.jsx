@@ -28,7 +28,6 @@ const Shelf = (props) => {
   const showBookDetail = useShowBookDetail()
 
   const bookData = useMemo(() => {
-    console.log(data)
     if (showType === 0) {
       return data
     } else if (showType === 1) {
@@ -97,8 +96,8 @@ const Shelf = (props) => {
         }
       } else if (book.type === 2) {
         if (!isEditMode) {
-          history.push(`/book-store/category/${book.title}`,{
-            category:book
+          history.push(`/book-store/category/${book.title}`, {
+            category: book,
           })
         }
       }

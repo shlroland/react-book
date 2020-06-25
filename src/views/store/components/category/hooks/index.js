@@ -19,12 +19,9 @@ export const useShowBookDetail = () => {
 
 export const useEditClick = () => {
   const dispatch = useDispatch()
-  const bookList = useSelector((state) =>
-    state.getIn(['bookCategory', 'bookList']).toJS()
-  )
-  // console.log(bookList)
+
   const cb = useCallback(
-    (bool) => {
+    (bool,bookList) => {
       if (!bool) {
         bookList.forEach((item) => {
           if (item.bookId) {
@@ -44,39 +41,32 @@ export const useEditClick = () => {
       }
       dispatch(changeSelectedList([]))
       dispatch(changeIsEditMode(bool))
-      dispatch(changeBookList(bookList))
       dispatch(changeScrollBottom(scroll))
     },
-    [bookList, dispatch]
+    [dispatch]
   )
   return cb
 }
 
-export const useSetPrivate = (showToast, t) => {
+export const useSetPrivate = () => {
   const dispatch = useDispatch()
-  const bookList = useSelector((state) =>
-    state.getIn(['bookCategory', 'bookList']).toJS()
-  )
   const editClick = useEditClick()
+  const ShelfList = useSelector((state) =>
+  state.getIn(['bookShelf', 'bookList']).toJS()
+)
   const cb = useCallback(
-    (v) => {
+    (v,bookList) => {
       bookList.forEach((item) => {
         if (item.selected) {
           item.private = v
         }
       })
-      if (v) {
-        showToast(t('setPrivateSuccess'))
-      } else {
-        showToast(t('closePrivateSuccess'))
-      }
-
+      editClick(false,bookList)
       dispatch(changeBookList(bookList))
-      editClick(false)
+      // setLocalStorage('bookShelf', bookList)
     },
-    [bookList, dispatch, editClick, showToast, t]
+    [dispatch, editClick]
   )
-
   return cb
 }
 
