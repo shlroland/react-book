@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/styled-components": "^5.1.1",
     "customize-cra": "^1.0.0",
+    "epubjs": "^0.3.88",
     "mobx": "^5.15.4",
     "mobx-react": "^6.2.2",
     "react": "^16.13.1",
