@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Reboot } from './assets/styles'
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom'
+import Ebook from './views/ebook'
+import Mall from './views/mall'
+import { StoreProvider } from './store/global'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <StoreProvider>
+      <Reboot></Reboot>
+      <Router>
+        <Switch>
+          <Route path="/ebook" component={Ebook}></Route>
+          <Route path="/mall" component={Mall}></Route>
+          <Redirect from="/" to="/ebook"></Redirect>
+        </Switch>
+      </Router>
+    </StoreProvider>
+  )
 }
 
-export default App;
+export default App
