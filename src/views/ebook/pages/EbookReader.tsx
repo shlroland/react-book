@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useStore as useGlobalStore } from '@/store/global'
+import { useStore as useEbookStore } from '@/store/ebook'
 import { useObserver } from 'mobx-react'
 import Epub, { Book, Rendition } from 'epubjs'
 
@@ -11,22 +11,23 @@ interface ParamTypes {
 const baseUrl = 'http://localhost:9900/epub/'
 
 const EbookReader: React.FC = () => {
-  const globalStore = useGlobalStore()
+  const ebookStore = useEbookStore()
   const { fileName } = useParams<ParamTypes>()
 
-  const currentBook = useRef<Book | null>(null)
   const currentRendition = useRef<Rendition | null>(null)
 
   useEffect(() => {
-    globalStore.changeFileName(fileName)
     const url = `${baseUrl}${fileName.split('|').join('/')}.epub`
-    currentBook.current = Epub(url)
-    currentRendition.current = currentBook.current.renderTo('read',{
+    ebookStore.changeFileName(fileName)
+    ebookStore.changeCurrentBook(Epub(url))
+    
+    currentRendition.current = (ebookStore.currentBook as Book).renderTo('read',{
         width:window.innerWidth,
         height:window.innerHeight,
     })
     currentRendition.current.display()
-  }, [fileName, globalStore])
+    
+  }, [fileName, ebookStore])
 
   return useObserver(() => (
     <div className="ebookReader">

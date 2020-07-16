@@ -1,3 +1,8 @@
-import EbookStore from './instants'
+import Store from './instant'
+import { storeContext,StoreProvider } from './context'
+import { useStore }  from './hooks'
+import * as types from './types'
 
-export { EbookStore }
+export {
+    Store,storeContext,StoreProvider,useStore,types
+}
