@@ -1,6 +1,5 @@
 import { EbookStoreReturn } from './types'
 import { Book } from 'epubjs'
-import { Default, Eye, Gold, Night } from '@/assets/styles/theme'
 
 function EbookStore(): EbookStoreReturn {
   return {
@@ -14,23 +13,7 @@ function EbookStore(): EbookStoreReturn {
       this.fileName = fileName
     },
 
-    theme: Default,
-    setTheme(themeType) {
-      switch (themeType) {
-        case 'Gold':
-          this.theme = Gold
-          break
-        case 'Eye':
-          this.theme = Eye
-          break
-        case 'Night':
-          this.theme = Night
-          break
-        default:
-          this.theme = Default
-          break
-      }
-    },
+    
   }
 }
 
