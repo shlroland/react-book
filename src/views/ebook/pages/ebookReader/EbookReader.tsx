@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useStore as useEbookStore } from '@/store/ebook'
 import { useObserver } from 'mobx-react'
 import Epub, { Book, Rendition } from 'epubjs'
+import { useStore as useEbookStore } from '@/store/ebook'
+import EbookReaderWrapper from './style'
 
 interface ParamTypes {
   fileName: string
@@ -20,7 +21,7 @@ const EbookReader: React.FC = () => {
     const url = `${baseUrl}${fileName.split('|').join('/')}.epub`
     ebookStore.changeFileName(fileName)
     ebookStore.changeCurrentBook(Epub(url))
-    
+
     currentRendition.current = (ebookStore.currentBook as Book).renderTo('read',{
         width:window.innerWidth,
         height:window.innerHeight,
@@ -30,9 +31,9 @@ const EbookReader: React.FC = () => {
   }, [fileName, ebookStore])
 
   return useObserver(() => (
-    <div className="ebookReader">
+    <EbookReaderWrapper>
       <div id="read"></div>
-    </div>
+    </EbookReaderWrapper>
   ))
 }
 

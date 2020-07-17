@@ -9,6 +9,7 @@ import {
 import Ebook from './views/ebook'
 import Mall from './views/mall'
 import { StoreProvider } from './store/global'
+import './assets/style/icon.css'
 
 function App() {
   return (
