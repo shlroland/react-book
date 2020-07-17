@@ -13,7 +13,10 @@ function EbookStore(): EbookStoreReturn {
       this.fileName = fileName
     },
 
-    
+    menuVisible: false,
+    changeMenuVisible(menuVisible) {
+      this.menuVisible = menuVisible
+    }
   }
 }
 

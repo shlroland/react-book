@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import {px2vw, mixin} from '@/assets/styles'
+import {px2vw, mixin,transition} from '@/assets/styles'
 
 const EbookTitleWrapper = styled.div`
   position: absolute;
@@ -13,6 +13,7 @@ const EbookTitleWrapper = styled.div`
   color: ${(props) => props.theme.textColor};
   box-shadow: 0 ${px2vw(8)} ${px2vw(8)} rgba(0, 0, 0, 0.15);
   font-size: ${px2vw(22)};
+  ${transition.slideDown()}
   .left {
     flex: 0 0 ${px2vw(37)};
     ${mixin.right()};
