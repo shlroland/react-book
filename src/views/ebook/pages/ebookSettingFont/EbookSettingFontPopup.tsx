@@ -1,9 +1,10 @@
 import React, { memo, FC } from 'react'
 import { useObserver } from 'mobx-react'
-import { FontFamilySettingWrapper,PopupListWrapper } from './style'
+import { FontFamilySettingWrapper, PopupListWrapper } from './style'
 import { CSSTransition } from 'react-transition-group'
 import { useStore as useEbookStore } from '@/store/ebook'
 import { fontFamily } from '@/utils/book'
+import { useTranslation } from 'react-i18next'
 import classnames from 'classnames'
 
 const PopupList = () => {
@@ -27,10 +28,7 @@ const PopupList = () => {
     <PopupListWrapper>
       {fontFamily.map((item, index) => {
         return (
-          <div
-            className="ebook-popup-item"
-            key={index}
-          >
+          <div className="ebook-popup-item" key={index}>
             <div
               className={classnames({
                 'ebook-popup-item-text': true,
@@ -42,7 +40,8 @@ const PopupList = () => {
             <div
               className="ebook-popup-item-check"
               style={{
-                display: ebookStore.defaultFontFamily === item.font ? 'block' : 'none',
+                display:
+                  ebookStore.defaultFontFamily === item.font ? 'block' : 'none',
               }}
             >
               <span className="icon-check"></span>
@@ -56,6 +55,7 @@ const PopupList = () => {
 
 const EbookSettingFontPopup: FC = () => {
   const ebookStore = useEbookStore()
+  const { t } = useTranslation('book')
 
   return useObserver(() => (
     <CSSTransition
@@ -75,8 +75,7 @@ const EbookSettingFontPopup: FC = () => {
           >
             <span className="icon-down2"></span>
           </div>
-          {/* <span className="ebook-popup-title-text">{t('selectFont')}</span> */}
-          <span className="ebook-popup-title-text">选择字体</span>
+          <span className="ebook-popup-title-text">{t('selectFont')}</span>
         </div>
         <PopupList></PopupList>
       </FontFamilySettingWrapper>
