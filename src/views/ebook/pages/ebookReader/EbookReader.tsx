@@ -22,17 +22,20 @@ const EbookReader: React.FC = () => {
     ebookStore.changeFileName(fileName)
     ebookStore.changeCurrentBook(Epub(url))
 
-    currentRendition.current = (ebookStore.currentBook as Book).renderTo('read',{
-        width:window.innerWidth,
-        height:window.innerHeight,
-    })
+    currentRendition.current = (ebookStore.currentBook as Book).renderTo(
+      'read',
+      {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }
+    )
     currentRendition.current.display()
-    
   }, [fileName, ebookStore])
 
   return useObserver(() => (
     <EbookReaderWrapper>
-      <div id="read"></div>
+      {/* <div className="ebook-reader-mask" ref={maskRef}></div> */}
+        <div id="read"></div>
     </EbookReaderWrapper>
   ))
 }

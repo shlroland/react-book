@@ -10,6 +10,7 @@ import Ebook from './views/ebook'
 import Mall from './views/mall'
 import { StoreProvider } from './store/global'
 import './assets/styles/icon.css'
+import 'mobx-react/batchingForReactDom'
 
 function App() {
   return (
