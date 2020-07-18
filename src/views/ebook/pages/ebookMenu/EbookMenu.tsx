@@ -5,12 +5,13 @@ import { useStore as useEbookStore } from '@/store/ebook'
 import { useObserver } from 'mobx-react'
 
 const EbookTitle: FC = () => {
-  const { menuVisible } = useEbookStore()
+  const ebookStore = useEbookStore()
+  
   return useObserver(() => (
     <CSSTransition
-      in={menuVisible}
+      in={ebookStore.menuVisible}
       timeout={300}
-      classNames="slide-down"
+      classNames="slide-up"
       appear={true}
       unmountOnExit
     >
