@@ -2,6 +2,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import cn from './cn'
 import en from './en'
+import { getLocale, saveLocale } from '@/utils/localStorage'
 
 const resources = {
   cn,
@@ -9,9 +10,11 @@ const resources = {
 }
 
 const setLocale = () =>{
-//   if (!locale) {
-   const locale = 'cn'
-//   }
+  let locale:'cn'|'en' = getLocale()
+  if (!locale) {
+   locale = 'cn'
+   saveLocale(locale)
+  }
   return locale
 }
 
