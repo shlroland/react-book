@@ -31,7 +31,7 @@ const EbookReader: React.FC = () => {
   }, [])
 
   const handleTapEvent = useCallback(
-    (ev) => {
+    (ev: HammerInput) => {
       const padLeft = window.innerWidth * 0.25
       const padRight = window.innerWidth * 0.75
       const x = ev.center.x
@@ -46,6 +46,18 @@ const EbookReader: React.FC = () => {
     },
     [nextPage, prevPage, toggleMenuVisible]
   )
+
+  const handleSwipeEvent = useCallback(
+    (ev: HammerInput) => {
+      if (ev.type === 'swipeleft') {
+        nextPage()
+      } else if (ev.type === 'swiperight') {
+        prevPage()
+      }
+    },
+    [nextPage, prevPage]
+  )
+
   useEffect(() => {
     const url = `${baseUrl}${fileName.split('|').join('/')}.epub`
     ebookStore.changeFileName(fileName)
@@ -65,10 +77,12 @@ const EbookReader: React.FC = () => {
     const hammer = new Hammer(maskRef.current as HTMLDivElement)
     hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL })
     hammer.on('tap', handleTapEvent)
+    hammer.on('swipeleft swiperight', handleSwipeEvent)
     return () => {
       hammer.off('tap', handleTapEvent)
+      hammer.off('swipeleft swiperight', handleSwipeEvent)
     }
-  }, [handleTapEvent])
+  }, [handleSwipeEvent, handleTapEvent])
 
   return useObserver(() => (
     <EbookReaderWrapper>
