@@ -1,6 +1,7 @@
 import { EbookStoreReturn } from './types'
 import { Book } from 'epubjs'
 import { Default, Eye, Gold, Night } from '@/assets/styles/theme'
+import { getFontSize, saveFontSize, getFontFamily, saveFontFamily } from '@/utils/localStorage'
 
 function EbookStore(): EbookStoreReturn {
   return {
@@ -26,7 +27,7 @@ function EbookStore(): EbookStoreReturn {
       this.currentBook = currentBook
     },
 
-    fileName: 'epub',
+    fileName: '',
     changeFileName(fileName) {
       this.fileName = fileName
     },
@@ -58,10 +59,30 @@ function EbookStore(): EbookStoreReturn {
     },
 
     defaultFontSize: 16,
-    defaultFontFamily: 'Default',
+    defaultFontFamily: 'Times New Roman',
     changeDefaultFontFamily(fontFamily) {
       this.defaultFontFamily = fontFamily
+      saveFontFamily(this.fileName, fontFamily)
     },
+    changeDefaultFontSize(fontSize) {
+      this.defaultFontSize = fontSize
+      saveFontSize(this.fileName, fontSize)
+    },
+    initDefaultFontSize() {
+      this.defaultFontSize = getFontSize(this.fileName) || this.defaultFontSize
+    },
+    initDefaultFontFamily() {
+      this.defaultFontFamily = getFontFamily(this.fileName) || this.defaultFontFamily
+    }
+    // get fontSize() {
+    //   let font: number = this.defaultFontSize
+    //   // return font ? font : this.defaultFontSize
+    //   return font
+    // },
+    // get fontFamily() {
+    //   let font = getFontFamily(this.fileName)
+    //   return font ? font : this.defaultFontFamily
+    // },
   }
 }
 

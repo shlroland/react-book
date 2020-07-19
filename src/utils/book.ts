@@ -9,7 +9,7 @@ export const fontSizeList = [
 ]
 
 export const fontFamily = [
-  { font: 'Default' },
+  { font: 'Times New Roman' },
   { font: 'Cabin' },
   { font: 'Days One' },
   { font: 'Montserrat' },

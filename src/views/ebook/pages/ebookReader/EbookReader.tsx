@@ -1,17 +1,19 @@
 import React, { useEffect, useRef, memo, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { useObserver } from 'mobx-react'
-import Epub, { Book, Rendition } from 'epubjs'
+import { reaction } from 'mobx'
+import Epub, { Book, Rendition, Contents } from 'epubjs'
 import { useStore as useEbookStore } from '@/store/ebook'
 import { useToggleMenuVisible } from '../hook'
 import EbookReaderWrapper from './style'
 import Hammer from 'hammerjs'
+// import { fontFamily } from '@/utils/book'
 
 interface ParamTypes {
   fileName: string
 }
 
-const baseUrl = 'http://localhost:9900/epub/'
+// const baseUrl = 'http://localhost:9900/epub/'
 
 const EbookReader: React.FC = () => {
   const ebookStore = useEbookStore()
@@ -59,9 +61,13 @@ const EbookReader: React.FC = () => {
   )
 
   useEffect(() => {
-    const url = `${baseUrl}${fileName.split('|').join('/')}.epub`
+    const url = `${process.env.REACT_APP_BOOK_URL}/${fileName
+      .split('|')
+      .join('/')}.epub`
     ebookStore.changeFileName(fileName)
     ebookStore.changeCurrentBook(Epub(url))
+    ebookStore.initDefaultFontSize()
+    ebookStore.initDefaultFontFamily()
 
     currentRendition.current = (ebookStore.currentBook as Book).renderTo(
       'read',
@@ -70,7 +76,47 @@ const EbookReader: React.FC = () => {
         height: window.innerHeight,
       }
     )
+    currentRendition.current.hooks.content.register((contents: Contents) => {
+      contents.addStylesheet(
+        `${process.env.REACT_APP_BASE_URL}/fonts/daysOne.css`
+      )
+      contents.addStylesheet(
+        `${process.env.REACT_APP_BASE_URL}/fonts/tangerine.css`
+      )
+      contents.addStylesheet(
+        `${process.env.REACT_APP_BASE_URL}/fonts/montserrat.css`
+      )
+      contents.addStylesheet(
+        `${process.env.REACT_APP_BASE_URL}/fonts/cabin.css`
+      )
+    })
+    const cleanUpFontSize = reaction(
+      () => ebookStore.defaultFontSize,
+      (fontSize) => {
+        ;(currentRendition.current as Rendition).themes.fontSize(
+          fontSize + 'px'
+        )
+      },
+      {
+        fireImmediately: true,
+      }
+    )
+
+    const cleanUpFontFamily = reaction(
+      () => ebookStore.defaultFontFamily,
+      (fontFamily) => {
+        ;(currentRendition.current as Rendition).themes.font(fontFamily)
+      },
+      {
+        fireImmediately: true,
+      }
+    )
+
     currentRendition.current.display()
+    return () => {
+      cleanUpFontSize()
+      cleanUpFontFamily()
+    }
   }, [fileName, ebookStore])
 
   useEffect(() => {

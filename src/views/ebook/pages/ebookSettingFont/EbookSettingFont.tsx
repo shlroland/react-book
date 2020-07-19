@@ -76,6 +76,9 @@ const EbookTitle: FC = () => {
                   className="select-wrapper"
                   key={index}
                   ref={(el) => (itemsRef.current[index] = el)}
+                  onClick={() =>
+                    ebookStore.changeDefaultFontSize(item.fontSize)
+                  }
                 >
                   <div className="line"></div>
                   <div className="point-wrapper">

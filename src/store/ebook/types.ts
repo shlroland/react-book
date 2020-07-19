@@ -11,16 +11,22 @@ export interface EbookStoreReturn {
   theme: themeProp
   settingVisible: settingVisibleProp
   fontSettingVisible: boolean
-  defaultFontSize: number
   fontFamilyVisible: boolean
+  defaultFontSize: number
   defaultFontFamily: defaultFontFamily
+  // fontSize: number
+  // fontFamily: defaultFontFamily
   setTheme: (themeType: themeType) => void
   changeCurrentBook: (currentBook: Book) => void
   changeFileName: (fileName: string) => void
   changeMenuVisible: (menuVisible: boolean) => void
   changeSettingVisible: (settingVisible: settingVisibleProp) => void
-  changeFontFamilyVisible:(fontFamilyVisible:boolean)=>void
+  changeFontFamilyVisible: (fontFamilyVisible: boolean) => void
   changeDefaultFontFamily: (fontFamily: defaultFontFamily) => void
+  changeDefaultFontSize: (fontSize: number) => void
+  initDefaultFontSize: () => void
+  initDefaultFontFamily: () => void
+
 }
 
 export type themeType = 'Default' | 'Gold' | 'Eye' | 'Night'
@@ -28,10 +34,10 @@ export type themeType = 'Default' | 'Gold' | 'Eye' | 'Night'
 export type settingVisibleProp = -1 | 0 | 1 | 2 | 3
 
 export type defaultFontFamily =
-  | 'Default'
   | 'Cabin'
   | 'Days One'
   | 'Montserrat'
   | 'Tangerine'
+  | 'Times New Roman'
 
 export type storeType = ReturnType<typeof Store>
