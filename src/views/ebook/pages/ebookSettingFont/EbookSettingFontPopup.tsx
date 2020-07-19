@@ -6,23 +6,13 @@ import { useStore as useEbookStore, types } from '@/store/ebook'
 import { fontFamily } from '@/utils/book'
 import { useTranslation } from 'react-i18next'
 import classnames from 'classnames'
-import { saveFontFamily } from '@/utils/localStorage'
 
 const PopupList = () => {
   const ebookStore = useEbookStore()
 
-  const setFontFamily = (font: types.defaultFontFamily) => {
-    saveFontFamily(ebookStore.fileName, font)
-    // if (currentBook) {
-    // if (font === 'Default') {
-    // ebookStore.changeDefaultFontFamily('Times New Roman')
-    //     currentBook.rendition.themes.font('Times New Roman')
-    // } else {
-    ebookStore.changeDefaultFontFamily(font)
-    //     currentBook.rendition.themes.font(font)
-    // }
-    // }
-  }
+  // const setFontFamily = (font: types.defaultFontFamily) => {
+  //   saveFontFamily(ebookStore.fileName, font)
+  // }
   return useObserver(() => (
     <PopupListWrapper>
       {fontFamily.map((item, index) => {
@@ -30,7 +20,11 @@ const PopupList = () => {
           <div
             className="ebook-popup-item"
             key={index}
-            onClick={() => setFontFamily(item.font as types.defaultFontFamily)}
+            onClick={() => {
+              ebookStore.changeDefaultFontFamily(
+                item.font as types.defaultFontFamily
+              )
+            }}
           >
             <div
               className={classnames({

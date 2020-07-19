@@ -74,15 +74,6 @@ function EbookStore(): EbookStoreReturn {
     initDefaultFontFamily() {
       this.defaultFontFamily = getFontFamily(this.fileName) || this.defaultFontFamily
     }
-    // get fontSize() {
-    //   let font: number = this.defaultFontSize
-    //   // return font ? font : this.defaultFontSize
-    //   return font
-    // },
-    // get fontFamily() {
-    //   let font = getFontFamily(this.fileName)
-    //   return font ? font : this.defaultFontFamily
-    // },
   }
 }
 
