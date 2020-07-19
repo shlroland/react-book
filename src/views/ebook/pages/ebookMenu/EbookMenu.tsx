@@ -5,6 +5,7 @@ import { useStore as useEbookStore } from '@/store/ebook'
 import { useObserver } from 'mobx-react'
 import EbookSettingFont from '../ebookSettingFont/EbookSettingFont'
 import EbookSettingFontPopup from '../ebookSettingFont/EbookSettingFontPopup'
+import EbookSettingTheme from '../ebookSettingTheme/EbookSettingTheme'
 
 const EbookTitle: FC = () => {
   const ebookStore = useEbookStore()
@@ -25,7 +26,10 @@ const EbookTitle: FC = () => {
           <div className="icon-wrapper">
             <span className="icon-progress"></span>
           </div>
-          <div className="icon-wrapper">
+          <div
+            className="icon-wrapper"
+            onClick={() => ebookStore.changeSettingVisible(1)}
+          >
             <span className="icon-bright"></span>
           </div>
           <div
@@ -37,6 +41,7 @@ const EbookTitle: FC = () => {
         </EbookMenuWrapper>
       </CSSTransition>
       <EbookSettingFont></EbookSettingFont>
+      <EbookSettingTheme></EbookSettingTheme>
       <EbookSettingFontPopup></EbookSettingFontPopup>
     </>
   ))

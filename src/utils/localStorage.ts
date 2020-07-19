@@ -52,9 +52,17 @@ export function saveFontSize(fileName: string, fontSize: number) {
 }
 
 export function getLocale() {
-    return getLocalStorage('locale')
-  }
-  
-  export function saveLocale(locale: 'cn'| 'en') {
-    return setLocalStorage('locale', locale)
-  }
+  return getLocalStorage('locale')
+}
+
+export function saveLocale(locale: 'cn' | 'en') {
+  return setLocalStorage('locale', locale)
+}
+
+export function getTheme(fileName:string) {
+  return getBookObject(fileName, 'theme')
+}
+
+export function saveTheme(fileName:string, theme:string) {
+  setBookObject(fileName, 'theme', theme)
+}

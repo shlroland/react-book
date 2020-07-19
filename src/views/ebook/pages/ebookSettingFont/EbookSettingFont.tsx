@@ -26,11 +26,6 @@ const EbookTitle: FC = () => {
     Array(fontSizeList.length).fill(null)
   )
 
-  // const showFontFamilyVisible = (e) => {
-  //     e.preventDefault()
-  //     dispatch(changeFontFamilyVisible(true))
-  //   }
-
   useEffect(() => {
     if (ebookStore.fontSettingVisible) {
       const leftWidth = (left.current as HTMLDivElement).getBoundingClientRect()
