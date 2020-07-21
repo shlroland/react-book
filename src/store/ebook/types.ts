@@ -1,4 +1,4 @@
-import { Book } from 'epubjs'
+import { Book, NavItem } from 'epubjs'
 import Store from './instant'
 import { themeProp } from '@/assets/styles/theme'
 import { ebookItemType } from '@/utils/book'
@@ -14,11 +14,19 @@ export interface EbookStoreReturn {
   fontSettingVisible: boolean
   themeSettingVisible: boolean
   fontFamilyVisible: boolean
+  progressSettingVisible: boolean
   defaultFontSize: number
   defaultFontFamily: defaultFontFamily
   theme: themeProp
   ebookTheme: themeType
   ebookThemeList: ebookItemType[]
+  readTime: number
+  section: number
+  progress: number
+  isPaginating: boolean
+  bookAvailable: boolean
+  pagelist: string[]
+  navigation: ebookNavItem[]
   setTheme: (themeType: themeType) => void
   changeCurrentBook: (currentBook: Book) => void
   changeFileName: (fileName: string) => void
@@ -27,9 +35,16 @@ export interface EbookStoreReturn {
   changeFontFamilyVisible: (fontFamilyVisible: boolean) => void
   changeDefaultFontFamily: (fontFamily: defaultFontFamily) => void
   changeDefaultFontSize: (fontSize: number) => void
+  changeReadTime: (readTime: number) => void
+  changeSection: (section: number) => void
+  changeProgress: (progress: number) => void
+  changeIsPaginating: (isPaginating: boolean) => void
+  changeBookAvailable: (bookAvailable: boolean) => void
+  changPageLIst: (pagelist: string[]) => void
+  changeNavigation: (navigation: ebookNavItem[]) => void
   initDefaultFontSize: () => void
   initDefaultFontFamily: () => void
-  initEbookTheme: (t:TFunction) => void
+  initEbookTheme: (t: TFunction) => void
 }
 
 export type themeType = 'Default' | 'Gold' | 'Eye' | 'Night'
@@ -42,5 +57,13 @@ export type defaultFontFamily =
   | 'Montserrat'
   | 'Tangerine'
   | 'Times New Roman'
+
+export interface ebookNavItem extends NavItem {
+  level?: number
+  total?: number
+  pagelist?: any[]
+  idhref?: string
+  page?: number
+}
 
 export type storeType = ReturnType<typeof Store>

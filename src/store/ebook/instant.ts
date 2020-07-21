@@ -48,6 +48,9 @@ function EbookStore(): EbookStoreReturn {
     get themeSettingVisible() {
       return this.menuVisible && this.settingVisible === 1
     },
+    get progressSettingVisible() {
+      return this.menuVisible && this.settingVisible === 2
+    },
     changeSettingVisible(settingVisible) {
       this.settingVisible = settingVisible
     },
@@ -69,6 +72,7 @@ function EbookStore(): EbookStoreReturn {
       this.defaultFontFamily =
         getFontFamily(this.fileName) || this.defaultFontFamily
     },
+
     theme: Default,
     ebookTheme: 'Default',
     ebookThemeList: [],
@@ -95,6 +99,39 @@ function EbookStore(): EbookStoreReturn {
       this.setTheme(cacheTheme)
       this.ebookThemeList = genThemeList(t)
     },
+
+    readTime: 0,
+    changeReadTime(time) {
+      this.readTime = time
+    },
+
+    section: 0,
+    changeSection(section){
+      this.section = section
+    },
+    progress: 0,
+    changeProgress(progress) {
+      this.progress = progress
+      saveFontSize(this.fileName, progress)
+
+    },
+
+    isPaginating: true,
+    changeIsPaginating(isPaginating) {
+      this.isPaginating = isPaginating
+    },
+    bookAvailable: false,
+    changeBookAvailable(bookAvailable) {
+      this.bookAvailable = bookAvailable
+    },
+    pagelist:[],
+    changPageLIst(pagelist){
+      this.pagelist = pagelist
+    },
+    navigation:[],
+    changeNavigation(navigation){
+      this.navigation = navigation
+    }
   }
 }
 

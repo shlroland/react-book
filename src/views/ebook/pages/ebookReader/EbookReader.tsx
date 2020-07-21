@@ -4,13 +4,12 @@ import { useObserver } from 'mobx-react'
 import { reaction, toJS } from 'mobx'
 import Epub, { Book, Rendition, Contents } from 'epubjs'
 import { useStore as useEbookStore } from '@/store/ebook'
-import { useToggleMenuVisible } from '../hook'
 import EbookReaderWrapper from './style'
 import Hammer from 'hammerjs'
 import { useTranslation } from 'react-i18next'
 import { ebookItemType } from '@/utils/book'
-// import { fontFamily } from '@/utils/book'
-
+import { useParseBook } from './hooks'
+import { useToggleMenuVisible } from '../hooks'
 interface ParamTypes {
   fileName: string
 }
@@ -94,6 +93,7 @@ const EbookReader: React.FC = () => {
         `${process.env.REACT_APP_BASE_URL}/fonts/cabin.css`
       )
     })
+
     const cleanUpFontSize = reaction(
       () => ebookStore.defaultFontSize,
       (fontSize) => {
@@ -115,21 +115,6 @@ const EbookReader: React.FC = () => {
         fireImmediately: true,
       }
     )
-
-    // const cleanUpThemeList = reaction(
-    //   () => ebookStore.ebookThemeList,
-    //   (themeList) => {
-    //     themeList.forEach((theme) => {
-    //       ;(currentRendition.current as Rendition).themes.register(
-    //         theme.name,
-    //         theme.style
-    //       )
-    //     })
-    //   },
-    //   {
-    //     fireImmediately: true,
-    //   }
-    // )
 
     const cleanUpTheme = reaction(
       () => ebookStore.ebookTheme,
@@ -153,7 +138,6 @@ const EbookReader: React.FC = () => {
     return () => {
       cleanUpFontSize()
       cleanUpFontFamily()
-      // cleanUpThemeList()
       cleanUpTheme()
     }
   }, [fileName, ebookStore, t])
@@ -168,6 +152,8 @@ const EbookReader: React.FC = () => {
       hammer.off('swipeleft swiperight', handleSwipeEvent)
     }
   }, [handleSwipeEvent, handleTapEvent])
+
+  useParseBook()
 
   return useObserver(() => (
     <EbookReaderWrapper>
