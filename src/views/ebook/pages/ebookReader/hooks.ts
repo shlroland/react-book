@@ -1,9 +1,14 @@
 import { useEffect, useCallback } from 'react'
 import { useStore as useEbookStore } from '@/store/ebook'
-import { NavItem, Book } from 'epubjs'
-import { getFontSize } from '@/utils/localStorage'
+import { NavItem, Book, Contents } from 'epubjs'
+import { getFontSize, getLocation } from '@/utils/localStorage'
 import Navigation from 'epubjs/types/navigation'
 import { ebookNavItem } from '@/store/ebook/types'
+import { useTranslation } from 'react-i18next'
+import { useDisplay, useRefreshLocation } from '../hooks'
+import { reaction, toJS } from 'mobx'
+import { ebookItemType } from '@/utils/book'
+import { isRendition } from '@/utils/utils'
 
 export const useParseBook = () => {
   const ebookStore = useEbookStore()
@@ -66,4 +71,88 @@ export const useParseBook = () => {
       ebookStore.changeBookAvailable(true)
     })
   }, [ebookStore, initNavigation, initPagination])
+}
+
+export const useInit = () => {
+  const ebookStore = useEbookStore()
+  const { t } = useTranslation('book')
+  const display = useDisplay()
+  const refreshLocation = useRefreshLocation()
+  const rendition = ebookStore.currentBook?.rendition
+
+  useEffect(() => {
+    Promise.all([
+      ebookStore.initDefaultFontSize(),
+      ebookStore.initDefaultFontFamily(),
+      ebookStore.initEbookTheme(t),
+    ]).then(() => {
+      const location = getLocation(ebookStore.fileName)
+      if (location) {
+        display(location).then(() => {
+          refreshLocation()
+        })
+      }
+    })
+    if (isRendition(rendition)) {
+      rendition.hooks.content.register((contents: Contents) => {
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/daysOne.css`
+        )
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/tangerine.css`
+        )
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/montserrat.css`
+        )
+        contents.addStylesheet(
+          `${process.env.REACT_APP_BASE_URL}/fonts/cabin.css`
+        )
+      })
+    }
+
+    const cleanUpFontSize = reaction(
+      () => ebookStore.defaultFontSize,
+      (fontSize) => {
+        if (isRendition(rendition)) {
+          rendition.themes.fontSize(fontSize + 'px')
+        }
+      },
+      {
+        fireImmediately: true,
+      }
+    )
+
+    const cleanUpFontFamily = reaction(
+      () => ebookStore.defaultFontFamily,
+      (fontFamily) => {
+        if (isRendition(rendition)) {
+          rendition.themes.font(fontFamily)
+        }
+      },
+      {
+        fireImmediately: true,
+      }
+    )
+
+    const cleanUpTheme = reaction(
+      () => ebookStore.ebookTheme,
+      (theme) => {
+        const { color, background } = toJS(
+          ebookStore.ebookThemeList.find((item) => item.name === theme)
+        ) as ebookItemType
+        if (isRendition(rendition)) {
+          rendition.themes.override('color', color)
+          rendition.themes.override('background', background)
+        }
+      },
+      {
+        fireImmediately: true,
+      }
+    )
+    return () => {
+      cleanUpFontSize()
+      cleanUpFontFamily()
+      cleanUpTheme()
+    }
+  }, [display, ebookStore, refreshLocation, rendition, t])
 }

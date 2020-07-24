@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useStore as useEbookStore } from '@/store/ebook'
 import { Book } from 'epubjs'
 import { DisplayedLocation } from 'epubjs/types/rendition'
-import { saveLocation } from '@/utils/localStorage'
+import { saveLocation, getProgress } from '@/utils/localStorage'
 
 interface EbookDisplayedLocation extends DisplayedLocation {
   location: number
@@ -40,9 +40,10 @@ export const useRefreshLocation = () => {
     const currentLocation = ((ebookStore.currentBook as Book).rendition.currentLocation() as unknown) as Location
     ebookStore.changeSection(currentLocation.start.index)
     if (currentLocation.start && currentLocation.start.index) {
-      const progress = (ebookStore.currentBook as Book).locations.percentageFromCfi(
-        currentLocation.start.cfi
-      )
+      const progress =
+        (ebookStore.currentBook as Book).locations.percentageFromCfi(
+          currentLocation.start.cfi
+        ) || getProgress(ebookStore.fileName) / 100
       ebookStore.changeProgress(Math.floor(progress * 100))
       if (currentLocation.start.location <= 0) {
         ebookStore.changPaginate('')
