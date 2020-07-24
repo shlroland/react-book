@@ -18,24 +18,26 @@ const EbookSettingProgress = () => {
   const refreshLocation = useRefreshLocation()
 
   const displaySection = (section: number) => {
+    console.log(section)
     const sectionInfo = (ebookStore.currentBook as Book).section(section)
     if (sectionInfo && sectionInfo.href) {
       return display(sectionInfo.href)
     }
   }
 
-  const displayProgress = (progress: number) => {
+  const displayProgress = async (progress: number) => {
     const cfi = (ebookStore.currentBook as Book).locations.cfiFromPercentage(
       progress / 100
     )
-    display(cfi)
+    await display(cfi)
+    refreshLocation()
   }
 
   const prevSection = async () => {
     if (ebookStore.section > 0 && !isProgressLoading.current) {
       isProgressLoading.current = true
       ebookStore.changeSection(ebookStore.section - 1)
-      await displaySection(ebookStore.section - 1)
+      await displaySection(ebookStore.section)
       refreshLocation()
       isProgressLoading.current = false
     }
@@ -48,8 +50,8 @@ const EbookSettingProgress = () => {
       !isProgressLoading.current
     ) {
       isProgressLoading.current = true
-      ebookStore.changeSection(ebookStore.section + 1)
-      await displaySection(ebookStore.section + 1)
+      ebookStore.changeSection(++ebookStore.section)
+      await displaySection(ebookStore.section)
       refreshLocation()
       isProgressLoading.current = false
     }

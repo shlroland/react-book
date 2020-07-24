@@ -25,7 +25,7 @@ export const useToggleMenuVisible = () => {
 export const useDisplay = () => {
   const ebookStore = useEbookStore()
   const display = useCallback(
-    (target: string) => {
+    async (target: string) => {
       return (ebookStore.currentBook as Book).rendition.display(target)
     },
     [ebookStore]
@@ -38,6 +38,7 @@ export const useRefreshLocation = () => {
   const ebookStore = useEbookStore()
   const refreshLocation = useCallback(() => {
     const currentLocation = ((ebookStore.currentBook as Book).rendition.currentLocation() as unknown) as Location
+    ebookStore.changeSection(currentLocation.start.index)
     if (currentLocation.start && currentLocation.start.index) {
       const progress = (ebookStore.currentBook as Book).locations.percentageFromCfi(
         currentLocation.start.cfi
@@ -54,7 +55,7 @@ export const useRefreshLocation = () => {
       ebookStore.changPaginate('')
     }
     const cfistart = currentLocation.start.cfi
-    saveLocation(ebookStore.fileName,cfistart)
+    saveLocation(ebookStore.fileName, cfistart)
   }, [ebookStore])
   return refreshLocation
 }
