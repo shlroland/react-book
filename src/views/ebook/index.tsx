@@ -9,12 +9,14 @@ import EbookReader from './pages/ebookReader/EbookReader'
 import EbookMenu from './pages/ebookMenu/EbookMenu'
 import EbookWrapper from './style'
 import { reaction } from 'mobx'
+import { getReadTime, saveReadTime } from '@/utils/localStorage'
 
 const EbookChild: React.FC = () => {
   const ebookStore = useEbookStore()
 
   useEffect(() => {
-    const cleanup = reaction(
+    let timer: number
+    const cleanUpVisible = reaction(
       () => ebookStore.menuVisible,
       (visible) => {
         if (!visible) {
@@ -23,8 +25,41 @@ const EbookChild: React.FC = () => {
         }
       }
     )
+    let readTime = getReadTime(ebookStore.fileName)
+    if (!readTime) {
+      readTime = 0
+    } else {
+      ebookStore.changeReadTime(Math.ceil(readTime / 60))
+    }
+    timer = setInterval(() => {
+      readTime++
+      if (readTime % 30 === 0) {
+        ebookStore.changeReadTime(Math.ceil(readTime / 60))
+        saveReadTime(ebookStore.fileName, readTime)
+      }
+    }, 1000)
+    // const cleanUpTime = reaction(
+    //   () => ebookStore.fileName,
+    //   (fileName) => {
+    //     let readTime = getReadTime(fileName)
+    //     if (!readTime) {
+    //       readTime = 0
+    //     }
+    //     timer = setInterval(() => {
+    //       readTime++
+    //       console.log(readTime)
+    //       if (readTime % 30 === 0) {
+    //         ebookStore.changeReadTime(readTime)
+    //         saveReadTime(fileName, readTime)
+    //       }
+    //     }, 1000)
+    //   }
+
+    // )
     return () => {
-      cleanup()
+      cleanUpVisible()
+      // cleanUpTime()
+      clearInterval(timer)
     }
   }, [ebookStore])
 

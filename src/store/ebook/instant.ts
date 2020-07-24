@@ -8,6 +8,7 @@ import {
   saveFontFamily,
   getTheme,
   saveTheme,
+  saveProgress,
 } from '@/utils/localStorage'
 import { genThemeList } from '@/utils/book'
 
@@ -106,14 +107,13 @@ function EbookStore(): EbookStoreReturn {
     },
 
     section: 0,
-    changeSection(section){
+    changeSection(section) {
       this.section = section
     },
     progress: 0,
     changeProgress(progress) {
       this.progress = progress
-      saveFontSize(this.fileName, progress)
-
+      saveProgress(this.fileName, progress)
     },
 
     isPaginating: true,
@@ -124,14 +124,31 @@ function EbookStore(): EbookStoreReturn {
     changeBookAvailable(bookAvailable) {
       this.bookAvailable = bookAvailable
     },
-    pagelist:[],
-    changPageLIst(pagelist){
+    pagelist: [],
+    changPageLIst(pagelist) {
       this.pagelist = pagelist
     },
-    navigation:[],
-    changeNavigation(navigation){
+    paginate: '',
+    changPaginate(paginate) {
+      this.paginate = paginate
+    },
+    navigation: [],
+    changeNavigation(navigation) {
       this.navigation = navigation
-    }
+    },
+    get sectionName() {
+      if (this.section && this.navigation) {
+        const sectionInfo = (this.currentBook as Book).section(this.section)
+        if (
+          sectionInfo &&
+          sectionInfo.href &&
+          (this.currentBook as Book).navigation
+        ) {
+          return this.navigation[this.section]?.label 
+        }
+      }
+      return ''
+    },
   }
 }
 

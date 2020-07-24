@@ -27,6 +27,8 @@ export interface EbookStoreReturn {
   bookAvailable: boolean
   pagelist: string[]
   navigation: ebookNavItem[]
+  sectionName: string
+  paginate: string
   setTheme: (themeType: themeType) => void
   changeCurrentBook: (currentBook: Book) => void
   changeFileName: (fileName: string) => void
@@ -42,6 +44,7 @@ export interface EbookStoreReturn {
   changeBookAvailable: (bookAvailable: boolean) => void
   changPageLIst: (pagelist: string[]) => void
   changeNavigation: (navigation: ebookNavItem[]) => void
+  changPaginate: (paginate: string) => void
   initDefaultFontSize: () => void
   initDefaultFontFamily: () => void
   initEbookTheme: (t: TFunction) => void

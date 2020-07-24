@@ -1,5 +1,6 @@
 import { TFunction } from 'i18next'
 import { themeType } from '@/store/ebook/types'
+import { getReadTime } from './localStorage'
 
 export const fontSizeList = [
   { fontSize: 12 },
@@ -118,4 +119,12 @@ export interface ebookItemType {
   //     'mix-blend-mode': string
   //   }
   // }
+}
+
+export function getReadTimeByMinute(fileName:string) {
+  if (!getReadTime(fileName)) {
+    return 0
+  } else {
+    return Math.ceil(getReadTime(fileName) / 60)
+  }
 }

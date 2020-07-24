@@ -9,7 +9,7 @@ export const useParseBook = () => {
   const ebookStore = useEbookStore()
   const initPagination = useCallback(async () => {
     await (ebookStore.currentBook as Book).ready
-    const locations  = (ebookStore.currentBook as Book).locations.generate(
+    const locations = (ebookStore.currentBook as Book).locations.generate(
       750 * (window.innerWidth / 375) * (getFontSize(ebookStore.fileName) / 16)
     ) as string[]
     return locations
@@ -43,28 +43,27 @@ export const useParseBook = () => {
   useEffect(() => {
     Promise.all([initPagination(), initNavigation()]).then((initItem) => {
       const [pagelist, navigation] = initItem
-      console.log(pagelist)
       pagelist.forEach((location) => {
-          const loc = (location.match(/\[(.*)\]!/) as RegExpMatchArray)[1]
-          navigation.forEach((item) => {
-            if (item.idhref && item.idhref.indexOf(loc) >= 0) {
-              (item.pagelist as any[]).push(location)
-            }
-          })
-          let currentPage = 1
-          navigation.forEach((item, index) => {
-            if (index === 0) {
-              item.page = 1
-            } else {
-              item.page = currentPage
-            }
-            currentPage += (item.pagelist as any[]).length + 1
-          })
+        const loc = (location.match(/\[(.*)\]!/) as RegExpMatchArray)[1]
+        navigation.forEach((item) => {
+          if (item.idhref && item.idhref.indexOf(loc) >= 0) {
+            ;(item.pagelist as any[]).push(location)
+          }
         })
-        ebookStore.changPageLIst(pagelist)
-        ebookStore.changeNavigation(navigation)
-        ebookStore.changeIsPaginating(false)
-        ebookStore.changeBookAvailable(true)
+        let currentPage = 1
+        navigation.forEach((item, index) => {
+          if (index === 0) {
+            item.page = 1
+          } else {
+            item.page = currentPage
+          }
+          currentPage += (item.pagelist as any[]).length + 1
+        })
+      })
+      ebookStore.changPageLIst(pagelist)
+      ebookStore.changeNavigation(navigation)
+      ebookStore.changeIsPaginating(false)
+      ebookStore.changeBookAvailable(true)
     })
   }, [ebookStore, initNavigation, initPagination])
 }

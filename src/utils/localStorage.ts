@@ -6,7 +6,11 @@ export function getLocalStorage(key: any) {
   return localStorage.get(key)
 }
 
-export function setLocalStorage(key: any, value: any, expire = 30 * 24 * 3600) {
+export function setLocalStorage(
+  key: any,
+  value: any,
+  expire = 365 * 24 * 3600
+) {
   return localStorage.set(key, value, { exp: expire })
 }
 
@@ -59,10 +63,34 @@ export function saveLocale(locale: 'cn' | 'en') {
   return setLocalStorage('locale', locale)
 }
 
-export function getTheme(fileName:string) {
+export function getTheme(fileName: string) {
   return getBookObject(fileName, 'theme')
 }
 
-export function saveTheme(fileName:string, theme:string) {
+export function saveTheme(fileName: string, theme: string) {
   setBookObject(fileName, 'theme', theme)
+}
+
+export function getReadTime(fileName: string) {
+  return getBookObject(fileName, 'time')
+}
+
+export function saveReadTime(fileName: string, time: number) {
+  setBookObject(fileName, 'time', time)
+}
+
+export function getProgress(fileName: string) {
+  return getBookObject(fileName, 'progress')
+}
+
+export function saveProgress(fileName: string, progress: number) {
+  setBookObject(fileName, 'progress', progress)
+}
+
+export function getLocation(fileName: string) {
+  return getBookObject(fileName, 'location')
+}
+
+export function saveLocation(fileName: string, location: string) {
+  setBookObject(fileName, 'location', location)
 }
