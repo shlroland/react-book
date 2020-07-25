@@ -2,11 +2,10 @@ import React, {
   forwardRef,
   FC,
   useMemo,
-  useEffect,
   useRef,
   useImperativeHandle,
+  useCallback,
 } from 'react'
-import BScroll from '@better-scroll/core'
 import styled from 'styled-components'
 import { mixin, realPx } from '@/assets/styles'
 
@@ -28,35 +27,36 @@ interface ScrollProps {
 const Scroll: FC<ScrollProps> = forwardRef((props, ref) => {
   const { top, bottom, children } = props
 
-  const Bs = useRef<BScroll>()
-
   const scrollWrapperDom = useRef<HTMLDivElement>(null)
 
   const computedHeight = useMemo(() => {
     return window.innerHeight - realPx(top) - realPx(bottom)
   }, [bottom, top])
 
-  useEffect(() => {
-    Bs.current = new BScroll(scrollWrapperDom.current as HTMLDivElement, {
-      scrollY: true,
-      click: true,
-      probeType: 3, // listening scroll hook
-    })
-    console.log(Bs.current)
-  }, [])
+  // const handleScroll = useCallback(
+  //   (e) => {
+  //     const offsetY =
+  //       e.target.scrollTop || window.pageYOffset || document.body.scrollTop
+  //     if (onScroll) {
+  //       onScroll(offsetY)
+  //     }
+  //   },
+  //   [onScroll]
+  // )
 
-  useEffect(() => {
-    setTimeout(() => {
-      Bs.current?.refresh()
-    }, 20)
-  })
+  const refresh = useCallback(() => {
+    if (scrollWrapperDom.current instanceof HTMLDivElement) {
+      scrollWrapperDom.current.style.height =
+        `${window.innerHeight - realPx(top) - realPx(bottom)}`
+    }
+  }, [bottom, top])
 
   useImperativeHandle(
     ref,
     () => ({
-      refresh: Bs.current?.refresh,
+      refresh
     }),
-    []
+    [refresh]
   )
 
   return (

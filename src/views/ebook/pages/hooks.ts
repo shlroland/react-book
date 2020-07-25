@@ -3,6 +3,7 @@ import { useStore as useEbookStore } from '@/store/ebook'
 import { Book } from 'epubjs'
 import { DisplayedLocation } from 'epubjs/types/rendition'
 import { saveLocation, getProgress } from '@/utils/localStorage'
+import { isBook } from '@/utils/utils'
 
 interface EbookDisplayedLocation extends DisplayedLocation {
   location: number
@@ -24,13 +25,31 @@ export const useToggleMenuVisible = () => {
 
 export const useDisplay = () => {
   const ebookStore = useEbookStore()
+  const refreshLocation = useRefreshLocation()
   const display = useCallback(
-    async (target: string,highlight = false) => {
-      return (ebookStore.currentBook as Book).rendition.display(target).then(()=>{
-          
-      })
+    async (target: string, highlight: boolean = false) => {
+      if (isBook(ebookStore.currentBook)) {
+        if (target) {
+          return ebookStore.currentBook.rendition.display(target).then(() => {
+            if (highlight) {
+              if (target.startsWith('epubcfi')) {
+                ((ebookStore.currentBook as Book).getRange(target) as unknown as Promise<Range> ).then((res)=>{
+                  ;(ebookStore.currentBook as Book).rendition.annotations.highlight(
+                    target
+                  )
+                })
+              }
+            }
+            return refreshLocation()
+          })
+        } else {
+          return ebookStore.currentBook.rendition.display().then(() => {
+            return refreshLocation()
+          })
+        }
+      }
     },
-    [ebookStore]
+    [ebookStore.currentBook, refreshLocation]
   )
 
   return display

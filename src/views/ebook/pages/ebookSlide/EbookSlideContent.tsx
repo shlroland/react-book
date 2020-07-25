@@ -13,6 +13,7 @@ import Spine from 'epubjs/types/spine'
 import Section from 'epubjs/types/section'
 import { Book } from 'epubjs'
 import { PackagingMetadataObject } from 'epubjs/types/packaging'
+import { useDisplay, useToggleMenuVisible } from '../hooks'
 
 interface EbookSpine extends Spine {
   spineItems: Section[]
@@ -35,23 +36,32 @@ interface SearchItem {
 }
 
 const SlideSearchItem: FC<SearchItem> = ({ excerpt, cfi }) => {
-  // const display = useDisplay()
-  // const toggleMenuVisible = useToggleMenuVisible()
+  const display = useDisplay()
+  const toggleMenuVisible = useToggleMenuVisible()
+
+  const handleDisplay = async () => {
+    await display(cfi, true)
+    toggleMenuVisible()
+  }
   return (
     <SlideSearchItemWrapper
       dangerouslySetInnerHTML={{ __html: excerpt }}
+      onClick={handleDisplay}
     ></SlideSearchItemWrapper>
   )
 }
 
 const SlideContentsItem: FC<ContentsItemProp> = (props) => {
   const ebookStore = useEbookStore()
+  const display = useDisplay()
+  const toggleMenuVisible = useToggleMenuVisible()
   const { label, page, index, level, href } = props
-  const cn = () => {
-    console.log('123')
+  const handleDisplay = async () => {
+    await display(href, false)
+    toggleMenuVisible()
   }
   return (
-    <SlideContentsItemWrapper level={level as number} onClick={cn}>
+    <SlideContentsItemWrapper level={level as number} onClick={handleDisplay}>
       <span
         className={classnames({
           'slide-contents-item-label': true,

@@ -32,14 +32,14 @@ export const right = () => css`
 `
 
 export const scroll = () => css`
-  /* overflow-x: hidden;
-  overflow-y: scroll; */
-  overflow:hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {
     display: none;
   }
 `
+
 export const leftBottom = () => css`
   display: flex;
   justify-content: flex-start;
