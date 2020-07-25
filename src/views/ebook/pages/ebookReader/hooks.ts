@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import { useStore as useEbookStore } from '@/store/ebook'
 import { NavItem, Book, Contents } from 'epubjs'
-import { getFontSize, getLocation } from '@/utils/localStorage'
+import { getFontSize, getLocation, saveMetadata } from '@/utils/localStorage'
 import Navigation from 'epubjs/types/navigation'
 import { ebookNavItem } from '@/store/ebook/types'
 import { useTranslation } from 'react-i18next'
@@ -45,8 +45,30 @@ export const useParseBook = () => {
     return navItem
   }, [ebookStore])
 
+  const initMetadata = useCallback(async () => {
+    const metadata = await (ebookStore.currentBook as Book).loaded.metadata
+    ebookStore.changeMetadata(metadata)
+    saveMetadata(ebookStore.fileName, metadata)
+  }, [ebookStore])
+
+  const initCover = useCallback(async () => {
+    const cover = await (ebookStore.currentBook as Book).loaded.cover
+    const url = await (ebookStore.currentBook as Book).archive.createUrl(
+      cover,
+      {
+        base64: true,
+      }
+    )
+    ebookStore.changeCover(url)
+  }, [ebookStore])
+
   useEffect(() => {
-    Promise.all([initPagination(), initNavigation()]).then((initItem) => {
+    Promise.all([
+      initPagination(),
+      initNavigation(),
+      initMetadata(),
+      initCover(),
+    ]).then((initItem) => {
       const [pagelist, navigation] = initItem
       pagelist.forEach((location) => {
         const loc = (location.match(/\[(.*)\]!/) as RegExpMatchArray)[1]
@@ -70,7 +92,7 @@ export const useParseBook = () => {
       ebookStore.changeIsPaginating(false)
       ebookStore.changeBookAvailable(true)
     })
-  }, [ebookStore, initNavigation, initPagination])
+  }, [ebookStore, initCover, initMetadata, initNavigation, initPagination])
 }
 
 export const useInit = () => {

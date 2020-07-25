@@ -7,6 +7,7 @@ import EbookSettingFont from '../ebookSettingFont/EbookSettingFont'
 import EbookSettingFontPopup from '../ebookSettingFont/EbookSettingFontPopup'
 import EbookSettingTheme from '../ebookSettingTheme/EbookSettingTheme'
 import EbookSettingProgress from '../ebookSettingProgress/EbookSettingProgress'
+import EbookSlide from '../ebookSlide/EbookSlide'
 
 const EbookTitle: FC = () => {
   const ebookStore = useEbookStore()
@@ -21,7 +22,10 @@ const EbookTitle: FC = () => {
         unmountOnExit
       >
         <EbookMenuWrapper>
-          <div className="icon-wrapper">
+          <div
+            className="icon-wrapper"
+            onClick={() => ebookStore.changeSettingVisible(3)}
+          >
             <span className="icon-menu"></span>
           </div>
           <div
@@ -48,6 +52,7 @@ const EbookTitle: FC = () => {
       <EbookSettingTheme></EbookSettingTheme>
       <EbookSettingProgress></EbookSettingProgress>
       <EbookSettingFontPopup></EbookSettingFontPopup>
+      <EbookSlide></EbookSlide>
     </>
   ))
 }

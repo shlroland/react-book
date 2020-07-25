@@ -1,5 +1,4 @@
-import React, { FC } from 'react'
-// import { useTranslation } from 'react-i18next'
+import React, { FC, memo } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { useStore as useEbookStore } from '@/store/ebook'
 import { useObserver } from 'mobx-react'
@@ -41,20 +40,6 @@ const ThemeItem: FC<{ theme: ebookItemType }> = (props) => {
 
 const EbookSettingTheme: FC = () => {
   const ebookStore = useEbookStore()
-  // const { t } = useTranslation('book')
-  // const themeListStore = useLocalStore(() => {
-  //   return {
-  //     themeList: genThemeList(t),
-  //   }
-  // })
-  // const themeList = useRef(genThemeList(t))
-  // const menuVisible = useSelector((state) =>
-  //   state.getIn(['ebook', 'menuVisible'])
-  // )
-  // const settingVisible = useSelector((state) =>
-  //   state.getIn(['ebook', 'settingVisible'])
-  // )
-
   return useObserver(() => (
     <CSSTransition
       in={ebookStore.themeSettingVisible}
@@ -74,4 +59,4 @@ const EbookSettingTheme: FC = () => {
   ))
 }
 
-export default EbookSettingTheme
+export default memo(EbookSettingTheme)

@@ -3,6 +3,7 @@ import Store from './instant'
 import { themeProp } from '@/assets/styles/theme'
 import { ebookItemType } from '@/utils/book'
 import { TFunction } from 'i18next'
+import { PackagingMetadataObject } from 'epubjs/types/packaging'
 
 export interface EbookStoreReturn {
   currentBook: Book | null
@@ -15,6 +16,7 @@ export interface EbookStoreReturn {
   themeSettingVisible: boolean
   fontFamilyVisible: boolean
   progressSettingVisible: boolean
+  slideVisible: boolean
   defaultFontSize: number
   defaultFontFamily: defaultFontFamily
   theme: themeProp
@@ -29,6 +31,8 @@ export interface EbookStoreReturn {
   navigation: ebookNavItem[]
   sectionName: string
   paginate: string
+  metadata: PackagingMetadataObject | null
+  cover: string
   setTheme: (themeType: themeType) => void
   changeCurrentBook: (currentBook: Book) => void
   changeFileName: (fileName: string) => void
@@ -45,6 +49,8 @@ export interface EbookStoreReturn {
   changPageLIst: (pagelist: string[]) => void
   changeNavigation: (navigation: ebookNavItem[]) => void
   changPaginate: (paginate: string) => void
+  changeMetadata: (metadata: PackagingMetadataObject) => void
+  changeCover: (url: string) => void
   initDefaultFontSize: () => void
   initDefaultFontFamily: () => void
   initEbookTheme: (t: TFunction) => void

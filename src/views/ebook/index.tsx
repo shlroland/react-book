@@ -10,6 +10,7 @@ import EbookMenu from './pages/ebookMenu/EbookMenu'
 import EbookWrapper from './style'
 import { reaction } from 'mobx'
 import { getReadTime, saveReadTime } from '@/utils/localStorage'
+import { AliveScope } from 'react-activation'
 
 const EbookChild: React.FC = () => {
   const ebookStore = useEbookStore()
@@ -65,11 +66,13 @@ const EbookChild: React.FC = () => {
 
   return useObserver(() => (
     <ThemeProvider theme={ebookStore.theme}>
-      <EbookWrapper Y={ebookStore.Y}>
-        <EbookTitle></EbookTitle>
-        <Route path="/ebook/:fileName" component={EbookReader}></Route>
-        <EbookMenu></EbookMenu>
-      </EbookWrapper>
+      <AliveScope>
+        <EbookWrapper Y={ebookStore.Y}>
+          <EbookTitle></EbookTitle>
+          <Route path="/ebook/:fileName" component={EbookReader}></Route>
+          <EbookMenu></EbookMenu>
+        </EbookWrapper>
+      </AliveScope>
     </ThemeProvider>
   ))
 }

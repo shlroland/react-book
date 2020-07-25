@@ -25,8 +25,10 @@ export const useToggleMenuVisible = () => {
 export const useDisplay = () => {
   const ebookStore = useEbookStore()
   const display = useCallback(
-    async (target: string) => {
-      return (ebookStore.currentBook as Book).rendition.display(target)
+    async (target: string,highlight = false) => {
+      return (ebookStore.currentBook as Book).rendition.display(target).then(()=>{
+          
+      })
     },
     [ebookStore]
   )

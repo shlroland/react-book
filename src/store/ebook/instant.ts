@@ -52,6 +52,9 @@ function EbookStore(): EbookStoreReturn {
     get progressSettingVisible() {
       return this.menuVisible && this.settingVisible === 2
     },
+    get slideVisible() {
+      return this.menuVisible && this.settingVisible === 3
+    },
     changeSettingVisible(settingVisible) {
       this.settingVisible = settingVisible
     },
@@ -149,6 +152,14 @@ function EbookStore(): EbookStoreReturn {
       }
       return ''
     },
+    metadata:null,
+    changeMetadata(metadata){
+      this.metadata = metadata
+    },
+    cover: '',
+    changeCover(url){
+      this.cover = url
+    }
   }
 }
 

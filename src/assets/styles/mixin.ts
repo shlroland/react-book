@@ -32,8 +32,9 @@ export const right = () => css`
 `
 
 export const scroll = () => css`
-  overflow-x: hidden;
-  overflow-y: scroll;
+  /* overflow-x: hidden;
+  overflow-y: scroll; */
+  overflow:hidden;
   -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {
     display: none;

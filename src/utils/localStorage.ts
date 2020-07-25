@@ -47,6 +47,14 @@ export function saveFontFamily(fileName: string, fontFamily: string) {
   setBookObject(fileName, 'fontFamily', fontFamily)
 }
 
+export function getMetadata(fileName: string) {
+  return getBookObject(fileName, 'metadata')
+}
+
+export function saveMetadata(fileName: string, metadata:object) {
+  setBookObject(fileName, 'metadata', metadata)
+}
+
 export function getFontSize(fileName: string) {
   return getBookObject(fileName, 'fontSize')
 }
