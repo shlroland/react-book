@@ -115,3 +115,11 @@ export interface bookmarkItem {
 export function saveBookmark(fileName: string, bookmark: bookmarkItem[]) {
   setBookObject(fileName, 'bookmark', bookmark)
 }
+
+export function getHome() {
+  return getLocalStorage('home')
+}
+
+export function saveHome(home:any) {
+  return setLocalStorage('home', home, 1800)
+}
