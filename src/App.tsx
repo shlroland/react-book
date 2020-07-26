@@ -35,7 +35,7 @@ function App() {
           <Switch>
             <Route path="/ebook" component={Ebook}></Route>
             <Route path="/mall" component={Mall}></Route>
-            <Redirect from="/" to="/ebook"></Redirect>
+            <Redirect from="/" to="/mall"></Redirect>
           </Switch>
         </AppWrapper>
       </Router>

@@ -18,36 +18,36 @@ const ScrollWrapper = styled.div<{ height: number }>`
 `
 
 interface ScrollProps {
-  top: number
-  bottom: number
+  top?: number
+  bottom?: number
   onScroll?: (...rest: any[]) => any
   className?: string | string[]
 }
 
 const Scroll: FC<ScrollProps> = forwardRef((props, ref) => {
-  const { top, bottom, children } = props
+  const { top, bottom, children,onScroll } = props
 
   const scrollWrapperDom = useRef<HTMLDivElement>(null)
 
   const computedHeight = useMemo(() => {
-    return window.innerHeight - realPx(top) - realPx(bottom)
+    return window.innerHeight - realPx(top!) - realPx(bottom!)
   }, [bottom, top])
 
-  // const handleScroll = useCallback(
-  //   (e) => {
-  //     const offsetY =
-  //       e.target.scrollTop || window.pageYOffset || document.body.scrollTop
-  //     if (onScroll) {
-  //       onScroll(offsetY)
-  //     }
-  //   },
-  //   [onScroll]
-  // )
+  const handleScroll = useCallback(
+    (e) => {
+      const offsetY =
+        e.target.scrollTop || window.pageYOffset || document.body.scrollTop
+      if (onScroll) {
+        onScroll(offsetY)
+      }
+    },
+    [onScroll]
+  )
 
   const refresh = useCallback(() => {
     if (scrollWrapperDom.current instanceof HTMLDivElement) {
       scrollWrapperDom.current.style.height =
-        `${window.innerHeight - realPx(top) - realPx(bottom)}`
+        `${window.innerHeight - realPx(top!) - realPx(bottom!)}`
     }
   }, [bottom, top])
 
@@ -60,7 +60,7 @@ const Scroll: FC<ScrollProps> = forwardRef((props, ref) => {
   )
 
   return (
-    <ScrollWrapper height={computedHeight} ref={scrollWrapperDom}>
+    <ScrollWrapper height={computedHeight} ref={scrollWrapperDom} onScroll={(e) => handleScroll(e)}>
       {children}
     </ScrollWrapper>
   )
