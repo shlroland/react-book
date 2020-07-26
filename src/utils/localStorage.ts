@@ -102,3 +102,16 @@ export function getLocation(fileName: string) {
 export function saveLocation(fileName: string, location: string) {
   setBookObject(fileName, 'location', location)
 }
+
+export function getBookmark(fileName: string) {
+  return getBookObject(fileName, 'bookmark')
+}
+
+export interface bookmarkItem {
+  cfi: string,
+  text: string
+}
+
+export function saveBookmark(fileName: string, bookmark: bookmarkItem[]) {
+  setBookObject(fileName, 'bookmark', bookmark)
+}

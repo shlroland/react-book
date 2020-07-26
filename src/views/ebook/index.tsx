@@ -7,6 +7,7 @@ import { ThemeProvider } from 'styled-components'
 import EbookTitle from './pages/ebookTitle/EbookTitle'
 import EbookReader from './pages/ebookReader/EbookReader'
 import EbookMenu from './pages/ebookMenu/EbookMenu'
+import EbookBookMark from './pages/ebookBookMark/EbookBookMark'
 import EbookWrapper from './style'
 import { reaction } from 'mobx'
 import { getReadTime, saveReadTime } from '@/utils/localStorage'
@@ -39,27 +40,9 @@ const EbookChild: React.FC = () => {
         saveReadTime(ebookStore.fileName, readTime)
       }
     }, 1000)
-    // const cleanUpTime = reaction(
-    //   () => ebookStore.fileName,
-    //   (fileName) => {
-    //     let readTime = getReadTime(fileName)
-    //     if (!readTime) {
-    //       readTime = 0
-    //     }
-    //     timer = setInterval(() => {
-    //       readTime++
-    //       console.log(readTime)
-    //       if (readTime % 30 === 0) {
-    //         ebookStore.changeReadTime(readTime)
-    //         saveReadTime(fileName, readTime)
-    //       }
-    //     }, 1000)
-    //   }
 
-    // )
     return () => {
       cleanUpVisible()
-      // cleanUpTime()
       clearInterval(timer)
     }
   }, [ebookStore])
@@ -68,6 +51,7 @@ const EbookChild: React.FC = () => {
     <ThemeProvider theme={ebookStore.theme}>
       <AliveScope>
         <EbookWrapper Y={ebookStore.Y}>
+          <EbookBookMark></EbookBookMark>
           <EbookTitle></EbookTitle>
           <Route path="/ebook/:fileName" component={EbookReader}></Route>
           <EbookMenu></EbookMenu>

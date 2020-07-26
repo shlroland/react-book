@@ -30,6 +30,9 @@ function EbookStore(): EbookStoreReturn {
     },
 
     offsetY: 0,
+    changeOffsetY(offsetY) {
+      this.offsetY = offsetY
+    },
     get Y() {
       if (!this.menuVisible) {
         return this.offsetY
@@ -147,19 +150,23 @@ function EbookStore(): EbookStoreReturn {
           sectionInfo.href &&
           (this.currentBook as Book).navigation
         ) {
-          return this.navigation[this.section]?.label 
+          return this.navigation[this.section]?.label
         }
       }
       return ''
     },
-    metadata:null,
-    changeMetadata(metadata){
+    metadata: null,
+    changeMetadata(metadata) {
       this.metadata = metadata
     },
     cover: '',
-    changeCover(url){
+    changeCover(url) {
       this.cover = url
-    }
+    },
+    isBookMark: false,
+    changeIsBookMark(bookMark) {
+      this.isBookMark = bookMark
+    },
   }
 }
 

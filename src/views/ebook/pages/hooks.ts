@@ -1,19 +1,13 @@
 import { useCallback } from 'react'
-import { useStore as useEbookStore } from '@/store/ebook'
+import { useStore as useEbookStore, types } from '@/store/ebook'
 import { Book } from 'epubjs'
-import { DisplayedLocation } from 'epubjs/types/rendition'
-import { saveLocation, getProgress } from '@/utils/localStorage'
+import {
+  saveLocation,
+  getProgress,
+  getBookmark,
+  bookmarkItem,
+} from '@/utils/localStorage'
 import { isBook } from '@/utils/utils'
-
-interface EbookDisplayedLocation extends DisplayedLocation {
-  location: number
-  percentage: number
-}
-
-interface Location {
-  start: EbookDisplayedLocation
-  end: EbookDisplayedLocation
-}
 
 export const useToggleMenuVisible = () => {
   const ebookStore = useEbookStore()
@@ -33,7 +27,9 @@ export const useDisplay = () => {
           return ebookStore.currentBook.rendition.display(target).then(() => {
             if (highlight) {
               if (target.startsWith('epubcfi')) {
-                ((ebookStore.currentBook as Book).getRange(target) as unknown as Promise<Range> ).then((res)=>{
+                ;(((ebookStore.currentBook as Book).getRange(
+                  target
+                ) as unknown) as Promise<Range>).then((res) => {
                   ;(ebookStore.currentBook as Book).rendition.annotations.highlight(
                     target
                   )
@@ -58,7 +54,7 @@ export const useDisplay = () => {
 export const useRefreshLocation = () => {
   const ebookStore = useEbookStore()
   const refreshLocation = useCallback(() => {
-    const currentLocation = ((ebookStore.currentBook as Book).rendition.currentLocation() as unknown) as Location
+    const currentLocation = ((ebookStore.currentBook as Book).rendition.currentLocation() as unknown) as types.Location
     ebookStore.changeSection(currentLocation.start.index)
     if (currentLocation.start && currentLocation.start.index) {
       const progress =
@@ -77,6 +73,16 @@ export const useRefreshLocation = () => {
       ebookStore.changPaginate('')
     }
     const cfistart = currentLocation.start.cfi
+    const bookmark: bookmarkItem[] = getBookmark(ebookStore.fileName)
+    if (bookmark) {
+      if (bookmark.some((item) => item.cfi === cfistart)) {
+        ebookStore.changeIsBookMark(true)
+      } else {
+        ebookStore.changeIsBookMark(false)
+      }
+    } else {
+      ebookStore.changeIsBookMark(false)
+    }
     saveLocation(ebookStore.fileName, cfistart)
   }, [ebookStore])
   return refreshLocation

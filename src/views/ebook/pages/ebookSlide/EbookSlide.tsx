@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react'
+import React, { FC, useState, useContext, memo } from 'react'
 import { observer } from 'mobx-react'
 import { ThemeContext, ThemeProvider } from 'styled-components'
 import { SlideSettingWrapper } from './style'
@@ -84,4 +84,4 @@ const EbookSlide: FC = observer(() => {
   ) : null
 })
 
-export default EbookSlide
+export default memo(EbookSlide)

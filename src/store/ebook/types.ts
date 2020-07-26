@@ -4,6 +4,7 @@ import { themeProp } from '@/assets/styles/theme'
 import { ebookItemType } from '@/utils/book'
 import { TFunction } from 'i18next'
 import { PackagingMetadataObject } from 'epubjs/types/packaging'
+import { DisplayedLocation } from 'epubjs/types/rendition'
 
 export interface EbookStoreReturn {
   currentBook: Book | null
@@ -33,10 +34,12 @@ export interface EbookStoreReturn {
   paginate: string
   metadata: PackagingMetadataObject | null
   cover: string
+  isBookMark: boolean
   setTheme: (themeType: themeType) => void
   changeCurrentBook: (currentBook: Book) => void
   changeFileName: (fileName: string) => void
   changeMenuVisible: (menuVisible: boolean) => void
+  changeOffsetY: (offsetY: number) => void
   changeSettingVisible: (settingVisible: settingVisibleProp) => void
   changeFontFamilyVisible: (fontFamilyVisible: boolean) => void
   changeDefaultFontFamily: (fontFamily: defaultFontFamily) => void
@@ -51,6 +54,7 @@ export interface EbookStoreReturn {
   changPaginate: (paginate: string) => void
   changeMetadata: (metadata: PackagingMetadataObject) => void
   changeCover: (url: string) => void
+  changeIsBookMark: (bookMark: boolean) => void
   initDefaultFontSize: () => void
   initDefaultFontFamily: () => void
   initEbookTheme: (t: TFunction) => void
@@ -76,3 +80,13 @@ export interface ebookNavItem extends NavItem {
 }
 
 export type storeType = ReturnType<typeof Store>
+
+export interface EbookDisplayedLocation extends DisplayedLocation {
+  location: number
+  percentage: number
+}
+
+export interface Location {
+  start: EbookDisplayedLocation
+  end: EbookDisplayedLocation
+}

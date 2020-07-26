@@ -69,6 +69,36 @@ const EbookReader: React.FC = () => {
     [nextPage, prevPage]
   )
 
+  const handlePanMoveEvent = useCallback(
+    (ev: HammerInput) => {
+      if (
+        ebookStore.settingVisible > 0 ||
+        ebookStore.menuVisible ||
+        ebookStore.isPaginating
+      ) {
+        return
+      }
+      ebookStore.changeOffsetY(
+        ev.deltaY > 0 ? (ev.deltaY < 150 ? ev.deltaY : 150) : 0
+      )
+    },
+    [ebookStore]
+  )
+
+  const handlePanEndEvent = useCallback(
+    (ev: HammerInput) => {
+      if (
+        ebookStore.settingVisible > 0 ||
+        ebookStore.menuVisible ||
+        ebookStore.isPaginating
+      ) {
+        return
+      }
+      ebookStore.changeOffsetY(0)
+    },
+    [ebookStore]
+  )
+
   useEffect(() => {
     const url = `${process.env.REACT_APP_BOOK_URL}/${fileName
       .split('|')
@@ -90,12 +120,16 @@ const EbookReader: React.FC = () => {
     hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL })
     hammer.on('tap', handleTapEvent)
     hammer.on('swipeleft swiperight', handleSwipeEvent)
+    hammer.on('pandown panup', handlePanMoveEvent)
+    hammer.on('panend', handlePanEndEvent)
     return () => {
       hammer.off('tap', handleTapEvent)
       hammer.off('swipeleft swiperight', handleSwipeEvent)
+      hammer.off('pandown panup', handlePanMoveEvent)
+      hammer.on('panend', handlePanEndEvent)
     }
-  }, [handleSwipeEvent, handleTapEvent])
-  
+  }, [handlePanEndEvent, handlePanMoveEvent, handleSwipeEvent, handleTapEvent])
+
   useInit()
   useParseBook()
 
