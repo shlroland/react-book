@@ -253,3 +253,42 @@ export const SlideSearchItemWrapper = styled.div`
     font-weight: ${(props) => props.theme.slideFontWeight};
   }
 `
+export const SlideBookmark = styled.div`
+  width: 100%;
+    .slide-bookmark-title {
+      width: 100%;
+      height: ${px2vw(48)};
+      font-size: ${px2vw(14)};
+      font-weight: bold;
+      padding: 0 ${px2vw(15)};
+      box-sizing: border-box;
+      ${mixin.left()};
+    }
+    .slide-bookmark-list {
+      padding: 0 ${px2vw(15)};
+      box-sizing: border-box;
+      .slide-bookmark-item {
+        display: flex;
+        padding: ${px2vw(15)} 0;
+        box-sizing: border-box;
+        .slide-bookmark-item-icon {
+          flex: 0 0 ${px2vw(29)};
+          ${mixin.left()}
+          .icon-bookmark {
+            width: ${px2vw(20)};
+            height: ${px2vw(20)};
+            font-size: ${px2vw(12)};
+            border-radius: 50%;
+            background: #bbb;
+            ${mixin.center()}
+          }
+        }
+        .slide-bookmark-item-text {
+          font-size: ${px2vw(14)};
+          line-height: ${px2vw(15)};
+          max-height: ${px2vw(45)};
+          ${mixin.ellipsis2(3)};
+        }
+      }
+    }
+`

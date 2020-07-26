@@ -42,15 +42,15 @@ const EbookSlide: FC = observer(() => {
           {!ebookStore.isPaginating ? (
             <div className="content-page-wrapper">
               <div className="content-page">
-                <KeepAlive>
-                  <ThemeProvider theme={themeContext}>
-                    {tab === 1 ? (
+                {tab === 1 ? (
+                  <KeepAlive>
+                    <ThemeProvider theme={themeContext}>
                       <EbookSlideContent></EbookSlideContent>
-                    ) : (
-                      <EbookSlideBookMark></EbookSlideBookMark>
-                    )}
-                  </ThemeProvider>
-                </KeepAlive>
+                    </ThemeProvider>
+                  </KeepAlive>
+                ) : (
+                  <EbookSlideBookMark></EbookSlideBookMark>
+                )}
               </div>
               <div className="content-page-tab">
                 <div
