@@ -2,11 +2,12 @@ import React, { FC, useEffect } from 'react'
 import { BookHomeWrapper } from './style'
 import SearchBar from './searchBar/SearchBar'
 import GuessYouLike from './guessYouLike/GuessYouLike'
+import Recommend from './recommend/Recommend'
 import Scroll from '@/common/scroll/Scroll'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { getHome, saveHome } from '@/utils/localStorage'
 import { home } from '@/api'
-import { HomeStoreReturn, GuessYouLikeItem } from './types'
+import { HomeStoreReturn, GuessYouLikeItem, RecommendItem } from './types'
 
 const BookHome: FC = () => {
   const store = useLocalStore<HomeStoreReturn>(() => {
@@ -17,14 +18,18 @@ const BookHome: FC = () => {
       },
       get height() {
         if (store.offsetY > 0) {
-          return 52
-        } else {
           return 94
+        } else {
+          return 52
         }
       },
       guessYouLikeList: [],
+      recommendList: [],
+      bannerImage: '',
       parseHomeData(data) {
         this.guessYouLikeList = data.guessYouLike as GuessYouLikeItem[]
+        this.recommendList = data.recommend as RecommendItem[]
+        this.bannerImage = 'url(' + data.banner + ')'
       },
     }
   })
@@ -33,7 +38,6 @@ const BookHome: FC = () => {
     const data = getHome()
     if (data) {
       console.log(data)
-
       store.parseHomeData(data)
     } else {
       home().then((res) => {
@@ -52,9 +56,13 @@ const BookHome: FC = () => {
       <Scroll top={store.height} onScroll={(Y) => store.setOffsetY(Y)}>
         <div className="book-list-wrapper">
           <div className="banner-wrapper">
-            {/* <div className="banner" style={bannerStyle}></div> */}
+            <div
+              className="banner"
+              style={{ backgroundImage: store.bannerImage }}
+            ></div>
           </div>
           <GuessYouLike data={store.guessYouLikeList}></GuessYouLike>
+          <Recommend data={store.recommendList}></Recommend>
         </div>
       </Scroll>
     </BookHomeWrapper>

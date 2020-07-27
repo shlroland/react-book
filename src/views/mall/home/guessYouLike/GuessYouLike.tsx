@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react'
 import { GuessYouLikeWrapper } from './style'
-import TitleView from './Title'
+import TitleView from '../title/Title'
 import { useTranslation } from 'react-i18next'
 import { GuessYouLikeItem } from '../types'
 import { useObserver, useLocalStore } from 'mobx-react'

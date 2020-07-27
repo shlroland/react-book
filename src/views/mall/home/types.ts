@@ -1,3 +1,4 @@
+
 export interface GuessYouLikeItem {
   author: string
   bookId: string
@@ -18,10 +19,16 @@ export interface GuessYouLikeItem {
   type: number
 }
 
+export interface RecommendItem extends GuessYouLikeItem {
+  readers: number
+}
+
 export interface HomeStoreReturn {
   offsetY: number
   setOffsetY(offsetY: number): void
-  readonly height: 52 | 94
+  readonly height: number
   guessYouLikeList: GuessYouLikeItem[]
+  recommendList: RecommendItem[]
   parseHomeData: (data: any) => void
+  bannerImage: string
 }

@@ -5,7 +5,7 @@ import classnames from 'classnames'
 interface titleProp {
   label: string
   btn: string
-  onChange: () => void
+  onChange?: () => void
 }
 
 const Title: FC<titleProp> = ({ label, btn, onChange }) => {
@@ -19,7 +19,7 @@ const Title: FC<titleProp> = ({ label, btn, onChange }) => {
   }, [])
 
   const handleChange = useCallback(() => {
-    onChange()
+   if(onChange) onChange()
   }, [onChange])
   return (
     <TitleWrapper>
