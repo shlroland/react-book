@@ -25,6 +25,18 @@ export interface RecommendItem extends GuessYouLikeItem {
 
 export interface FeaturedItem extends GuessYouLikeItem {}
 
+export interface categoryListItem {
+  category:number
+  list: Partial<GuessYouLikeItem>[]
+}
+
+export interface CategoriesItem {
+  category:number
+  num:number
+  img1:string
+  img2:string
+}
+
 export interface HomeStoreReturn {
   offsetY: number
   setOffsetY(offsetY: number): void
@@ -32,6 +44,7 @@ export interface HomeStoreReturn {
   guessYouLikeList: GuessYouLikeItem[]
   recommendList: RecommendItem[]
   featuredList: FeaturedItem[]
+  categoryList: categoryListItem[]
   parseHomeData: (data: any) => void
   bannerImage: string
 }

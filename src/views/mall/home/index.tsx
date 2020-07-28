@@ -8,11 +8,18 @@ import Scroll from '@/common/scroll/Scroll'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { getHome, saveHome } from '@/utils/localStorage'
 import { home } from '@/api'
-import { HomeStoreReturn, GuessYouLikeItem, RecommendItem, FeaturedItem } from './types'
+import {
+  HomeStoreReturn,
+  GuessYouLikeItem,
+  RecommendItem,
+  FeaturedItem,
+  categoryListItem,
+} from './types'
 import { useTranslation } from 'react-i18next'
+import CategoryBook from './categoryBook/CategoryBook'
 
 const BookHome: FC = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const store = useLocalStore<HomeStoreReturn>(() => {
     return {
       offsetY: 0,
@@ -28,12 +35,14 @@ const BookHome: FC = () => {
       },
       guessYouLikeList: [],
       recommendList: [],
-      featuredList:[],
+      featuredList: [],
+      categoryList: [],
       bannerImage: '',
       parseHomeData(data) {
         this.guessYouLikeList = data.guessYouLike as GuessYouLikeItem[]
         this.recommendList = data.recommend as RecommendItem[]
         this.featuredList = data.featured as FeaturedItem[]
+        this.categoryList = data.categoryList as categoryListItem[]
         this.bannerImage = 'url(' + data.banner + ')'
       },
     }
@@ -68,7 +77,19 @@ const BookHome: FC = () => {
           </div>
           <GuessYouLike data={store.guessYouLikeList}></GuessYouLike>
           <Recommend data={store.recommendList}></Recommend>
-          <Featured data={store.featuredList} titleText={t('home:featured')} btnText={t('home:seeAll')} ></Featured>
+          <Featured
+            data={store.featuredList}
+            titleText={t('home:featured')}
+            btnText={t('home:seeAll')}
+          ></Featured>
+          {store.categoryList &&
+            store.categoryList.map((item) => {
+              return (
+                <div className="category-list-wrapper" key={item.category}>
+                  <CategoryBook data={item} key={item.category}></CategoryBook>
+                </div>
+              )
+            })}
         </div>
       </Scroll>
     </BookHomeWrapper>
