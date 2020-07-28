@@ -23,12 +23,15 @@ export interface RecommendItem extends GuessYouLikeItem {
   readers: number
 }
 
+export interface FeaturedItem extends GuessYouLikeItem {}
+
 export interface HomeStoreReturn {
   offsetY: number
   setOffsetY(offsetY: number): void
   readonly height: number
   guessYouLikeList: GuessYouLikeItem[]
   recommendList: RecommendItem[]
+  featuredList: FeaturedItem[]
   parseHomeData: (data: any) => void
   bannerImage: string
 }

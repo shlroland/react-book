@@ -3,13 +3,16 @@ import { BookHomeWrapper } from './style'
 import SearchBar from './searchBar/SearchBar'
 import GuessYouLike from './guessYouLike/GuessYouLike'
 import Recommend from './recommend/Recommend'
+import Featured from './featured/Featured'
 import Scroll from '@/common/scroll/Scroll'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { getHome, saveHome } from '@/utils/localStorage'
 import { home } from '@/api'
-import { HomeStoreReturn, GuessYouLikeItem, RecommendItem } from './types'
+import { HomeStoreReturn, GuessYouLikeItem, RecommendItem, FeaturedItem } from './types'
+import { useTranslation } from 'react-i18next'
 
 const BookHome: FC = () => {
+  const {t} = useTranslation()
   const store = useLocalStore<HomeStoreReturn>(() => {
     return {
       offsetY: 0,
@@ -25,10 +28,12 @@ const BookHome: FC = () => {
       },
       guessYouLikeList: [],
       recommendList: [],
+      featuredList:[],
       bannerImage: '',
       parseHomeData(data) {
         this.guessYouLikeList = data.guessYouLike as GuessYouLikeItem[]
         this.recommendList = data.recommend as RecommendItem[]
+        this.featuredList = data.featured as FeaturedItem[]
         this.bannerImage = 'url(' + data.banner + ')'
       },
     }
@@ -63,6 +68,7 @@ const BookHome: FC = () => {
           </div>
           <GuessYouLike data={store.guessYouLikeList}></GuessYouLike>
           <Recommend data={store.recommendList}></Recommend>
+          <Featured data={store.featuredList} titleText={t('home:featured')} btnText={t('home:seeAll')} ></Featured>
         </div>
       </Scroll>
     </BookHomeWrapper>
