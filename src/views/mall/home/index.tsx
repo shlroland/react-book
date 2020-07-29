@@ -74,7 +74,6 @@ const BookHome: FC = () => {
   useEffect(() => {
     const data = getHome()
     if (data) {
-      console.log(data)
       store.parseHomeData(data)
     } else {
       home().then((res) => {

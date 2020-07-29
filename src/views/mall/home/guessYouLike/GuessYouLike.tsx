@@ -4,6 +4,7 @@ import TitleView from '../title/Title'
 import { useTranslation } from 'react-i18next'
 import { GuessYouLikeItem } from '../types'
 import { useObserver, useLocalStore } from 'mobx-react'
+import { useShowBookDetail } from '../../hooks'
 
 interface GuessYouLikeProp {
   data: GuessYouLikeItem[]
@@ -11,6 +12,7 @@ interface GuessYouLikeProp {
 
 const GuessYouLike: FC<GuessYouLikeProp> = (prop) => {
   const { t } = useTranslation('home')
+  const showBookDetail = useShowBookDetail()
 
   const store = useLocalStore(
     (prop) => ({
@@ -72,7 +74,7 @@ const GuessYouLike: FC<GuessYouLikeProp> = (prop) => {
                 <div
                   className="guess-you-like-item"
                   key={item.id}
-                  // onClick={() => showBookDetail(item)}
+                  onClick={() => showBookDetail(item)}
                 >
                   <div className="img-wrapper">
                     <img className="img" src={item.cover} alt="猜你喜欢" />

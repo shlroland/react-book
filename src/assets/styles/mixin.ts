@@ -105,3 +105,15 @@ export const ellipsis2 = ($line: number) => css`
   text-overflow: ellipsis;
   overflow-wrap: break-word;
 `
+
+export const variableColor = {
+  $colorGreen: 'rgb(59, 201, 22)',
+  $colorPink: 'rgb(255, 102, 159)',
+  $colorBlue: 'rgb(74, 171, 255)',
+  $colorYellow: 'rgb(255, 198, 102)',
+  $colorGreenTransparent: 'rgba(59, 201, 22, .5)',
+  $colorPinkTransparent: 'rgba(255, 102, 159, .5)',
+  $colorBlueTransparent: 'rgba(74, 171, 255, .5)',
+  $colorYellowTransparent: 'rgba(255, 198, 102, .5)',
+}
+

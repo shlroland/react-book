@@ -6,3 +6,13 @@ export function home() {
     url: `${process.env.REACT_APP_SAM_URL}/book/home`,
   })
 }
+
+export function detail(book:{fileName:string}) {
+  return axios({
+    method: 'get',
+    url: `${process.env.REACT_APP_SAM_URL}/book/detail`,
+    params: {
+      fileName: book.fileName,
+    },
+  })
+}
