@@ -11,6 +11,7 @@ import { reaction } from 'mobx'
 
 interface SearchBarProp {
   offsetY: number
+  handleShowFlapCard: () => void
 }
 
 const SearchBar: FC<SearchBarProp> = (prop) => {
@@ -84,7 +85,7 @@ const SearchBar: FC<SearchBarProp> = (prop) => {
         >
           <div className="title-search-page-wrapper">
             <span className="title-text">{t('title')}</span>
-            <div className="icon-shake-wrapper">
+            <div className="icon-shake-wrapper" onClick={() => prop.handleShowFlapCard()}>
               <span className="icon-shake icon"></span>
             </div>
           </div>

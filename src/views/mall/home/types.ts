@@ -1,4 +1,3 @@
-
 export interface GuessYouLikeItem {
   author: string
   bookId: string
@@ -25,17 +24,19 @@ export interface RecommendItem extends GuessYouLikeItem {
 
 export interface FeaturedItem extends GuessYouLikeItem {}
 
-export interface categoryListItem {
-  category:number
+export interface CategoryListItem {
+  category: number
   list: Partial<GuessYouLikeItem>[]
 }
 
 export interface CategoriesItem {
-  category:number
-  num:number
-  img1:string
-  img2:string
+  category: number
+  num: number
+  img1: string
+  img2: string
 }
+
+export interface randomItem extends GuessYouLikeItem {}
 
 export interface HomeStoreReturn {
   offsetY: number
@@ -44,7 +45,13 @@ export interface HomeStoreReturn {
   guessYouLikeList: GuessYouLikeItem[]
   recommendList: RecommendItem[]
   featuredList: FeaturedItem[]
-  categoryList: categoryListItem[]
+  categoryList: CategoryListItem[]
+  categoriesList: CategoriesItem[]
+  randomList: randomItem[]
+  random: randomItem | null
   parseHomeData: (data: any) => void
   bannerImage: string
+  showFlapCard: boolean
+  setShowFlapCard: (flag: boolean) => void
+  toggleShowFlapCard: () => void
 }

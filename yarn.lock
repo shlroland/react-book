@@ -1769,6 +1769,11 @@
     "@types/testing-library__dom" "*"
     pretty-format "^25.1.0"
 
+"@types/web-animations-js@^2.2.9":
+  version "2.2.9"
+  resolved "https://registry.npm.taobao.org/@types/web-animations-js/download/@types/web-animations-js-2.2.9.tgz#0d1944636ccc46efdcf3d2870726ece89b916fbd"
+  integrity sha1-DRlEY2zMRu/c89KHBybs6JuRb70=
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.npm.taobao.org/@types/yargs-parser/download/@types/yargs-parser-15.0.0.tgz?cache=0&sync_timestamp=1588203262235&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fyargs-parser%2Fdownload%2F%40types%2Fyargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
@@ -10942,6 +10947,11 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   integrity sha1-wdjRSTFtPqhShIiVy2oL/oh7h98=
   dependencies:
     minimalistic-assert "^1.0.0"
+
+web-animations-js@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.npm.taobao.org/web-animations-js/download/web-animations-js-2.3.2.tgz#a51963a359c543f97b47c7d4bc2d811f9fc9e153"
+  integrity sha1-pRljo1nFQ/l7R8fUvC2BH5/J4VM=
 
 web-storage-cache@^1.1.1:
   version "1.1.1"

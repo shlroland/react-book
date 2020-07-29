@@ -3,10 +3,10 @@ import TitleView from '../title/Title'
 import { useTranslation } from 'react-i18next'
 import { CategoryBookWrapper } from './style'
 import { categoryText } from '@/utils/book'
-import { categoryListItem } from '../types'
+import { CategoryListItem } from '../types'
 
 interface CategoryBookProp {
-    data:categoryListItem
+    data:CategoryListItem
 }
 
 const CategoryBook:FC<CategoryBookProp> = ({ data }) => {

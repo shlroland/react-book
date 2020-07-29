@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 import { BookHomeWrapper } from './style'
 import SearchBar from './searchBar/SearchBar'
 import GuessYouLike from './guessYouLike/GuessYouLike'
@@ -13,13 +13,19 @@ import {
   GuessYouLikeItem,
   RecommendItem,
   FeaturedItem,
-  categoryListItem,
+  CategoryListItem,
+  CategoriesItem,
+  randomItem,
 } from './types'
 import { useTranslation } from 'react-i18next'
 import CategoryBook from './categoryBook/CategoryBook'
+import Category from './category/Category'
+import FlapCard, { FlapCardRef } from './flapCard/FlapCard'
 
 const BookHome: FC = () => {
   const { t } = useTranslation()
+  const flapCardRef = useRef<FlapCardRef | null>(null)
+
   const store = useLocalStore<HomeStoreReturn>(() => {
     return {
       offsetY: 0,
@@ -37,13 +43,30 @@ const BookHome: FC = () => {
       recommendList: [],
       featuredList: [],
       categoryList: [],
+      categoriesList: [],
+      randomList: [],
+      random: null,
       bannerImage: '',
+      showFlapCard: false,
       parseHomeData(data) {
         this.guessYouLikeList = data.guessYouLike as GuessYouLikeItem[]
         this.recommendList = data.recommend as RecommendItem[]
         this.featuredList = data.featured as FeaturedItem[]
-        this.categoryList = data.categoryList as categoryListItem[]
+        this.categoryList = data.categoryList as CategoryListItem[]
+        this.categoriesList = data.categories as CategoriesItem[]
+        this.randomList = data.random as randomItem[]
         this.bannerImage = 'url(' + data.banner + ')'
+      },
+      setShowFlapCard(flag) {
+        this.showFlapCard = flag
+      },
+      toggleShowFlapCard() {
+        const randomNumber = Math.floor(Math.random() * this.randomList.length)
+        this.random = this.randomList[randomNumber]
+        this.showFlapCard = true
+        setTimeout(() => {
+          flapCardRef.current!.startFlapCardAnimation()
+        }, 0)
       },
     }
   })
@@ -66,7 +89,10 @@ const BookHome: FC = () => {
 
   return useObserver(() => (
     <BookHomeWrapper>
-      <SearchBar offsetY={store.offsetY}></SearchBar>
+      <SearchBar
+        offsetY={store.offsetY}
+        handleShowFlapCard={store.toggleShowFlapCard}
+      ></SearchBar>
       <Scroll top={store.height} onScroll={(Y) => store.setOffsetY(Y)}>
         <div className="book-list-wrapper">
           <div className="banner-wrapper">
@@ -90,8 +116,16 @@ const BookHome: FC = () => {
                 </div>
               )
             })}
+          <Category data={store.categoriesList}></Category>
         </div>
       </Scroll>
+      {store.showFlapCard ? (
+        <FlapCard
+          ref={flapCardRef}
+          random={store.random!}
+          setShowFlapCard={store.setShowFlapCard}
+        ></FlapCard>
+      ) : null}
     </BookHomeWrapper>
   ))
 }
