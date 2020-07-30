@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react'
 import TitleView from '../title/Title'
 import { useTranslation } from 'react-i18next'
 import { CategoryWrapper } from './style'
-import { categoryText,getCategoryName } from '@/utils/book'
+import { categoryText } from '@/utils/book'
 import { CategoriesItem } from '../types'
 // import qs from 'qs'
 

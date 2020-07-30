@@ -3,7 +3,7 @@ import { BookDetailWrapper } from './style'
 import BookInfo from './BookInfo'
 import Scroll from '@/common/scroll/Scroll'
 import { useTranslation } from 'react-i18next'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation,useHistory } from 'react-router-dom'
 import { detail } from '@/api'
 import { useLocalStore, useObserver } from 'mobx-react'
 import Epub, { Book } from 'epubjs'
@@ -12,6 +12,7 @@ import Section from 'epubjs/types/section'
 import Navigation, { NavItem } from 'epubjs/types/navigation'
 import classnames from 'classnames'
 import { px2vw } from '@/assets/styles'
+import DetailTitle from './DetailTitle'
 // class BookNavigation extn Navigation {}
 
 interface BookDetailStore {
@@ -35,6 +36,8 @@ const BookDetail: FC = () => {
   const {
     state: { category },
   } = useLocation()
+
+  const history = useHistory()
 
   const { t } = useTranslation('detail')
 
@@ -167,9 +170,8 @@ const BookDetail: FC = () => {
 
   return useObserver(() => (
     <BookDetailWrapper>
-      {/* <DetailTitle showShelf={true} onBack={history.goBack}></DetailTitle> */}
+      <DetailTitle showShelf={true} onBack={history.goBack}></DetailTitle>
       <Scroll
-        className={['content-wrapper']}
         // top={42}
         bottom={43}
         // ref={scrollDom}

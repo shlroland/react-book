@@ -153,3 +153,43 @@ export const BookInfoWrapper = styled.div`
     }
   }
 `
+
+export const DetailTitleWrapper = styled.div`
+  .detail-title-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: ${px2vw(42)};
+    box-shadow: 0 ${px2vw(2)} ${px2vw(2)} 0 rgba(0, 0, 0, 0.1);
+    font-size: ${px2vw(20)};
+    color: #666;
+    &.hide-shadow {
+      box-shadow: none;
+    }
+    .title-left-wrapper {
+      position: relative;
+      z-index: 200;
+      flex: 1;
+      margin-left: ${px2vw(15)};
+      ${mixin.left()};
+    }
+    .title-right-wrapper {
+      position: relative;
+      z-index: 200;
+      flex: 1;
+      margin-right: ${px2vw(15)};
+      ${mixin.right()};
+    }
+    .title-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      width: 100%;
+      height: ${px2vw(42)};
+      font-size: ${px2vw(16)};
+      color: #333;
+      ${mixin.center()};
+    }
+  }
+`
