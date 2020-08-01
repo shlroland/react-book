@@ -1680,6 +1680,11 @@
   resolved "https://registry.npm.taobao.org/@types/q/download/@types/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha1-FZJUFOCtLNdlv+9YhC9+JqesyyQ=
 
+"@types/qs@^6.9.4":
+  version "6.9.4"
+  resolved "https://registry.npm.taobao.org/@types/qs/download/@types/qs-6.9.4.tgz?cache=0&sync_timestamp=1595667584960&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fqs%2Fdownload%2F%40types%2Fqs-6.9.4.tgz#a59e851c1ba16c0513ea123830dd639a0a15cb6a"
+  integrity sha1-pZ6FHBuhbAUT6hI4MN1jmgoVy2o=
+
 "@types/rangy@^0.0.33":
   version "0.0.33"
   resolved "https://registry.npm.taobao.org/@types/rangy/download/@types/rangy-0.0.33.tgz#9f1afff01b4ba840360713a2c2ef3a36e7d49576"
@@ -8922,6 +8927,11 @@ qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.npm.taobao.org/qs/download/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha1-QdwaAV49WB8WIXdr4xr7KHapsbw=
+
+qs@^6.9.4:
+  version "6.9.4"
+  resolved "https://registry.npm.taobao.org/qs/download/qs-6.9.4.tgz#9090b290d1f91728d3c22e54843ca44aea5ab687"
+  integrity sha1-kJCykNH5FyjTwi5UhDykSupatoc=
 
 qs@~6.5.2:
   version "6.5.2"

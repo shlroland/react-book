@@ -16,3 +16,10 @@ export function detail(book:{fileName:string}) {
     },
   })
 }
+
+export function list() {
+  return axios({
+    method: 'get',
+    url: `${process.env.REACT_APP_SAM_URL}/book/list`,
+  })
+}
