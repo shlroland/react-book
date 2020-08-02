@@ -92,7 +92,6 @@ const BookList: FC = () => {
           return list[key].length > 0
         })
       }
-      console.log(list, total)
       store.changeList(list)
       store.changeTotal(total)
     })

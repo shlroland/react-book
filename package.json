@@ -70,6 +70,7 @@
     "react-app-rewired": "^2.1.6",
     "react-dev-utils": "^10.2.1",
     "react-dom": "^16.13.1",
+    "react-flip-toolkit": "^7.0.12",
     "react-i18next": "^11.7.0",
     "react-router-dom": "^5.2.0",
     "react-transition-group": "^4.4.1",
@@ -111,9 +112,11 @@
     ]
   },
   "devDependencies": {
+    "@types/mockjs": "^1.0.2",
     "@types/qs": "^6.9.4",
     "@types/react-router-dom": "^5.1.5",
-    "@types/web-animations-js": "^2.2.9"
+    "@types/web-animations-js": "^2.2.9",
+    "mockjs": "^1.1.0"
   },
   "jest": {
     "roots": [

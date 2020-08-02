@@ -21,11 +21,11 @@ interface ScrollProps {
   top?: number
   bottom?: number
   onScroll?: (...rest: any[]) => any
-  className?: string | string[]
+  className?: string
 }
 
 const Scroll: FC<ScrollProps> = forwardRef((props, ref) => {
-  const { top, bottom, children,onScroll } = props
+  const { top, bottom, children,onScroll,className } = props
 
   const scrollWrapperDom = useRef<HTMLDivElement>(null)
 
@@ -60,7 +60,7 @@ const Scroll: FC<ScrollProps> = forwardRef((props, ref) => {
   )
 
   return (
-    <ScrollWrapper height={computedHeight} ref={scrollWrapperDom} onScroll={(e) => handleScroll(e)}>
+    <ScrollWrapper className={className} height={computedHeight} ref={scrollWrapperDom} onScroll={(e) => handleScroll(e)}>
       {children}
     </ScrollWrapper>
   )

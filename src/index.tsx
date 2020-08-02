@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import './i18n'
 import 'web-animations-js'
+import './mock'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 

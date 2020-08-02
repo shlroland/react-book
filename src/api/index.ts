@@ -23,3 +23,10 @@ export function list() {
     url: `${process.env.REACT_APP_SAM_URL}/book/list`,
   })
 }
+
+export function shelf() {
+  return axios({
+    method: 'get',
+    url: `/book/shelf`,
+  })
+}
