@@ -3,7 +3,7 @@ import { BookShelfWrapper } from './style'
 import { useLocalStore, useObserver } from 'mobx-react'
 import { setLocalStorage, getLocalStorage } from '@/utils/localStorage'
 import { shelf } from '@/api'
-import { BookShelfStoreReturn } from './types'
+import { BookShelfStoreReturn, BookItem, CategoryItem } from './types'
 import { useTranslation } from 'react-i18next'
 import ShelfTitle from './shelfTitle/ShelfTitle'
 import ScrollView from '@/common/scroll/Scroll'
@@ -32,7 +32,7 @@ const BookShelf: FC = () => {
         this.isEditMode = flag
       },
       onSearchClick() {
-        // this.onEditClick(false)
+        this.onEditClick(false)
         this.showType = 1
         this.ifShowTitle = false
       },
@@ -62,6 +62,25 @@ const BookShelf: FC = () => {
           this.bookList.forEach((item) => {
             item.selected = false
           })
+        }
+      },
+      onEditClick(v) {
+        this.isEditMode = v
+        if (!this.isEditMode) {
+          this.bookList.forEach((item) => {
+            if ((item as BookItem).bookId) {
+              item.selected = false
+            } else if (item.itemList) {
+              ;(item as CategoryItem).itemList.forEach((subItem) => {
+                subItem.selected = false
+              })
+            }
+          })
+        }
+        if (this.isEditMode) {
+          this.scrollBottom = 42
+        } else {
+          this.scrollBottom = 0
         }
       },
     }
@@ -94,7 +113,7 @@ const BookShelf: FC = () => {
         ifShowClear={store.isShowClear}
         isEditMode={store.isEditMode}
         ifShowTitle={store.ifShowTitle}
-        setEditMode={store.setIsEditMode}
+        onEditClick={store.onEditClick}
       ></ShelfTitle>
       <ScrollView
         className="book-shelf-scroll-wrapper"

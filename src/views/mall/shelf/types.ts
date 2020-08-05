@@ -53,4 +53,5 @@ export interface BookShelfStoreReturn {
   onSearchClick: () => void
   onSearchTabClick: (id: number) => void
   onSearchCancel: () => void
+  onEditClick: (v:boolean) => void
 }

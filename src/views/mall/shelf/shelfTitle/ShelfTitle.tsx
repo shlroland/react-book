@@ -14,7 +14,7 @@ interface ShelfTitleProp {
   category?: CategoryItem
   ifGroupEmpty?: boolean
   ifShowTitle: boolean
-  setEditMode: (flag: boolean) => void
+  onEditClick: (v: boolean) => void
 }
 
 const ShelfTitle: FC<ShelfTitleProp> = (props) => {
@@ -45,6 +45,14 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
 
   const [isHideShadow, setIsHideShadow] = useState(true)
 
+  const handleOnEditClick = () => {
+    if (props.isEditMode) {
+      props.onEditClick(false)
+    } else {
+      props.onEditClick(true)
+    }
+  }
+
   return useObserver(() => (
     <CSSTransition
       in={ifShowTitle}
@@ -63,7 +71,7 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
             {store.selectedText}
           </span>
           {!props.ifGroupEmpty ? (
-            <div className="btn-text-wrapper">
+            <div className="btn-text-wrapper" onClick={handleOnEditClick}>
               <span className="btn-text">
                 {props.isEditMode ? t('cancel') : t('edit')}
               </span>
