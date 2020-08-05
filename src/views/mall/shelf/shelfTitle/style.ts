@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { px2vw, mixin } from '@/assets/styles'
+import { px2vw, mixin, transition } from '@/assets/styles'
 
 export const ShelfTitleWrapper = styled.div`
   position: relative;
@@ -8,6 +8,7 @@ export const ShelfTitleWrapper = styled.div`
   height: ${px2vw(42)};
   background: white;
   box-shadow: 0 ${px2vw(2)} ${px2vw(2)} 0 rgba(0, 0, 0, 0.1);
+  ${transition.fade()}
   &.hide-shadow {
     box-shadow: none;
   }

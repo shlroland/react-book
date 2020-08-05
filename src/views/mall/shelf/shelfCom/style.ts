@@ -148,3 +148,94 @@ export const ShelfWrapper = styled.div`
     }
   }
 `
+export const ShelfImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  .book-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .icon-selected {
+    position: absolute;
+    bottom: ${px2vw(2)};
+    right: ${px2vw(2)};
+    font-size: ${px2vw(18)};
+    color: rgba(0, 0, 0, 0.4);
+    &.is-selected {
+      color: ${mixin.variableColor.$colorBlue};
+    }
+  }
+  .private-wrapper {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-width: ${px2vw(15)};
+    border-style: solid;
+    border-color: transparent transparent rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.3);
+  }
+  .private-icon-wrapper {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: ${px2vw(30)};
+    height: ${px2vw(30)};
+    padding-bottom: ${px2vw(5)};
+    padding-left: ${px2vw(3)};
+    ${mixin.leftBottom()};
+    .icon-private {
+      font-size: ${px2vw(12)};
+      color: white;
+    }
+  }
+`
+export const ShelfCategoryWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  .shelf-category {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    // justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    padding-top: ${px2vw(5)};
+    box-sizing: border-box;
+    opacity: 1;
+    &.is-edit {
+      opacity: 0.5;
+    }
+    .shelf-category-item {
+      flex: 0 0 33.33%;
+      width: 33.33%;
+      height: 33.33%;
+      box-sizing: border-box;
+      &:nth-child(3n + 1) {
+        padding: 0 ${px2vw(2.5)} ${px2vw(5)} ${px2vw(5)};
+      }
+      &:nth-child(3n + 2) {
+        padding: 0 ${px2vw(2.5)} ${px2vw(5)} ${px2vw(2.5)};
+      }
+      &:nth-child(3n + 3) {
+        padding: 0 ${px2vw(5)} ${px2vw(5)} ${px2vw(2.5)};
+      }
+      .shelf-category-img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .shelf-category-bg {
+    width: 100%;
+    height: 100%;
+    ${mixin.center()};
+    font-size: ${px2vw(30)};
+    color: #ccc;
+  }
+`

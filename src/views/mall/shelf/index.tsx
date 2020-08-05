@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect } from 'react'
 import { BookShelfWrapper } from './style'
 import { useLocalStore, useObserver } from 'mobx-react'
 import { setLocalStorage, getLocalStorage } from '@/utils/localStorage'
@@ -7,8 +7,9 @@ import { BookShelfStoreReturn } from './types'
 import { useTranslation } from 'react-i18next'
 import ShelfTitle from './shelfTitle/ShelfTitle'
 import ScrollView from '@/common/scroll/Scroll'
-import ShelfSearch from './shlefSearch/ShelfSearch'
+import ShelfSearch from './shelfSearch/ShelfSearch'
 import ShelfCom from './shelfCom/ShelfCom'
+import ShelfFooter from './shelfFooter/ShelfFooter'
 
 const BOOK_SHELF_KEY = 'bookShelf'
 
@@ -21,11 +22,25 @@ const BookShelf: FC = () => {
       isEditMode: false,
       scrollBottom: 0,
       showType: 0,
+      ifShowBack: false,
+      isShowClear: true,
+      ifShowTitle: true,
+      showTitle() {
+        this.ifShowTitle = true
+      },
       changeBookList(bookList) {
         this.bookList = bookList
       },
       setIsEditMode(flag) {
         this.isEditMode = flag
+      },
+      onSearchClick() {
+        // this.onEditClick(false)
+        this.showType = 1
+        this.ifShowTitle = false
+      },
+      onSearchTabClick(id) {
+        this.showType = id
       },
       saveBookShelfToLocalStorage() {
         setLocalStorage(BOOK_SHELF_KEY, this.bookList)
@@ -51,9 +66,6 @@ const BookShelf: FC = () => {
     }
   })
 
-  const [ifShowBack, setIfShowBack] = useState(false)
-  const [isShowClear, setIsShowClear] = useState(true)
-
   useEffect(() => {
     const bookList = store.getBookShelfFromLocalStorage()
     if (bookList) {
@@ -77,9 +89,10 @@ const BookShelf: FC = () => {
       <ShelfTitle
         title={t('title')}
         data={store.bookList}
-        ifShowBack={ifShowBack}
-        ifShowClear={isShowClear}
+        ifShowBack={store.ifShowBack}
+        ifShowClear={store.isShowClear}
         isEditMode={store.isEditMode}
+        ifShowTitle={store.ifShowTitle}
         setEditMode={store.setIsEditMode}
       ></ShelfTitle>
       <ScrollView
@@ -87,13 +100,18 @@ const BookShelf: FC = () => {
         top={0}
         bottom={store.scrollBottom}
       >
-        <ShelfSearch></ShelfSearch>
+        <ShelfSearch onSearchClick={store.onSearchClick} onSearchTabClick={store.onSearchTabClick}></ShelfSearch>
         <ShelfCom
           data={store.bookList}
           showType={store.showType}
           isEditMode={store.isEditMode}
         ></ShelfCom>
       </ScrollView>
+      <ShelfFooter
+        data={store.bookList}
+        isEditMode={store.isEditMode}
+        isInGroup={false}
+      ></ShelfFooter>
     </BookShelfWrapper>
   ))
 }

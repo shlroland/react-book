@@ -41,10 +41,16 @@ export interface BookShelfStoreReturn {
   isEditMode: boolean
   scrollBottom: number
   showType: number
+  ifShowBack: boolean
+  isShowClear: boolean
+  ifShowTitle: boolean
   changeBookList: (bookList: BookList) => void
   setIsEditMode: (flag: boolean) => void
   saveBookShelfToLocalStorage(): void
   getBookShelfFromLocalStorage(): BookList
   appendAddToBookList: () => void
   initBookShelf: () => void
+  showTitle: () => void
+  onSearchClick: () => void
+  onSearchTabClick: (id: number) => void
 }

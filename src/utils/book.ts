@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next'
 import { themeType } from '@/store/ebook/types'
 import { getReadTime } from './localStorage'
+import { BookList } from '@/views/mall/shelf/types'
 
 export const fontSizeList = [
   { fontSize: 12 },
@@ -27,7 +28,6 @@ export function genThemeList(t: TFunction): ebookItemType[] {
       name: 'Default',
       color: '#4c5059',
       background: '#f2f3f4',
-      
     },
     {
       alias: t('themeGold'),
@@ -121,7 +121,7 @@ export interface ebookItemType {
   // }
 }
 
-export function getReadTimeByMinute(fileName:string) {
+export function getReadTimeByMinute(fileName: string) {
   if (!getReadTime(fileName)) {
     return 0
   } else {
@@ -129,7 +129,7 @@ export function getReadTimeByMinute(fileName:string) {
   }
 }
 
-export function categoryText(category:number, t:TFunction) {
+export function categoryText(category: number, t: TFunction) {
   switch (category) {
     case 1:
       return t('computerScience')
@@ -180,7 +180,7 @@ export function categoryText(category:number, t:TFunction) {
   }
 }
 
-export function getCategoryName(id:number) {
+export function getCategoryName(id: number) {
   switch (id) {
     case 1:
       return 'ComputerScience'
@@ -232,26 +232,77 @@ export function getCategoryName(id:number) {
 }
 
 export const categoryList = {
-  'ComputerScience': 1,
-  'SocialSciences': 2,
-  'Economics': 3,
-  'Education': 4,
-  'Engineering': 5,
-  'Environment': 6,
-  'Geography': 7,
-  'History': 8,
-  'Laws': 9,
-  'LifeSciences': 10,
-  'Literature': 11,
-  'Biomedicine': 12,
-  'BusinessandManagement': 13,
-  'EarthSciences': 14,
-  'MaterialsScience': 15,
-  'Mathematics': 16,
-  'MedicineAndPublicHealth': 17,
-  'Philosophy': 18,
-  'Physics': 19,
-  'PoliticalScienceAndInternationalRelations': 20,
-  'Psychology': 21,
-  'Statistics': 22
+  ComputerScience: 1,
+  SocialSciences: 2,
+  Economics: 3,
+  Education: 4,
+  Engineering: 5,
+  Environment: 6,
+  Geography: 7,
+  History: 8,
+  Laws: 9,
+  LifeSciences: 10,
+  Literature: 11,
+  Biomedicine: 12,
+  BusinessandManagement: 13,
+  EarthSciences: 14,
+  MaterialsScience: 15,
+  Mathematics: 16,
+  MedicineAndPublicHealth: 17,
+  Philosophy: 18,
+  Physics: 19,
+  PoliticalScienceAndInternationalRelations: 20,
+  Psychology: 21,
+  Statistics: 22,
+}
+
+export function flatBookList(bookList: BookList) {
+  if (bookList) {
+    let orgBookList = bookList.filter((item) => {
+      return item.type !== 3
+    })
+    const categoryList = bookList.filter((item) => {
+      return item.type === 2
+    })
+    categoryList.forEach((item) => {
+      const index = orgBookList.findIndex((v) => {
+        return v.id === item.id
+      })
+      if (item.itemList) {
+        item.itemList.forEach((subItem: any) => {
+          orgBookList.splice(index, 0, subItem)
+        })
+      }
+    })
+    orgBookList.forEach((item, index) => {
+      item.id = index + 1
+    })
+    orgBookList = orgBookList.filter((item) => item.type !== 2)
+    return orgBookList
+  } else {
+    return []
+  }
+}
+
+export function footerTabs(t: TFunction) {
+  return [
+    {
+      label: t('private'),
+      label2: t('noPrivate'),
+      index: 1,
+    },
+    {
+      label: t('download'),
+      label2: t('delete'),
+      index: 2,
+    },
+    {
+      label: t('move'),
+      index: 3,
+    },
+    {
+      label: t('remove'),
+      index: 4,
+    },
+  ]
 }

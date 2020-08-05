@@ -1,24 +1,64 @@
-import React, { FC, memo, useState, useCallback } from 'react'
+import React, { FC, memo, useState, useCallback, useMemo } from 'react'
 import { ShelfSearchWrapper } from './style'
-import { useObserver } from 'mobx-react'
+import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { saveLocale } from '@/utils/localStorage'
+import { CSSTransition } from 'react-transition-group'
 
-const ShelfSearch: FC = () => {
+interface ShelfSearchProp {
+  onSearchClick: () => void
+  onSearchTabClick: (id: number) => void
+}
+
+interface tabsItem {
+  id: number
+  text: string
+  selected: boolean
+}
+
+const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
+  const { onSearchClick, onSearchTabClick } = props
+
   const { t, i18n } = useTranslation('shelf')
-
   const [ifShowCancel, setIfShowCancel] = useState(false)
   const [ifHideShadow, setIfHideShadow] = useState(true)
   const [ifShowClear, setIfShowClear] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [lang, setLang] = useState(i18n.language)
+  const [tabs, setTabs] = useState<tabsItem[]>([
+    {
+      id: 1,
+      text: t('default'),
+      selected: true,
+    },
+    {
+      id: 2,
+      text: t('progress'),
+      selected: false,
+    },
+    {
+      id: 3,
+      text: t('purchase'),
+      selected: false,
+    },
+  ])
+
+  const onTabClick = (item: tabsItem) => {
+    tabs.forEach((tab) => {
+      if (tab.id === item.id) {
+        tab.selected = true
+      } else {
+        tab.selected = false
+      }
+    })
+    onSearchTabClick(item.id)
+    setTabs([...tabs])
+  }
 
   const checkSearchText = useCallback((e) => {
     console.log(e)
   }, [])
-
-  const onSearchClick = useCallback(() => {}, [])
 
   const changeLang = () => {
     if (lang === 'cn') {
@@ -30,6 +70,11 @@ const ShelfSearch: FC = () => {
       saveLocale('cn')
       setLang('cn')
     }
+  }
+
+  const handleOnSearchClick = () => {
+    setIfShowCancel(true)
+    onSearchClick()
   }
 
   return (
@@ -55,7 +100,7 @@ const ShelfSearch: FC = () => {
               type="text"
               placeholder={t('search')}
               onChange={(e) => checkSearchText(e)}
-              onClick={() => onSearchClick()}
+              onClick={handleOnSearchClick}
               value={searchText}
             />
           </div>
@@ -79,8 +124,39 @@ const ShelfSearch: FC = () => {
           </div>
         )}
       </div>
+      <CSSTransition
+        in={ifShowCancel}
+        timeout={500}
+        classNames="shelf-tab-slide-up"
+        appear={true}
+        unmountOnExit
+      >
+        <div className="tab-wrapper">
+          {/* <div className="tab-item" v-for="(item, index) in tabs" :key="index" @click="onTabClick(item)">
+          <span className="tab-item-text" :class="{'is-selected': item.selected}" v-if="showShadow">{{item.text}}</span>
+        </div> */}
+          {tabs &&
+            tabs.map((item) => {
+              return (
+                <div
+                  className="tab-item"
+                  key={item.id}
+                  onClick={() => onTabClick(item)}
+                >
+                  <span
+                    className={classnames('tab-item-text', {
+                      'is-selected': item.selected,
+                    })}
+                  >
+                    {item.text}
+                  </span>
+                </div>
+              )
+            })}
+        </div>
+      </CSSTransition>
     </ShelfSearchWrapper>
   )
-}
+})
 
 export default memo(ShelfSearch)

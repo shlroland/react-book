@@ -62,6 +62,29 @@ export const popupSlideUp = () => css`
   }
 `
 
+export const shelfTabSlideUp = () => css`
+  &.shelf-tab-slide-up-enter,
+  &.shelf-tab-slide-up-appear {
+    transform: translate3d(0, ${px2vw(30)}, 0);
+    opacity: 0;
+  }
+  &.shelf-tab-slide-up-enter-active,
+  &.shelf-tab-slide-up-appear-active {
+    transition: all 0.5s linear;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  &.shelf-tab-slide-up-exit {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  &.shelf-tab-slide-up-exit-active {
+    transition: all 0.5s linear;
+    transform: translate3d(0, ${px2vw(30)}, 0);
+    opacity: 0;
+  }
+`
+
 export const fade = () => css`
   &.fade-enter,
   &.fade-appear {

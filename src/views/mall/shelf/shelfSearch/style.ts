@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { px2vw, mixin } from '@/assets/styles'
+import { px2vw, mixin, transition } from '@/assets/styles'
 
 export const ShelfSearchWrapper = styled.div`
   position: relative;
@@ -96,6 +96,7 @@ export const ShelfSearchWrapper = styled.div`
     display: flex;
     width: 100%;
     height: ${px2vw(42)};
+    ${transition.shelfTabSlideUp()}
     .tab-item {
       flex: 1;
       ${mixin.center()};
