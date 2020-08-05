@@ -41,7 +41,7 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
       get publicNumber() {
         if (this.bookData) {
           let number = 0
-          this.bookData.filter((item) => {
+          this.bookData.forEach((item) => {
             if (!(item as BookItem).private && item.type === 1) {
               number++
             } else if (item.type === 2 && item.itemList.length > 0) {
@@ -58,7 +58,7 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
       get privateNumber() {
         if (this.bookData) {
           let number = 0
-          this.bookData.filter((item) => {
+          this.bookData.forEach((item) => {
             if ((item as BookItem).private && item.type === 1) {
               number++
             } else if (item.type === 2 && item.itemList.length > 0) {

@@ -1,4 +1,4 @@
-import React, { FC, memo, useState, useCallback, useMemo } from 'react'
+import React, { FC, memo, useState, useCallback, useRef } from 'react'
 import { ShelfSearchWrapper } from './style'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
@@ -22,8 +22,9 @@ const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
   const { onSearchClick, onSearchTabClick, onSearchCancel } = props
 
   const { t, i18n } = useTranslation('shelf')
+  const searchInput = useRef<HTMLInputElement | null>(null)
   const [ifShowCancel, setIfShowCancel] = useState(false)
-  const [ifHideShadow, setIfHideShadow] = useState(true)
+  const [ifHideShadow] = useState(true)
   const [ifShowClear, setIfShowClear] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [lang, setLang] = useState(i18n.language)
@@ -62,9 +63,26 @@ const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
     onSearchCancel()
   }
 
-  const checkSearchText = useCallback((e) => {
-    console.log(e)
-  }, [])
+  const checkSearchText = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation()
+      e.preventDefault()
+      const value = e.target.value
+      if (value && value.length > 0) {
+        setIfShowClear(true)
+      } else {
+        setIfShowClear(false)
+      }
+      setSearchText(value)
+    },
+    []
+  )
+
+  const clearSearchText = () => {
+    setSearchText('')
+    setIfShowClear(false)
+    searchInput.current!.focus()
+  }
 
   const changeLang = () => {
     if (lang === 'cn') {
@@ -108,10 +126,11 @@ const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
               onChange={(e) => checkSearchText(e)}
               onClick={handleOnSearchClick}
               value={searchText}
+              ref={searchInput}
             />
           </div>
           {ifShowClear ? (
-            <div className="icon-clear-wrapper">
+            <div className="icon-clear-wrapper" onClick={clearSearchText}>
               <span className="icon-close-circle-fill icon"></span>
             </div>
           ) : null}
