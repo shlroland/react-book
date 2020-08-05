@@ -50,7 +50,7 @@ export interface BookShelfStoreReturn {
   getBookShelfFromLocalStorage(): BookList
   appendAddToBookList: () => void
   initBookShelf: () => void
-  showTitle: () => void
   onSearchClick: () => void
   onSearchTabClick: (id: number) => void
+  onSearchCancel: () => void
 }

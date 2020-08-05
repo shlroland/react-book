@@ -8,6 +8,7 @@ import { CSSTransition } from 'react-transition-group'
 
 interface ShelfSearchProp {
   onSearchClick: () => void
+  onSearchCancel: () => void
   onSearchTabClick: (id: number) => void
 }
 
@@ -18,7 +19,7 @@ interface tabsItem {
 }
 
 const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
-  const { onSearchClick, onSearchTabClick } = props
+  const { onSearchClick, onSearchTabClick, onSearchCancel } = props
 
   const { t, i18n } = useTranslation('shelf')
   const [ifShowCancel, setIfShowCancel] = useState(false)
@@ -54,6 +55,11 @@ const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
     })
     onSearchTabClick(item.id)
     setTabs([...tabs])
+  }
+
+  const onCancel = () => {
+    setIfShowCancel(false)
+    onSearchCancel()
   }
 
   const checkSearchText = useCallback((e) => {
@@ -119,7 +125,7 @@ const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
             ) : null}
           </div>
         ) : (
-          <div className="cancel-btn-wrapper">
+          <div className="cancel-btn-wrapper" onClick={onCancel}>
             <span className="cancel-btn">{t('cancel')}</span>
           </div>
         )}
@@ -132,9 +138,6 @@ const ShelfSearch: FC<ShelfSearchProp> = observer((props) => {
         unmountOnExit
       >
         <div className="tab-wrapper">
-          {/* <div className="tab-item" v-for="(item, index) in tabs" :key="index" @click="onTabClick(item)">
-          <span className="tab-item-text" :class="{'is-selected': item.selected}" v-if="showShadow">{{item.text}}</span>
-        </div> */}
           {tabs &&
             tabs.map((item) => {
               return (

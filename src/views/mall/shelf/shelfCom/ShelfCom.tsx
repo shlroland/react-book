@@ -8,6 +8,7 @@ import classnames from 'classnames'
 import ShelfImage from './ShelfImage'
 import ShelfCategory from './ShelfCategory'
 import { cloneDeep } from 'lodash'
+import { useTranslation } from 'react-i18next'
 interface ShelfComProp {
   data: BookList
   showType: number
@@ -15,6 +16,8 @@ interface ShelfComProp {
 }
 
 const ShelfCom: FC<ShelfComProp> = (props) => {
+  const { t } = useTranslation('shelf')
+
   const store = useLocalStore((source) => {
     return {
       get bookData() {
@@ -31,6 +34,40 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
           return this.bookData.reduce((acc, cur) => {
             return acc + cur.id
           }, 0)
+        } else {
+          return 0
+        }
+      },
+      get publicNumber() {
+        if (this.bookData) {
+          let number = 0
+          this.bookData.filter((item) => {
+            if (!(item as BookItem).private && item.type === 1) {
+              number++
+            } else if (item.type === 2 && item.itemList.length > 0) {
+              number += (item as CategoryItem).itemList.filter((subItem) => {
+                return !subItem.private && subItem.type === 1
+              }).length
+            }
+          })
+          return number
+        } else {
+          return 0
+        }
+      },
+      get privateNumber() {
+        if (this.bookData) {
+          let number = 0
+          this.bookData.filter((item) => {
+            if ((item as BookItem).private && item.type === 1) {
+              number++
+            } else if (item.type === 2 && item.itemList.length > 0) {
+              number += (item as CategoryItem).itemList.filter((subItem) => {
+                return subItem.private && subItem.type === 1
+              }).length
+            }
+          })
+          return number
         } else {
           return 0
         }
@@ -75,6 +112,13 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
             ))}
         </Flipper>
       ) : null}
+
+      <div
+        className="book-shelf-statistics"
+        style={{ display: props.showType === 0 ? 'block' : 'none' }}
+      >
+        {t('statistic', { $1: store.publicNumber, $2: store.privateNumber })}
+      </div>
     </ShelfWrapper>
   ))
 }

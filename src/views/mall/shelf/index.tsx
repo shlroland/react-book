@@ -25,9 +25,6 @@ const BookShelf: FC = () => {
       ifShowBack: false,
       isShowClear: true,
       ifShowTitle: true,
-      showTitle() {
-        this.ifShowTitle = true
-      },
       changeBookList(bookList) {
         this.bookList = bookList
       },
@@ -38,6 +35,10 @@ const BookShelf: FC = () => {
         // this.onEditClick(false)
         this.showType = 1
         this.ifShowTitle = false
+      },
+      onSearchCancel() {
+        this.showType = 0
+        this.ifShowTitle = true
       },
       onSearchTabClick(id) {
         this.showType = id
@@ -100,7 +101,11 @@ const BookShelf: FC = () => {
         top={0}
         bottom={store.scrollBottom}
       >
-        <ShelfSearch onSearchClick={store.onSearchClick} onSearchTabClick={store.onSearchTabClick}></ShelfSearch>
+        <ShelfSearch
+          onSearchClick={store.onSearchClick}
+          onSearchTabClick={store.onSearchTabClick}
+          onSearchCancel={store.onSearchCancel}
+        ></ShelfSearch>
         <ShelfCom
           data={store.bookList}
           showType={store.showType}
