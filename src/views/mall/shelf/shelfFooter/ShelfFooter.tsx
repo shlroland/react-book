@@ -1,23 +1,41 @@
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useRef, ReactNode } from 'react'
 import { ShelfFooterWrapper } from './style'
 import { BookList, BookItem } from '../types'
 import { useTranslation } from 'react-i18next'
 import { useLocalStore, useObserver } from 'mobx-react'
 import { footerTabs } from '@/utils/book'
 import classnames from 'classnames'
-
+import Popup, { RefProp } from '@/common/popup/Popup'
 interface ShelfFooterProp {
   data: BookList
   isInGroup: boolean
   isEditMode: boolean
+  setPrivate: (v: boolean) => void
 }
+
+type TabItem =
+  | {
+      label: string
+      label2: string
+      index: number
+    }
+  | {
+      label: string
+      index: number
+      label2?: undefined
+    }
 
 const ShelfFooter: FC<ShelfFooterProp> = (props) => {
   const { t } = useTranslation('shelf')
+  const popupRef = useRef<RefProp | null>(null)
 
   const store = useLocalStore(
     (source) => ({
       tabs: footerTabs(t),
+      popTitle: '',
+      confirmText: '',
+      onConfirm: function (...args: any): any {},
+      isRemoveText: false,
       get isSelected() {
         if (source.data) {
           return source.data.some((item) => item.selected)
@@ -61,9 +79,40 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
             return item.label
         }
       },
+      showPrivate() {
+        if (this.isSelected) {
+          if (!this.isPrivate) {
+            this.showPopup(t('setPrivateTitle'), t('open'), () =>
+              source.setPrivate(true)
+            )
+          } else {
+            this.showPopup(t('closePrivateTitle'), t('close'), () =>
+              source.setPrivate(false)
+            )
+          }
+        }
+      },
+      showPopup(
+        title: string,
+        confirmText: string,
+        onConfirm: (...args: any) => any,
+        isRemoveText = false
+      ) {
+        this.popTitle = title
+        this.confirmText = confirmText
+        this.onConfirm = onConfirm
+        this.isRemoveText = isRemoveText
+        popupRef.current!.show()
+      },
     }),
     props
   )
+
+  const onTabClick = (item: TabItem) => {
+    if (item.index === 1) {
+      store.showPrivate()
+    }
+  }
 
   return useObserver(() => (
     <ShelfFooterWrapper
@@ -75,7 +124,7 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
           <div
             className="book-shelf-tab-wrapper"
             key={index}
-            // onClick={() => onTabClick(item)}
+            onClick={() => onTabClick(item)}
           >
             <div className="book-shelf-tab">
               {item.index === 1 && !store.isPrivate ? (
@@ -149,6 +198,14 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
           </div>
         )
       })}
+      <Popup
+        ref={popupRef}
+        title={store.popTitle}
+        confirmText={store.confirmText}
+        isRemoveText={store.isRemoveText}
+        confirm={store.onConfirm}
+        cancelText={t('cancel')}
+      ></Popup>
     </ShelfFooterWrapper>
   ))
 }

@@ -1,7 +1,7 @@
 import React, { memo, FC } from 'react'
 import { ShelfWrapper } from './style'
 import { useObserver, useLocalStore } from 'mobx-react'
-import { BookList, BookItem, CategoryItem } from '../types'
+import { BookList, BookItem, CategoryItem, BookListItem } from '../types'
 import { flatBookList } from '@/utils/book'
 import { Flipper, Flipped } from 'react-flip-toolkit'
 import classnames from 'classnames'
@@ -9,6 +9,8 @@ import ShelfImage from './ShelfImage'
 import ShelfCategory from './ShelfCategory'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
+import { useShowBookDetail } from '../../hooks'
 interface ShelfComProp {
   data: BookList
   showType: number
@@ -17,6 +19,8 @@ interface ShelfComProp {
 
 const ShelfCom: FC<ShelfComProp> = (props) => {
   const { t } = useTranslation('shelf')
+  const history = useHistory()
+  const showBookDetail = useShowBookDetail()
 
   const store = useLocalStore((source) => {
     return {
@@ -75,6 +79,24 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
     }
   }, props)
 
+  const onBookClick = (book: BookListItem, index: number) => {
+    if (book.type === 3) {
+      history.push('/mall/home')
+    } else if (book.type === 1) {
+      if (props.isEditMode) {
+        book.selected = !book.selected
+      } else {
+        showBookDetail(book)
+      }
+    } else if (book.type === 2) {
+      if (!props.isEditMode) {
+        history.push(`/mall/category/${book.title}`, {
+          category: book,
+        })
+      }
+    }
+  }
+
   return useObserver(() => (
     <ShelfWrapper className="book-shelf-list">
       {props.showType === 0 || props.showType === 1 ? (
@@ -82,7 +104,10 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
           {store.bookData &&
             store.bookData.map((item, index) => (
               <Flipped key={item.id} flipId={item.id}>
-                <div className="book-shelf-item">
+                <div
+                  className="book-shelf-item"
+                  onClick={() => onBookClick(item, index)}
+                >
                   <div
                     className={classnames({
                       'book-img-wrapper': true,

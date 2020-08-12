@@ -34,7 +34,9 @@ export interface AddItem {
   [property: string]: any
 }
 
-export type BookList = (BookItem | CategoryItem | AddItem)[]
+export type BookListItem = BookItem | CategoryItem | AddItem
+
+export type BookList = BookListItem[]
 
 export interface BookShelfStoreReturn {
   bookList: BookList
@@ -53,5 +55,6 @@ export interface BookShelfStoreReturn {
   onSearchClick: () => void
   onSearchTabClick: (id: number) => void
   onSearchCancel: () => void
-  onEditClick: (v:boolean) => void
+  onEditClick: (v: boolean) => void
+  setPrivate: (v: boolean) => void
 }

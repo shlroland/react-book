@@ -10,12 +10,13 @@ import ScrollView from '@/common/scroll/Scroll'
 import ShelfSearch from './shelfSearch/ShelfSearch'
 import ShelfCom from './shelfCom/ShelfCom'
 import ShelfFooter from './shelfFooter/ShelfFooter'
+import useToast from '@/common/toast/Toast'
 
 const BOOK_SHELF_KEY = 'bookShelf'
 
 const BookShelf: FC = () => {
   const { t } = useTranslation('shelf')
-
+  const { RenderToast, showToast, hideToast } = useToast()
   const store = useLocalStore<BookShelfStoreReturn>(() => {
     return {
       bookList: [],
@@ -83,6 +84,19 @@ const BookShelf: FC = () => {
           this.scrollBottom = 0
         }
       },
+      setPrivate(v) {
+        this.bookList.forEach((item) => {
+          if (item.selected) {
+            ;(item as BookItem).private = v
+          }
+        })
+        this.onEditClick(false)
+        if (v) {
+          showToast(t('setPrivateSuccess'))
+        } else {
+          showToast(t('closePrivateSuccess'))
+        }
+      },
     }
   })
 
@@ -135,7 +149,9 @@ const BookShelf: FC = () => {
         data={store.bookList}
         isEditMode={store.isEditMode}
         isInGroup={false}
+        setPrivate={store.setPrivate}
       ></ShelfFooter>
+      <RenderToast></RenderToast>
     </BookShelfWrapper>
   ))
 }
