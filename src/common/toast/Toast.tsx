@@ -1,4 +1,4 @@
-import React, { memo, ReactNode, useState, useEffect, useRef } from 'react'
+import React, { useState,  useRef } from 'react'
 import styled from 'styled-components'
 import { mixin, px2vw } from '@/assets/styles'
 import { createPortal } from 'react-dom'
@@ -63,6 +63,13 @@ const useToast = (timeout = 1500) => {
     setVisible(false)
   }
 
+  const continueShow = (text:string) => {
+    clearTimeout(task.current)
+    task.current = 0
+    setText(text)
+    setVisible(true)
+  }
+
   let portalRoot: HTMLElement
   const element = document.getElementById('portal-root')
   if (element) {
@@ -98,6 +105,7 @@ const useToast = (timeout = 1500) => {
     showToast,
     hideToast,
     RenderToast,
+    continueShow
   }
 }
 

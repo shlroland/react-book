@@ -57,4 +57,8 @@ export interface BookShelfStoreReturn {
   onSearchCancel: () => void
   onEditClick: (v: boolean) => void
   setPrivate: (v: boolean) => void
+  setDownload: (v: boolean) => Promise<void>
+  downloadBook: (item: BookItem) => void
+  downloadItem: (item:BookItem,needDownload:boolean) => Promise<void>
+  removeDownloadBook: (item: BookItem) => void
 }

@@ -1,7 +1,8 @@
 import { TFunction } from 'i18next'
 import { themeType } from '@/store/ebook/types'
-import { getReadTime } from './localStorage'
+import { getReadTime, removeLocalStorage } from './localStorage'
 import { BookList } from '@/views/mall/shelf/types'
+import { removeLocalForage } from './localForage'
 
 export const fontSizeList = [
   { fontSize: 12 },
@@ -305,4 +306,15 @@ export function footerTabs(t: TFunction) {
       index: 4,
     },
   ]
+}
+
+export function removeBookCache(fileName:string) {
+  return new Promise((resolve, reject) => {
+    removeLocalStorage(fileName)
+    removeLocalStorage(`${fileName}-info`)
+    removeLocalForage(fileName, () => {
+      console.log(`[${fileName}]删除成功...`)
+      resolve()
+    }, reject)
+  })
 }

@@ -1,4 +1,4 @@
-import React, { FC, memo, useRef, ReactNode } from 'react'
+import React, { FC, memo, useRef } from 'react'
 import { ShelfFooterWrapper } from './style'
 import { BookList, BookItem } from '../types'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,7 @@ interface ShelfFooterProp {
   isInGroup: boolean
   isEditMode: boolean
   setPrivate: (v: boolean) => void
+  setDownload: (v: boolean) => Promise<void>
 }
 
 type TabItem =
@@ -104,6 +105,24 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
         this.isRemoveText = isRemoveText
         popupRef.current!.show()
       },
+      showDownload() {
+        if (this.isSelected) {
+          if (!this.isDownload) {
+            this.showPopup(t('setDownloadTitle'), t('open'), () => {
+              source.setDownload(true)
+            })
+          } else {
+            this.showPopup(
+              t('removeDownloadTitle'),
+              t('delete'),
+              () => {
+                source.setDownload(false)
+              },
+              true
+            )
+          }
+        }
+      },
     }),
     props
   )
@@ -111,6 +130,8 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
   const onTabClick = (item: TabItem) => {
     if (item.index === 1) {
       store.showPrivate()
+    } else if (item.index === 2) {
+      store.showDownload()
     }
   }
 

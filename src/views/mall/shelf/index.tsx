@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react'
 import { BookShelfWrapper } from './style'
 import { useLocalStore, useObserver } from 'mobx-react'
 import { setLocalStorage, getLocalStorage } from '@/utils/localStorage'
-import { shelf } from '@/api'
+import { shelf, download } from '@/api'
 import { BookShelfStoreReturn, BookItem, CategoryItem } from './types'
 import { useTranslation } from 'react-i18next'
 import ShelfTitle from './shelfTitle/ShelfTitle'
@@ -11,12 +11,16 @@ import ShelfSearch from './shelfSearch/ShelfSearch'
 import ShelfCom from './shelfCom/ShelfCom'
 import ShelfFooter from './shelfFooter/ShelfFooter'
 import useToast from '@/common/toast/Toast'
+import { getLocalForage } from '@/utils/localForage'
+import Epub from 'epubjs'
+import { removeBookCache } from '@/utils/book'
+import { toJS } from 'mobx'
 
 const BOOK_SHELF_KEY = 'bookShelf'
 
 const BookShelf: FC = () => {
   const { t } = useTranslation('shelf')
-  const { RenderToast, showToast, hideToast } = useToast()
+  const { RenderToast, showToast, hideToast,continueShow } = useToast()
   const store = useLocalStore<BookShelfStoreReturn>(() => {
     return {
       bookList: [],
@@ -97,6 +101,63 @@ const BookShelf: FC = () => {
           showToast(t('closePrivateSuccess'))
         }
       },
+      async setDownload(needDownload) {
+        continueShow(t('startDownload'))
+        for (let i = 0; i < this.bookList.length; i++) {
+          const item = this.bookList[i]
+          if (needDownload && item.selected) {
+            this.downloadBook(item as BookItem)
+            ;(item as BookItem).cache = needDownload
+            console.log(i,toJS(item),toJS(this.bookList))
+          } else if (!needDownload && item.selected) {
+            this.removeDownloadBook(item as BookItem)
+            ;(item as BookItem).cache = needDownload
+          }
+          if (item.itemList) {
+            for (let i = 0; i < item.itemList.length; i++) {
+              await this.downloadItem(item.itemList[i], needDownload)
+            }
+          }
+        }
+        hideToast()
+
+      },
+      downloadBook(item) {
+        return new Promise((resolve, reject) => {
+          getLocalForage(item.fileName, (err, value) => {
+            if (!err && value instanceof Blob) {
+              console.log(
+                `[${item.fileName}]读取成功...`,
+                value,
+                Epub(value as any)
+              )
+              resolve()
+            } else {
+              download(
+                item,
+                (item) => {
+                  console.log('[' + item.fileName + ']下载成功...')
+                  resolve()
+                },
+                reject,
+                reject,
+              )
+            }
+          })
+        })
+      },
+      async downloadItem(subItem, needDownload) {
+        if (needDownload && subItem.selected) {
+          this.downloadBook(subItem)
+          subItem.cache = needDownload
+        } else if (!needDownload && subItem.selected) {
+          this.removeDownloadBook(subItem)
+          subItem.cache = needDownload
+        }
+      },
+      removeDownloadBook(item) {
+        return removeBookCache(item.fileName)
+      },
     }
   })
 
@@ -150,6 +211,7 @@ const BookShelf: FC = () => {
         isEditMode={store.isEditMode}
         isInGroup={false}
         setPrivate={store.setPrivate}
+        setDownload={store.setDownload}
       ></ShelfFooter>
       <RenderToast></RenderToast>
     </BookShelfWrapper>
