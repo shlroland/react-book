@@ -12,6 +12,7 @@ interface ShelfFooterProp {
   isEditMode: boolean
   setPrivate: (v: boolean) => void
   setDownload: (v: boolean) => Promise<void>
+  removeBook: () => void
 }
 
 type TabItem =
@@ -70,6 +71,15 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
           })
         }
       },
+      get selectedBooks() {
+        let selectedBooks: BookItem[] = []
+        source.data.forEach((item) => {
+          if (item.selected) {
+            selectedBooks.push(item as BookItem)
+          }
+        })
+        return selectedBooks
+      },
       label(item: { label: string; label2: string; index: number }) {
         switch (item.index) {
           case 1:
@@ -123,6 +133,19 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
           }
         }
       },
+      showRemove() {
+        if (this.isSelected) {
+          let msg
+          if (this.selectedBooks.length === 1) {
+            msg = t('removeBookTitle', {
+              $1: `《${this.selectedBooks[0].title}》`,
+            })
+          } else {
+            msg = t('removeBookTitle', { $1: t('selectedBooks') })
+          }
+          this.showPopup(msg, t('removeBook'), source.removeBook, true)
+        }
+      },
     }),
     props
   )
@@ -132,6 +155,8 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
       store.showPrivate()
     } else if (item.index === 2) {
       store.showDownload()
+    } else if (item.index === 4) {
+      store.showRemove()
     }
   }
 

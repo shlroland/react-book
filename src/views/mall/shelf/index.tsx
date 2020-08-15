@@ -14,13 +14,12 @@ import useToast from '@/common/toast/Toast'
 import { getLocalForage } from '@/utils/localForage'
 import Epub from 'epubjs'
 import { removeBookCache } from '@/utils/book'
-import { toJS } from 'mobx'
 
 const BOOK_SHELF_KEY = 'bookShelf'
 
 const BookShelf: FC = () => {
   const { t } = useTranslation('shelf')
-  const { RenderToast, showToast, hideToast,continueShow } = useToast()
+  const { RenderToast, showToast } = useToast()
   const store = useLocalStore<BookShelfStoreReturn>(() => {
     return {
       bookList: [],
@@ -100,18 +99,21 @@ const BookShelf: FC = () => {
         } else {
           showToast(t('closePrivateSuccess'))
         }
+        this.onEditClick(false)
+        this.saveBookShelfToLocalStorage()
       },
       async setDownload(needDownload) {
-        continueShow(t('startDownload'))
+        showToast(t('startDownload'))
         for (let i = 0; i < this.bookList.length; i++) {
           const item = this.bookList[i]
           if (needDownload && item.selected) {
-            this.downloadBook(item as BookItem)
+            await this.downloadBook(item as BookItem)
             ;(item as BookItem).cache = needDownload
-            console.log(i,toJS(item),toJS(this.bookList))
+            showToast(t('endDownload'))
           } else if (!needDownload && item.selected) {
-            this.removeDownloadBook(item as BookItem)
+            await this.removeDownloadBook(item as BookItem)
             ;(item as BookItem).cache = needDownload
+            showToast(t('endDownload'))
           }
           if (item.itemList) {
             for (let i = 0; i < item.itemList.length; i++) {
@@ -119,8 +121,8 @@ const BookShelf: FC = () => {
             }
           }
         }
-        hideToast()
-
+        this.onEditClick(false)
+        this.saveBookShelfToLocalStorage()
       },
       downloadBook(item) {
         return new Promise((resolve, reject) => {
@@ -140,7 +142,7 @@ const BookShelf: FC = () => {
                   resolve()
                 },
                 reject,
-                reject,
+                reject
               )
             }
           })
@@ -157,6 +159,18 @@ const BookShelf: FC = () => {
       },
       removeDownloadBook(item) {
         return removeBookCache(item.fileName)
+      },
+      removeBook() {
+        this.bookList = this.bookList.filter((item) => {
+          if (item.itemList) {
+            item.itemList = item.itemList.filter((subItem: BookItem) => {
+              return !subItem.selected
+            })
+          }
+          return !item.selected
+        })
+        this.onEditClick(false)
+        this.saveBookShelfToLocalStorage()
       },
     }
   })
@@ -212,6 +226,7 @@ const BookShelf: FC = () => {
         isInGroup={false}
         setPrivate={store.setPrivate}
         setDownload={store.setDownload}
+        removeBook={store.removeBook}
       ></ShelfFooter>
       <RenderToast></RenderToast>
     </BookShelfWrapper>

@@ -65,7 +65,6 @@ const useToast = (timeout = 1500) => {
 
   const continueShow = (text:string) => {
     clearTimeout(task.current)
-    task.current = 0
     setText(text)
     setVisible(true)
   }

@@ -92,11 +92,11 @@ const messages = {
       moveBookOutSuccess: '成功移出分组',
       statistic: '{{$1}}本公开阅读 • {{$2}}本私密阅读',
       startDownload: '开始下载...',
+      endDownload: '下载完成',
       progressDownload: '正在下载：{{$1}}',
       downloadFirst: '请先缓存图书',
       find: '去找书',
       changeLanguage: '切换语言',
-      studyNow: '去慕课网学习'
     },
     detail: {
       copyright: '版权',

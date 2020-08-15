@@ -98,6 +98,7 @@ const messages = {
     moveBookOutSuccess: 'Move book(s) out of the group successfully',
     statistic: '{{$1}} public reading • {{$2}} private reading',
     startDownload: 'Start download...',
+    endDownload: 'Download End',
     progressDownload: 'Downloading：{{$1}}',
     downloadFirst: 'Please download book first',
     find: 'Go to book store',
