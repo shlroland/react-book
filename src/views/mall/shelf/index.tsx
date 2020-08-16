@@ -53,6 +53,11 @@ const BookShelf: FC = () => {
       getBookShelfFromLocalStorage() {
         return getLocalStorage(BOOK_SHELF_KEY)
       },
+      clearAddFromBookList() {
+        this.bookList = this.bookList.filter((item) => {
+          return item.type !== 3
+        })
+      },
       appendAddToBookList() {
         this.bookList.push({
           cover: '',
@@ -201,6 +206,7 @@ const BookShelf: FC = () => {
       },
       moveToGroup(group) {
         const selectedBooks = this.getSelectedBooks
+        console.log(selectedBooks, group)
         this.clearSelectedBooks()
         if (group && group.itemList) {
           group.itemList = [...group.itemList, ...selectedBooks]
@@ -212,14 +218,19 @@ const BookShelf: FC = () => {
           showToast(t('moveBookInSuccess', { $1: group.title }))
         }
       },
+      newGroup(group) {
+        this.clearAddFromBookList()
+        this.bookList.push(group)
+        this.appendAddToBookList()
+      },
       groupEdit(operation, group) {
         switch (operation) {
           case 1:
             this.moveToGroup(group as CategoryItem)
             break
           case 2:
-            // this.newGroup(group)
-            // this.moveToGroup(group)
+            this.moveToGroup(group as CategoryItem)
+            this.newGroup(group as CategoryItem)
             break
           case 3:
             // this.moveOutGroup()

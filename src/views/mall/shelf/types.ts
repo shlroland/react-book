@@ -24,7 +24,7 @@ export interface CategoryItem {
   selected: boolean
   title: string
   type: number
-  edit: number
+  edit?: number
 }
 
 export interface AddItem {
@@ -40,6 +40,7 @@ export type BookListItem = BookItem | CategoryItem | AddItem
 export type BookList = BookListItem[]
 
 export type categoryListItem = CategoryItem | { title: string; edit: number }
+
 export interface BookShelfStoreReturn {
   bookList: BookList
   isEditMode: boolean
@@ -68,4 +69,6 @@ export interface BookShelfStoreReturn {
   removeBook: () => void
   readonly getSelectedBooks: BookItem[]
   clearSelectedBooks: () => void
+  clearAddFromBookList: () => void
+  newGroup: (group: CategoryItem) => void
 }

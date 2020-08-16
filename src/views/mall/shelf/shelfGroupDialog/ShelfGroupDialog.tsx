@@ -3,7 +3,6 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useRef,
-  useState,
 } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { useObserver, useLocalStore } from 'mobx-react'
@@ -16,6 +15,7 @@ interface DialogProp {
   isInGroup: boolean
   category?: CategoryItem
   bookList: BookList
+  isEditGroupName?: boolean
   groupEdit: (operation: number, group: categoryListItem) => void
 }
 
@@ -27,13 +27,17 @@ export interface RefProp {
 const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
   const { t } = useTranslation('shelf')
   const dialogInput = useRef<HTMLInputElement | null>(null)
-  const [newGroupName, setNewGroupName] = useState('')
+  //   const [newGroupName, setNewGroupName] = useState('')
 
   const store = useLocalStore((source) => {
     return {
       visible: false,
       newGroupDialogVisible: false,
       selectGroupDialogVisible: true,
+      newGroupName: '',
+      changeNewGroupName(str: string) {
+        this.newGroupName = str
+      },
       defaultCategory: [
         {
           title: t('newGroup'),
@@ -52,17 +56,43 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
           : []
         return [...this.defaultCategory, ...list] as categoryListItem[]
       },
-      onGroupClick(item:categoryListItem) {
+      onGroupClick(item: categoryListItem) {
         if (item.edit && item.edit === 1) {
-
+          this.showCreateGroupDialog()
         } else if (item.edit && item.edit === 2) {
-            // 移出分组
-            console.log(2)
-            this.hide()
+          // 移出分组
+          console.log(2)
+          this.hide()
         } else {
-            // 移入分组
-            props.groupEdit(1,item)
-            this.hide()
+          // 移入分组
+          source.groupEdit(1, item)
+          this.hide()
+        }
+      },
+      showCreateGroupDialog() {
+        this.newGroupDialogVisible = true
+        this.selectGroupDialogVisible = false
+        this.changeNewGroupName('')
+        setTimeout(() => {
+          dialogInput.current?.focus()
+        }, 20)
+      },
+      createNewGroup() {
+        console.log(20)
+        if (source.isEditGroupName) {
+          this.hide()
+        } else {
+          console.log(this.newGroupName.length)
+          if (this.newGroupName.length > 0) {
+            console.log(22)
+            source.groupEdit(2, {
+              id: source.bookList[source.bookList.length - 2].id + 1,
+              itemList: [],
+              selected: false,
+              title: this.newGroupName,
+              type: 2,
+            })
+          }
         }
       },
       show() {
@@ -146,29 +176,32 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
                       type="text"
                       className="dialog-input"
                       ref={dialogInput}
-                      value={newGroupName}
-                      onChange={(e) => setNewGroupName(e.target.value)}
+                      value={store.newGroupName}
+                      onChange={(e) => store.changeNewGroupName(e.target.value)}
                     />
                     <div
                       className="dialog-input-clear-wrapper"
                       style={{
-                        display: newGroupName.length > 0 ? 'block' : 'none',
+                        display:
+                          store.newGroupName.length > 0 ? 'block' : 'none',
                       }}
-                      onClick={() => setNewGroupName('')}
+                      onClick={() => store.changeNewGroupName('')}
                     >
                       <span className="icon-close-circle-fill"></span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="dialog-btn-wrapper" onClick={() => store.hide()}>
-                <div className="dialog-btn">{t('cancel')}</div>
+              <div className="dialog-btn-wrapper">
+                <div className="dialog-btn" onClick={() => store.hide()}>
+                  {t('cancel')}
+                </div>
                 <div
                   className={classnames({
                     'dialog-btn': true,
-                    'is-empty': newGroupName.length === 0,
+                    'is-empty': store.newGroupName.length === 0,
                   })}
-                  //   onClick={() => createNewGroup()}
+                  onClick={() => store.createNewGroup()}
                 >
                   {t('confirm')}
                 </div>
