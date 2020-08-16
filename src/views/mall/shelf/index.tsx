@@ -222,6 +222,8 @@ const BookShelf: FC = () => {
         this.clearAddFromBookList()
         this.bookList.push(group)
         this.appendAddToBookList()
+        this.onEditClick(false)
+        this.saveBookShelfToLocalStorage()
       },
       groupEdit(operation, group) {
         switch (operation) {

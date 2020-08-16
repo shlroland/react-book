@@ -1,9 +1,4 @@
-import React, {
-  memo,
-  useImperativeHandle,
-  forwardRef,
-  useRef,
-} from 'react'
+import React, { memo, useImperativeHandle, forwardRef, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { ShelfGroupDialogWrapper } from './style'
@@ -78,13 +73,10 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
         }, 20)
       },
       createNewGroup() {
-        console.log(20)
         if (source.isEditGroupName) {
           this.hide()
         } else {
-          console.log(this.newGroupName.length)
           if (this.newGroupName.length > 0) {
-            console.log(22)
             source.groupEdit(2, {
               id: source.bookList[source.bookList.length - 2].id + 1,
               itemList: [],
@@ -92,6 +84,10 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
               title: this.newGroupName,
               type: 2,
             })
+            this.newGroupDialogVisible = false
+            this.selectGroupDialogVisible = true
+            this.hide()
+            this.changeNewGroupName('')
           }
         }
       },
