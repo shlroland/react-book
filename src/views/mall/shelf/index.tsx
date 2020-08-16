@@ -172,11 +172,66 @@ const BookShelf: FC = () => {
         this.onEditClick(false)
         this.saveBookShelfToLocalStorage()
       },
+      get getSelectedBooks() {
+        const selectedBooks = this.bookList.filter((item) => {
+          return (item as BookItem).selected
+        }) as BookItem[]
+        this.bookList.forEach((item) => {
+          if (item.type === 2 && item.itemList) {
+            item.itemList.forEach((subItem: any) => {
+              if (subItem.selected) {
+                selectedBooks.push(subItem)
+              }
+            })
+          }
+        })
+        return selectedBooks
+      },
+      clearSelectedBooks() {
+        this.bookList = this.bookList.filter((item) => {
+          return !item.selected
+        })
+        this.bookList.forEach((item) => {
+          if (item.type === 2 && item.itemList) {
+            item.itemList = item.itemList.filter((subItem: BookItem) => {
+              return !subItem.selected
+            })
+          }
+        })
+      },
+      moveToGroup(group) {
+        const selectedBooks = this.getSelectedBooks
+        this.clearSelectedBooks()
+        if (group && group.itemList) {
+          group.itemList = [...group.itemList, ...selectedBooks]
+          group.itemList.forEach((item, index) => {
+            item.id = index + 1
+          })
+          this.onEditClick(false)
+          this.saveBookShelfToLocalStorage()
+          showToast(t('moveBookInSuccess', { $1: group.title }))
+        }
+      },
+      groupEdit(operation, group) {
+        switch (operation) {
+          case 1:
+            this.moveToGroup(group as CategoryItem)
+            break
+          case 2:
+            // this.newGroup(group)
+            // this.moveToGroup(group)
+            break
+          case 3:
+            // this.moveOutGroup()
+            break
+        }
+      },
     }
   })
 
   useEffect(() => {
     const bookList = store.getBookShelfFromLocalStorage()
+    console.log(bookList)
     if (bookList) {
       store.changeBookList(bookList)
     } else {
@@ -185,6 +240,7 @@ const BookShelf: FC = () => {
         if (!bookList.length) {
           bookList = []
         }
+
         store.changeBookList(bookList)
         store.appendAddToBookList()
         store.saveBookShelfToLocalStorage()
@@ -227,6 +283,7 @@ const BookShelf: FC = () => {
         setPrivate={store.setPrivate}
         setDownload={store.setDownload}
         removeBook={store.removeBook}
+        groupEdit={store.groupEdit}
       ></ShelfFooter>
       <RenderToast></RenderToast>
     </BookShelfWrapper>

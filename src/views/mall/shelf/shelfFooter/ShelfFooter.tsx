@@ -1,11 +1,14 @@
 import React, { FC, memo, useRef } from 'react'
 import { ShelfFooterWrapper } from './style'
-import { BookList, BookItem } from '../types'
+import { BookList, BookItem, categoryListItem } from '../types'
 import { useTranslation } from 'react-i18next'
 import { useLocalStore, useObserver } from 'mobx-react'
 import { footerTabs } from '@/utils/book'
 import classnames from 'classnames'
 import Popup, { RefProp } from '@/common/popup/Popup'
+import ShelfGroupDialog, {
+  RefProp as DialogRefProp,
+} from '../shelfGroupDialog/ShelfGroupDialog'
 interface ShelfFooterProp {
   data: BookList
   isInGroup: boolean
@@ -13,6 +16,7 @@ interface ShelfFooterProp {
   setPrivate: (v: boolean) => void
   setDownload: (v: boolean) => Promise<void>
   removeBook: () => void
+  groupEdit: (operation: number, group: categoryListItem) => void
 }
 
 type TabItem =
@@ -30,6 +34,7 @@ type TabItem =
 const ShelfFooter: FC<ShelfFooterProp> = (props) => {
   const { t } = useTranslation('shelf')
   const popupRef = useRef<RefProp | null>(null)
+  const dialogRef = useRef<DialogRefProp | null>(null)
 
   const store = useLocalStore(
     (source) => ({
@@ -146,6 +151,11 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
           this.showPopup(msg, t('removeBook'), source.removeBook, true)
         }
       },
+      showGroupDialog() {
+        if (this.isSelected) {
+          dialogRef.current?.show()
+        }
+      },
     }),
     props
   )
@@ -155,6 +165,8 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
       store.showPrivate()
     } else if (item.index === 2) {
       store.showDownload()
+    } else if (item.index === 3) {
+      store.showGroupDialog()
     } else if (item.index === 4) {
       store.showRemove()
     }
@@ -252,6 +264,12 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
         confirm={store.onConfirm}
         cancelText={t('cancel')}
       ></Popup>
+      <ShelfGroupDialog
+        ref={dialogRef}
+        bookList={props.data}
+        isInGroup={props.isInGroup}
+        groupEdit={props.groupEdit}
+      ></ShelfGroupDialog>
     </ShelfFooterWrapper>
   ))
 }

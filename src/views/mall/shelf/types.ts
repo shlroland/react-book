@@ -24,6 +24,7 @@ export interface CategoryItem {
   selected: boolean
   title: string
   type: number
+  edit: number
 }
 
 export interface AddItem {
@@ -38,6 +39,7 @@ export type BookListItem = BookItem | CategoryItem | AddItem
 
 export type BookList = BookListItem[]
 
+export type categoryListItem = CategoryItem | { title: string; edit: number }
 export interface BookShelfStoreReturn {
   bookList: BookList
   isEditMode: boolean
@@ -60,6 +62,10 @@ export interface BookShelfStoreReturn {
   setDownload: (v: boolean) => Promise<void>
   downloadBook: (item: BookItem) => void
   downloadItem: (item: BookItem, needDownload: boolean) => Promise<void>
+  groupEdit: (operation: number, group: categoryListItem) => void
+  moveToGroup: (group: CategoryItem) => void
   removeDownloadBook: (item: BookItem) => void
   removeBook: () => void
+  readonly getSelectedBooks: BookItem[]
+  clearSelectedBooks: () => void
 }
