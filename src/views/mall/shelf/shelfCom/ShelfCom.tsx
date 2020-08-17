@@ -11,6 +11,7 @@ import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useShowBookDetail } from '../../hooks'
+import qs from 'qs'
 interface ShelfComProp {
   data: BookList
   showType: number
@@ -90,8 +91,9 @@ const ShelfCom: FC<ShelfComProp> = (props) => {
       }
     } else if (book.type === 2) {
       if (!props.isEditMode) {
-        history.push(`/mall/category/${book.title}`, {
-          category: book,
+        history.push({
+          pathname:`/mall/category/${book.title}`,
+          search: `${qs.stringify({index})}`
         })
       }
     }

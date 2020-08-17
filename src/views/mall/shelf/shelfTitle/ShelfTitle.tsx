@@ -4,21 +4,24 @@ import { BookList, CategoryItem } from '../types'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { useTranslation } from 'react-i18next'
 import { CSSTransition } from 'react-transition-group'
+import { useHistory } from 'react-router-dom'
 
 interface ShelfTitleProp {
-  title: string
+  title?: string
   data: BookList
   ifShowBack: boolean
   ifShowClear: boolean
   isEditMode: boolean
   category?: CategoryItem
   ifGroupEmpty?: boolean
-  ifShowTitle: boolean
+  ifShowTitle?: boolean
   onEditClick: (v: boolean) => void
 }
 
 const ShelfTitle: FC<ShelfTitleProp> = (props) => {
   const { t } = useTranslation('shelf')
+
+  const history = useHistory()
 
   const { data, category, ifShowTitle } = props
 
@@ -87,7 +90,9 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
             </div>
           ) : null}
           {props.ifShowBack && !props.isEditMode ? (
-            <div className="btn-back-wrapper">
+            <div className="btn-back-wrapper" onClick={()=>{
+              history.goBack()
+            }}>
               <span className="icon-back"></span>
             </div>
           ) : null}

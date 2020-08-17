@@ -72,3 +72,32 @@ export interface BookShelfStoreReturn {
   clearAddFromBookList: () => void
   newGroup: (group: CategoryItem) => void
 }
+
+export interface BookShelfCategoryReturn {
+  bookList: BookList
+  category: CategoryItem | null
+  ifShowBack: boolean
+  ifShowClear: boolean
+  isEditMode: boolean
+  scrollBottom: number
+  readonly isEmpty: boolean
+  onEditClick: (v: boolean) => void
+  changeBookList: (bookList: BookList) => void
+  changeCategory: (index: number) => void
+  setPrivate: (v: boolean) => void
+  saveBookShelfToLocalStorage(): void
+  setDownload: (v: boolean) => Promise<void>
+  downloadBook: (item: BookItem) => void
+  downloadItem: (item: BookItem, needDownload: boolean) => Promise<void>
+  removeDownloadBook: (item: BookItem) => void
+  removeBook: () => void
+  groupEdit: (operation: number, group: categoryListItem) => void
+  newGroup: (group: CategoryItem) => void
+  moveToGroup: (group: CategoryItem) => void
+  readonly getSelectedBooks: BookItem[]
+  clearSelectedBooks: () => void
+  clearAddFromBookList: () => void
+  appendAddToBookList: () => void
+  moveOutGroup: () => void
+  appendBookToList: () => void
+}

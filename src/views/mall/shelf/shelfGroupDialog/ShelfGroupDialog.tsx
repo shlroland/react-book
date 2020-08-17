@@ -56,7 +56,7 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
           this.showCreateGroupDialog()
         } else if (item.edit && item.edit === 2) {
           // 移出分组
-          console.log(2)
+          source.groupEdit(3,item)
           this.hide()
         } else {
           // 移入分组

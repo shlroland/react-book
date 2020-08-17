@@ -11,6 +11,7 @@ import ShelfGroupDialog, {
 } from '../shelfGroupDialog/ShelfGroupDialog'
 interface ShelfFooterProp {
   data: BookList
+  bookList: BookList
   isInGroup: boolean
   isEditMode: boolean
   setPrivate: (v: boolean) => void
@@ -266,7 +267,7 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
       ></Popup>
       <ShelfGroupDialog
         ref={dialogRef}
-        bookList={props.data}
+        bookList={props.isInGroup ? props.bookList : props.data}
         isInGroup={props.isInGroup}
         groupEdit={props.groupEdit}
       ></ShelfGroupDialog>
@@ -276,6 +277,7 @@ const ShelfFooter: FC<ShelfFooterProp> = (props) => {
 
 ShelfFooter.defaultProps = {
   isInGroup: false,
+  bookList: []
 }
 
 export default memo(ShelfFooter)
