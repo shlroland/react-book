@@ -39,7 +39,6 @@ const Popup = forwardRef<RefProp, PopupProp>((props, ref) => {
   } = props
 
   const show = useCallback(() => {
-    console.log('show')
     setVisible(true)
     setPopupVisible(true)
   }, [])

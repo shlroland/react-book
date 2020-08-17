@@ -78,7 +78,6 @@ const BookHome: FC = () => {
     } else {
       home().then((res) => {
         if (res.status === 200 && res.data) {
-          console.log(res.data)
           store.parseHomeData(res.data)
           saveHome(res.data)
         }

@@ -18,7 +18,6 @@ const EbookSettingProgress = () => {
   const refreshLocation = useRefreshLocation()
 
   const displaySection = (section: number) => {
-    console.log(section)
     const sectionInfo = (ebookStore.currentBook as Book).section(section)
     if (sectionInfo && sectionInfo.href) {
       return display(sectionInfo.href)

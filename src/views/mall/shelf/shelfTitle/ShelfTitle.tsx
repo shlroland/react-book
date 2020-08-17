@@ -31,7 +31,7 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
   const popupRef = useRef<RefProp | null>(null)
   const dialogRef = useRef<DialogRefProp | null>(null)
 
-  const { data, ifShowTitle,deleteGroup } = props
+  const { ifShowTitle,deleteGroup } = props
 
   const store = useLocalStore((source) => {
     return {
@@ -96,7 +96,7 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
     }
   }, props)
 
-  const [isHideShadow, setIsHideShadow] = useState(true)
+  const [isHideShadow] = useState(true)
 
   const handleOnEditClick = () => {
     if (props.isEditMode) {

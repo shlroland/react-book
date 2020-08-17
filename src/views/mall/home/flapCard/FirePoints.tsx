@@ -31,7 +31,6 @@ const FirePoints:FC = () => {
     })
   }, [])
 
-  console.log(pointList)
 
   useEffect(() => {
     pointsRef.current = pointsRef.current.slice(0, pointList.length)
