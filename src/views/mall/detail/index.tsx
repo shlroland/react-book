@@ -3,7 +3,7 @@ import { BookDetailWrapper } from './style'
 import BookInfo from './BookInfo'
 import Scroll from '@/common/scroll/Scroll'
 import { useTranslation } from 'react-i18next'
-import { useParams, useLocation,useHistory } from 'react-router-dom'
+import { useParams, useLocation, useHistory } from 'react-router-dom'
 import { detail } from '@/api'
 import { useLocalStore, useObserver } from 'mobx-react'
 import Epub, { Book } from 'epubjs'
@@ -13,7 +13,12 @@ import Navigation, { NavItem } from 'epubjs/types/navigation'
 import classnames from 'classnames'
 import { px2vw } from '@/assets/styles'
 import DetailTitle from './DetailTitle'
-// class BookNavigation extn Navigation {}
+import useToast from '@/common/toast/Toast'
+import { BookList, BookItem } from '../shelf/types'
+import { getLocalStorage } from '@/utils/localStorage'
+import { runInAction } from 'mobx'
+import { getLocalForage } from '@/utils/localForage'
+import { removeFromBookShelf, addToShelf } from '@/utils/book'
 
 interface BookDetailStore {
   metadata: PackagingMetadataObject
@@ -21,14 +26,24 @@ interface BookDetailStore {
   description: string
   cover: string
   navigation: Navigation | null
+  opf: string
+  bookShelf: BookList
+  bookItem: BookItem | null
   readonly title: string
   readonly author: string
   readonly publisher: string
   readonly lang: string
   readonly isbn: string
   readonly flatNavigation: any
+  readonly inBookShelf: boolean
   parseBook: (blob: string) => void
   setCover: (cover: string) => void
+  setOpf: (opf: string) => void
+  setBookShelf: (list: BookList) => void
+  setBookItem: (item: BookItem) => void
+  init: () => void
+  readBook: () => void
+  addOrRemoveShelf: () => void
 }
 
 const BookDetail: FC = () => {
@@ -40,6 +55,8 @@ const BookDetail: FC = () => {
   const history = useHistory()
 
   const { t } = useTranslation('detail')
+
+  const { RenderToast, showToast } = useToast()
 
   const display = useCallback((book: Book, location: string) => {
     const rendition = book.renderTo('preview', {
@@ -75,8 +92,20 @@ const BookDetail: FC = () => {
       description: '',
       cover: '',
       navigation: null,
+      opf: '',
+      bookShelf: [],
+      bookItem: null,
+      setOpf(opf) {
+        this.opf = opf
+      },
       setCover(cover) {
         this.cover = cover
+      },
+      setBookShelf(list) {
+        this.bookShelf = list
+      },
+      setBookItem(item) {
+        this.bookItem = item
       },
       get title() {
         return this.metadata.title
@@ -125,6 +154,25 @@ const BookDetail: FC = () => {
         //     return ''
         // }
       },
+      get inBookShelf() {
+        if (this.bookItem && this.bookShelf) {
+          const flatShelf: BookItem[] = (function flatten(
+            arr: BookList
+          ): BookItem[] {
+            return ([] as any[]).concat(
+              ...arr.map((v) => (v.itemList ? [v, ...flatten(v.itemList)] : v))
+            )
+          })(this.bookShelf).filter((item) => item.type === 1)
+          const book = flatShelf.filter(
+            (item) =>
+              item.fileName ===
+              ((this.bookItem as unknown) as BookItem).fileName
+          )
+          return book && book.length > 0
+        } else {
+          return false
+        }
+      },
       parseBook(blob: string) {
         const book = Epub(blob)
         book.loaded.metadata.then((metadata) => {
@@ -145,28 +193,62 @@ const BookDetail: FC = () => {
           this.navigation = nav
         })
       },
+      init() {
+        detail({ fileName }).then((response) => {
+          if (
+            response.status === 200 &&
+            response.data.error_code === 0 &&
+            response.data.data
+          ) {
+            const data = response.data.data
+
+            let rootFile = data.rootFile
+            if (rootFile.startsWith('/')) {
+              rootFile = rootFile.substring(1, rootFile.length)
+            }
+            runInAction(() => {
+              store.setBookItem(data)
+              store.setCover(data.cover)
+              store.setOpf(
+                `${process.env.REACT_APP_EPUB_OPF_URL}/${fileName}/${rootFile}`
+              )
+              store.parseBook(
+                `${process.env.REACT_APP_EPUB_OPF_URL}/${fileName}/${rootFile}`
+              )
+            })
+          } else {
+            showToast(response.data?.msg)
+          }
+        })
+        runInAction(() => {
+          store.setBookShelf(getLocalStorage('bookShelf'))
+        })
+      },
+      readBook() {
+        getLocalForage(this.bookItem!.fileName, (err, value) => {
+          if (!err && value instanceof Blob) {
+            history.push({
+              pathname: `/ebook/${this.bookItem!.fileName}`,
+            })
+          } else {
+            history.push(`/ebook/${category}|${fileName}`)
+          }
+        })
+      },
+      addOrRemoveShelf() {
+        if (this.inBookShelf) {
+          removeFromBookShelf(this.bookItem!)
+        } else {
+          addToShelf(this.bookItem!)
+        }
+        this.bookShelf = getLocalStorage('bookShelf')
+      },
     }
   })
 
   useEffect(() => {
-    detail({ fileName }).then((response) => {
-      if (
-        response.status === 200 &&
-        response.data.error_code === 0 &&
-        response.data.data
-      ) {
-        const data = response.data.data
-        store.setCover(data.cover)
-        let rootFile = data.rootFile
-        if (rootFile.startsWith('/')) {
-          rootFile = rootFile.substring(1, rootFile.length)
-        }
-        store.parseBook(
-          `${process.env.REACT_APP_EPUB_OPF_URL}/${fileName}/${rootFile}`
-        )
-      }
-    })
-  }, [fileName, store])
+    store.init()
+  }, [store])
 
   return useObserver(() => (
     <BookDetailWrapper>
@@ -253,14 +335,30 @@ const BookDetail: FC = () => {
         </div>
       </Scroll>
       <div className="bottom-wrapper">
-        <div className="bottom-btn">{t('read')}</div>
+        <div
+          className="bottom-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            store.readBook()
+          }}
+        >
+          {t('read')}
+        </div>
         <div className="bottom-btn">{t('listen')}</div>
-        <div className="bottom-btn">
-          <span className="icon-check"></span>
-          {/* {inBookShelf ? t('detail.isAddedToShelf') : t('detail.addOrRemoveShelf')} */}
+        <div
+          className="bottom-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            store.addOrRemoveShelf()
+          }}
+        >
+          {store.inBookShelf ? <span className="icon-check"></span> : null}
+          {store.inBookShelf ? t('isAddedToShelf') : t('addOrRemoveShelf')}
         </div>
       </div>
-      {/* <toast ></toast> */}
+      <RenderToast></RenderToast>
     </BookDetailWrapper>
   ))
 }

@@ -59,6 +59,7 @@ const BookShelf: FC = () => {
         })
       },
       appendAddToBookList() {
+        console.log(this.bookList)
         this.bookList.push({
           cover: '',
           title: '',
@@ -244,7 +245,6 @@ const BookShelf: FC = () => {
 
   useEffect(() => {
     const bookList = store.getBookShelfFromLocalStorage()
-    console.log(bookList)
     if (bookList) {
       store.changeBookList(bookList)
     } else {
@@ -253,7 +253,6 @@ const BookShelf: FC = () => {
         if (!bookList.length) {
           bookList = []
         }
-
         store.changeBookList(bookList)
         store.appendAddToBookList()
         store.saveBookShelfToLocalStorage()

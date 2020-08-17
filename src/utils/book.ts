@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next'
 import { themeType } from '@/store/ebook/types'
-import { getReadTime, removeLocalStorage } from './localStorage'
-import { BookList } from '@/views/mall/shelf/types'
+import { getReadTime, removeLocalStorage, getLocalStorage, setLocalStorage } from './localStorage'
+import { BookList, BookItem } from '@/views/mall/shelf/types'
 import { removeLocalForage } from './localForage'
 
 export const fontSizeList = [
@@ -317,4 +317,43 @@ export function removeBookCache(fileName:string) {
       resolve()
     }, reject)
   })
+}
+
+export function removeFromBookShelf(bookItem:BookItem) {
+  let bookList = getLocalStorage('bookShelf') as BookList
+  bookList = bookList.filter(item => {
+    if (item.itemList) {
+      item.itemList = item.itemList.filter((subItem:BookItem) => subItem.fileName !== bookItem.fileName)
+    }
+    return (item as BookItem).fileName !== bookItem.fileName
+  })
+  setLocalStorage('bookShelf', bookList)
+}
+
+export function clearAddFromBookList(bookList:BookList) {
+  return bookList.filter(item => {
+    return item.type !== 3
+  })
+}
+
+
+export function appendAddToBookList(bookList:BookList) {
+  bookList.push({
+    cover: '',
+    title: '',
+    type: 3,
+    id: Number.MAX_SAFE_INTEGER
+  })
+}
+
+export function addToShelf(book:BookItem) {
+  let bookList = getLocalStorage('bookShelf') as BookList
+  bookList = clearAddFromBookList(bookList)
+  book.type = 1
+  bookList.push(book)
+  bookList.forEach((item, index) => {
+    item.id = index + 1
+  })
+  appendAddToBookList(bookList)
+  setLocalStorage('bookShelf', bookList)
 }

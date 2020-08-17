@@ -16,6 +16,7 @@ function EbookStore(): EbookStoreReturn {
   return {
     currentBook: null,
     changeCurrentBook(currentBook: Book) {
+      console.log(currentBook)
       this.currentBook = currentBook
     },
 

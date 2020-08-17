@@ -30,7 +30,7 @@ export function list() {
 export function shelf() {
   return axios({
     method: 'get',
-    url: `/book/shelf`,
+    url: `${process.env.REACT_APP_SAM_URL}/book/shelf`,
   })
 }
 
