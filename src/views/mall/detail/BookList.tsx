@@ -118,7 +118,7 @@ const BookList: FC = () => {
                 data={store.list![key as categoryListItem]}
                 titleText={categoryText as string || store.categoryText(key as categoryListItem)}
                 btnText="''"
-                key="index"
+                key={index}
               ></Featured>
             )
           })}

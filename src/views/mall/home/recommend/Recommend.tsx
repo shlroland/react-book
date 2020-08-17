@@ -4,6 +4,7 @@ import TitleView from '../title/Title'
 import { RecommendWrapper } from './style'
 import { RecommendItem } from '../types'
 import { useObserver } from 'mobx-react'
+import { useShowBookDetail } from '../../hooks'
 
 interface RecommendProp {
   data: RecommendItem[]
@@ -11,6 +12,7 @@ interface RecommendProp {
 
 const Recommend: FC<RecommendProp> = ({ data }) => {
   const { t } = useTranslation('home')
+  const showBookDetail = useShowBookDetail()
   return useObserver(() => (
     <RecommendWrapper>
       <TitleView label={t('recommend')} btn={t('seeAll')}></TitleView>
@@ -18,7 +20,11 @@ const Recommend: FC<RecommendProp> = ({ data }) => {
         {data &&
           data.map((item) => {
             return (
-              <div className="recommend-item" key={item.id}>
+              <div
+                className="recommend-item"
+                key={item.id}
+                onClick={() => showBookDetail(item)}
+              >
                 <div className="img-wrapper">
                   <img className="img" alt="暂无显示" src={item.cover} />
                 </div>

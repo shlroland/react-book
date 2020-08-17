@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { FeaturedItem } from '../types'
 import TitleView from '../title/Title'
 import { categoryText } from '@/utils/book'
+import { useShowBookDetail } from '../../hooks'
 
 interface FeaturedProp {
   data: FeaturedItem[]
@@ -13,6 +14,7 @@ interface FeaturedProp {
 
 const Featured: FC<FeaturedProp> = ({ data, titleText, btnText }) => {
   const { t } = useTranslation(['category', 'home'])
+  const showBookDetail = useShowBookDetail()
   return (
     <FeaturedWrapper>
       <TitleView label={titleText} btn={btnText}></TitleView>
@@ -21,7 +23,11 @@ const Featured: FC<FeaturedProp> = ({ data, titleText, btnText }) => {
           {data &&
             data.map((item) => {
               return (
-                <div className="featured-item" key={item.id}>
+                <div
+                  className="featured-item"
+                  key={item.id}
+                  onClick={() => showBookDetail(item)}
+                >
                   <div className="img-wrapper">
                     <img className="img" src={item.cover} alt="暂无图片" />
                   </div>

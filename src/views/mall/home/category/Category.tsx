@@ -1,32 +1,19 @@
-import React, { FC, memo, useCallback } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { FC, memo } from 'react'
 import TitleView from '../title/Title'
 import { useTranslation } from 'react-i18next'
 import { CategoryWrapper } from './style'
-import { categoryText, getCategoryName } from '@/utils/book'
+import { categoryText } from '@/utils/book'
 import { CategoriesItem } from '../types'
-import qs from 'qs'
+import { useShowBookCategory } from '../../hooks'
 
 interface CategoryProp {
   data: CategoriesItem[]
 }
 
 const Category: FC<CategoryProp> = ({ data }) => {
-  const history = useHistory()
   const { t } = useTranslation(['category', 'home'])
+  const showBookCategory = useShowBookCategory()
 
-  const showBookCategory = useCallback(
-    (item) => {
-      history.push({
-        pathname: '/mall/list',
-        search: `?${qs.stringify({
-          category: getCategoryName(item.category),
-          categoryText: categoryText(item.category, t),
-        })}`,
-      })
-    },
-    [history, t]
-  )
   return (
     <CategoryWrapper>
       <TitleView label={t('home:category')} btn={t('home:seeAll')}></TitleView>

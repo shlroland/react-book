@@ -8,6 +8,7 @@ import { useLocalStore, useObserver } from 'mobx-react'
 import { searchList } from '@/utils/mall'
 import HotSearch from './HotSearch'
 import { reaction } from 'mobx'
+import { useHistory } from 'react-router-dom'
 
 interface SearchBarProp {
   offsetY: number
@@ -16,6 +17,7 @@ interface SearchBarProp {
 
 const SearchBar: FC<SearchBarProp> = (prop) => {
   const { t } = useTranslation('home')
+  const history = useHistory()
 
   const store = useLocalStore(
     (source) => ({
@@ -40,8 +42,12 @@ const SearchBar: FC<SearchBarProp> = (prop) => {
               this.showSearchPage = false
               this.showShadow = true
               this.showHotSearch = false
+            } else {
+              history.push('/mall/shelf')
             }
           }
+        } else {
+          history.push('/mall/shelf')
         }
       },
       setHotSearchY(Y: number) {
@@ -85,7 +91,10 @@ const SearchBar: FC<SearchBarProp> = (prop) => {
         >
           <div className="title-search-page-wrapper">
             <span className="title-text">{t('title')}</span>
-            <div className="icon-shake-wrapper" onClick={() => prop.handleShowFlapCard()}>
+            <div
+              className="icon-shake-wrapper"
+              onClick={() => prop.handleShowFlapCard()}
+            >
               <span className="icon-shake icon"></span>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { CategoryBookWrapper } from './style'
 import { categoryText } from '@/utils/book'
 import { CategoryListItem } from '../types'
+import { useShowBookCategory } from '../../hooks'
 
 interface CategoryBookProp {
     data:CategoryListItem
@@ -11,11 +12,14 @@ interface CategoryBookProp {
 
 const CategoryBook:FC<CategoryBookProp> = ({ data }) => {
   const { t } = useTranslation(['category', 'home'])
+  const showBookCategory = useShowBookCategory()
+  console.log(data)
   return (
     <CategoryBookWrapper>
       <TitleView
         label={categoryText(data.category, t)}
         btn={t('home:seeAll')}
+        onChange={()=>{showBookCategory(data)}}
       ></TitleView>
       <div className="category-book-list">
         {data &&
