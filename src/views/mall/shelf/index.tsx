@@ -1,7 +1,11 @@
 import React, { FC, useEffect } from 'react'
 import { BookShelfWrapper } from './style'
 import { useLocalStore, useObserver } from 'mobx-react'
-import { setLocalStorage, getLocalStorage } from '@/utils/localStorage'
+import {
+  setLocalStorage,
+  getLocalStorage,
+  clearLocalStorage,
+} from '@/utils/localStorage'
 import { shelf, download } from '@/api'
 import { BookShelfStoreReturn, BookItem, CategoryItem } from './types'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +15,7 @@ import ShelfSearch from './shelfSearch/ShelfSearch'
 import ShelfCom from './shelfCom/ShelfCom'
 import ShelfFooter from './shelfFooter/ShelfFooter'
 import useToast from '@/common/toast/Toast'
-import { getLocalForage } from '@/utils/localForage'
+import { getLocalForage, clearLocalForage } from '@/utils/localForage'
 import Epub from 'epubjs'
 import { removeBookCache } from '@/utils/book'
 
@@ -240,25 +244,36 @@ const BookShelf: FC = () => {
             break
         }
       },
+      getBookList() {
+        const bookList = store.getBookShelfFromLocalStorage()
+        if (bookList) {
+          store.changeBookList(bookList)
+        } else {
+          shelf().then((response) => {
+            let bookList = response.data.bookList
+            if (!bookList.length) {
+              bookList = []
+            }
+            store.changeBookList(bookList)
+            store.appendAddToBookList()
+            store.saveBookShelfToLocalStorage()
+            store.initBookShelf()
+          })
+        }
+      },
+      clearCache() {
+        clearLocalStorage()
+        clearLocalForage(() => {
+          console.log('清除localForage成功...')
+          this.getBookList()
+        })
+        showToast(t('clearCacheSuccess'))
+      },
     }
   })
 
   useEffect(() => {
-    const bookList = store.getBookShelfFromLocalStorage()
-    if (bookList) {
-      store.changeBookList(bookList)
-    } else {
-      shelf().then((response) => {
-        let bookList = response.data.bookList
-        if (!bookList.length) {
-          bookList = []
-        }
-        store.changeBookList(bookList)
-        store.appendAddToBookList()
-        store.saveBookShelfToLocalStorage()
-        store.initBookShelf()
-      })
-    }
+    store.getBookList()
   }, [store])
 
   return useObserver(() => (
@@ -271,6 +286,7 @@ const BookShelf: FC = () => {
         isEditMode={store.isEditMode}
         ifShowTitle={store.ifShowTitle}
         onEditClick={store.onEditClick}
+        clearCache={store.clearCache}
       ></ShelfTitle>
       <ScrollView
         className="book-shelf-scroll-wrapper"

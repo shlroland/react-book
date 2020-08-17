@@ -71,6 +71,8 @@ export interface BookShelfStoreReturn {
   clearSelectedBooks: () => void
   clearAddFromBookList: () => void
   newGroup: (group: CategoryItem) => void
+  getBookList: () => void
+  clearCache: () => void
 }
 
 export interface BookShelfCategoryReturn {

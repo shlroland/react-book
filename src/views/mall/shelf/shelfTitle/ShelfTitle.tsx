@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { CSSTransition } from 'react-transition-group'
 import { useHistory } from 'react-router-dom'
 import Popup, { RefProp } from '@/common/popup/Popup'
-import ShelfGroupDialog,{
+import ShelfGroupDialog, {
   RefProp as DialogRefProp,
 } from '../shelfGroupDialog/ShelfGroupDialog'
 
@@ -20,8 +20,9 @@ interface ShelfTitleProp {
   ifGroupEmpty?: boolean
   ifShowTitle?: boolean
   onEditClick: (v: boolean) => void
-  deleteGroup?: ()=>void
-  editGroupName?: (name:string)=>void
+  deleteGroup?: () => void
+  editGroupName?: (name: string) => void
+  clearCache?: () => void
 }
 
 const ShelfTitle: FC<ShelfTitleProp> = (props) => {
@@ -31,7 +32,7 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
   const popupRef = useRef<RefProp | null>(null)
   const dialogRef = useRef<DialogRefProp | null>(null)
 
-  const { ifShowTitle,deleteGroup } = props
+  const { ifShowTitle, deleteGroup } = props
 
   const store = useLocalStore((source) => {
     return {
@@ -75,7 +76,7 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
       },
       onPopupDelete() {
         if (this.isDeleteGroup) {
-          if(deleteGroup) deleteGroup()
+          if (deleteGroup) deleteGroup()
           this.isDeleteGroup = false
         } else {
           popupRef.current?.hide()
@@ -90,9 +91,9 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
         dialogRef.current?.show()
         dialogRef.current?.showCreateGroupDialog()
       },
-      changeGroup(){
+      changeGroup() {
         popupRef.current?.show()
-      }
+      },
     }
   }, props)
 
@@ -135,14 +136,22 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
             </div>
           )}
           {props.ifShowClear ? (
-            <div className="btn-clear-wrapper">
+            <div
+              className="btn-clear-wrapper"
+              onClick={() => {
+                if (props.clearCache) props.clearCache()
+              }}
+            >
               <span className="btn-clear">{t('clearCache')}</span>
             </div>
           ) : null}
           {props.ifShowBack && !props.isEditMode ? (
-            <div className="btn-back-wrapper" onClick={()=>{
-              history.goBack()
-            }}>
+            <div
+              className="btn-back-wrapper"
+              onClick={() => {
+                history.goBack()
+              }}
+            >
               <span className="icon-back"></span>
             </div>
           ) : null}
@@ -153,20 +162,20 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
           ) : null}
         </div>
         <Popup
-        ref={popupRef}
-        title={store.popupTitle}
-        thirdText={store.thirdText}
-        confirmText={store.confirmText}
-        isRemoveText={true}
-        confirm={store.onPopupDelete}
-        third={store.onPopupChange}
-        cancelText={t('cancel')}
-      ></Popup>
-      <ShelfGroupDialog
-        ref={dialogRef}
-        isEditGroupName={true}
-        editGroupName={props.editGroupName}
-      ></ShelfGroupDialog>
+          ref={popupRef}
+          title={store.popupTitle}
+          thirdText={store.thirdText}
+          confirmText={store.confirmText}
+          isRemoveText={true}
+          confirm={store.onPopupDelete}
+          third={store.onPopupChange}
+          cancelText={t('cancel')}
+        ></Popup>
+        <ShelfGroupDialog
+          ref={dialogRef}
+          isEditGroupName={true}
+          editGroupName={props.editGroupName}
+        ></ShelfGroupDialog>
       </ShelfTitleWrapper>
     </CSSTransition>
   ))

@@ -38,15 +38,15 @@ export function removeLocalForage(
 }
 
 export function clearLocalForage(
-  cb: (...args: any) => any,
-  cb2: (...args: any) => any
+  cb?: (...args: any) => any,
+  cb2?: (...args: any) => any
 ) {
   localForage
     .clear()
     .then(function () {
-      cb()
+      if (cb) cb()
     })
     .catch(function (err) {
-      cb2(err)
+      if (cb2) cb2(err)
     })
 }
