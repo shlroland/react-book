@@ -7,16 +7,18 @@ import { CategoryItem, BookList, categoryListItem } from '../types'
 import classnames from 'classnames'
 
 interface DialogProp {
-  isInGroup: boolean
+  isInGroup?: boolean
   category?: CategoryItem
-  bookList: BookList
+  bookList?: BookList
   isEditGroupName?: boolean
-  groupEdit: (operation: number, group: categoryListItem) => void
+  groupEdit?: (operation: number, group: categoryListItem) => void
+  editGroupName?: (name: string) => void
 }
 
 export interface RefProp {
   show: () => void
   hide: () => void
+  showCreateGroupDialog: () => void
 }
 
 const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
@@ -56,11 +58,11 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
           this.showCreateGroupDialog()
         } else if (item.edit && item.edit === 2) {
           // 移出分组
-          source.groupEdit(3,item)
+          if (source.groupEdit) source.groupEdit(3, item)
           this.hide()
         } else {
           // 移入分组
-          source.groupEdit(1, item)
+          if (source.groupEdit) source.groupEdit(1, item)
           this.hide()
         }
       },
@@ -74,16 +76,18 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
       },
       createNewGroup() {
         if (source.isEditGroupName) {
+          if (source.editGroupName) source.editGroupName(this.newGroupName)
           this.hide()
         } else {
           if (this.newGroupName.length > 0) {
-            source.groupEdit(2, {
-              id: source.bookList[source.bookList.length - 2].id + 1,
-              itemList: [],
-              selected: false,
-              title: this.newGroupName,
-              type: 2,
-            })
+            if (source.groupEdit)
+              source.groupEdit(2, {
+                id: source.bookList![source.bookList!.length - 2].id + 1,
+                itemList: [],
+                selected: false,
+                title: this.newGroupName,
+                type: 2,
+              })
             this.newGroupDialogVisible = false
             this.selectGroupDialogVisible = true
             this.hide()
@@ -103,6 +107,7 @@ const ShelfGroupDialog = forwardRef<RefProp, DialogProp>((props, ref) => {
   useImperativeHandle(ref, () => ({
     show: store.show,
     hide: store.hide,
+    showCreateGroupDialog: store.showCreateGroupDialog,
   }))
 
   return useObserver(() => (

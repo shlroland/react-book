@@ -1,10 +1,14 @@
-import React, { FC, memo, useState } from 'react'
+import React, { FC, memo, useState, useRef } from 'react'
 import { ShelfTitleWrapper } from './style'
 import { BookList, CategoryItem } from '../types'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { useTranslation } from 'react-i18next'
 import { CSSTransition } from 'react-transition-group'
 import { useHistory } from 'react-router-dom'
+import Popup, { RefProp } from '@/common/popup/Popup'
+import ShelfGroupDialog,{
+  RefProp as DialogRefProp,
+} from '../shelfGroupDialog/ShelfGroupDialog'
 
 interface ShelfTitleProp {
   title?: string
@@ -16,17 +20,22 @@ interface ShelfTitleProp {
   ifGroupEmpty?: boolean
   ifShowTitle?: boolean
   onEditClick: (v: boolean) => void
+  deleteGroup?: ()=>void
+  editGroupName?: (name:string)=>void
 }
 
 const ShelfTitle: FC<ShelfTitleProp> = (props) => {
   const { t } = useTranslation('shelf')
 
   const history = useHistory()
+  const popupRef = useRef<RefProp | null>(null)
+  const dialogRef = useRef<DialogRefProp | null>(null)
 
-  const { data, category, ifShowTitle } = props
+  const { data, ifShowTitle,deleteGroup } = props
 
   const store = useLocalStore((source) => {
     return {
+      isDeleteGroup: false,
       get selectedNumber() {
         if (source.category && source.category.itemList) {
           return source.category.itemList.filter((item) => item.selected).length
@@ -43,6 +52,47 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
           ? t('haveSelectedBook', { $1: this.selectedNumber })
           : t('haveSelectedBooks', { $1: this.selectedNumber })
       },
+      get popupTitle() {
+        if (this.isDeleteGroup) {
+          return t('deleteGroupTitle')
+        } else {
+          return ''
+        }
+      },
+      get confirmText() {
+        if (this.isDeleteGroup) {
+          return t('confirm')
+        } else {
+          return t('deleteGroup')
+        }
+      },
+      get thirdText() {
+        if (this.isDeleteGroup) {
+          return ''
+        } else {
+          return t('editGroupName')
+        }
+      },
+      onPopupDelete() {
+        if (this.isDeleteGroup) {
+          if(deleteGroup) deleteGroup()
+          this.isDeleteGroup = false
+        } else {
+          popupRef.current?.hide()
+          setTimeout(() => {
+            this.isDeleteGroup = true
+            popupRef.current?.show()
+          }, 250)
+        }
+      },
+      onPopupChange() {
+        source.onEditClick(false)
+        dialogRef.current?.show()
+        dialogRef.current?.showCreateGroupDialog()
+      },
+      changeGroup(){
+        popupRef.current?.show()
+      }
     }
   }, props)
 
@@ -80,7 +130,7 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
               </span>
             </div>
           ) : (
-            <div className="btn-text-wrapper">
+            <div className="btn-text-wrapper" onClick={store.changeGroup}>
               <span className="btn-text">{t('editGroup')}</span>
             </div>
           )}
@@ -97,11 +147,26 @@ const ShelfTitle: FC<ShelfTitleProp> = (props) => {
             </div>
           ) : null}
           {props.ifShowBack && props.isEditMode ? (
-            <div className="btn-back-wrapper">
+            <div className="btn-back-wrapper" onClick={store.changeGroup}>
               <span className="btn-text">{t('editGroup')}</span>
             </div>
           ) : null}
         </div>
+        <Popup
+        ref={popupRef}
+        title={store.popupTitle}
+        thirdText={store.thirdText}
+        confirmText={store.confirmText}
+        isRemoveText={true}
+        confirm={store.onPopupDelete}
+        third={store.onPopupChange}
+        cancelText={t('cancel')}
+      ></Popup>
+      <ShelfGroupDialog
+        ref={dialogRef}
+        isEditGroupName={true}
+        editGroupName={props.editGroupName}
+      ></ShelfGroupDialog>
       </ShelfTitleWrapper>
     </CSSTransition>
   ))

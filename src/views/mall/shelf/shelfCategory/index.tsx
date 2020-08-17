@@ -10,7 +10,7 @@ import {
   BookList,
 } from '../types'
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import qs from 'qs'
 import ScrollView from '@/common/scroll/Scroll'
 import ShelfCom from '../shelfCom/ShelfCom'
@@ -27,6 +27,7 @@ const BOOK_SHELF_KEY = 'bookShelf'
 const ShelfCategory: FC = () => {
   const { t } = useTranslation('shelf')
   const location = useLocation()
+  const history = useHistory()
 
   const { RenderToast, showToast } = useToast()
 
@@ -236,16 +237,17 @@ const ShelfCategory: FC = () => {
         }
       },
       moveOutGroup() {
+        const selectedBooks = this.getSelectedBooks
         this.clearAddFromBookList()
-        this.appendBookToList()
+        this.appendBookToList(selectedBooks)
         this.clearSelectedBooks()
         this.onEditClick(false)
         this.saveBookShelfToLocalStorage()
         showToast(t('moveBookOutSuccess'))
       },
-      appendBookToList() {
+      appendBookToList(books) {
         let id = this.bookList[this.bookList.length - 1].id + 1
-        this.getSelectedBooks.forEach((item) => {
+        books.forEach((item) => {
           item.id = id++
           this.bookList.push(item)
         })
@@ -264,8 +266,26 @@ const ShelfCategory: FC = () => {
           type: 3,
           id: Number.MAX_SAFE_INTEGER,
         })
-        console.log(toJS(this.bookList))
       },
+      deleteGroup() {
+        const itemList = this.category?.itemList
+        this.clearSelectedBooks()
+        this.removeCategory(this.category!)
+        this.clearAddFromBookList()
+        this.appendBookToList(itemList!)
+        this.onEditClick(false)
+        this.saveBookShelfToLocalStorage()
+        history.goBack()
+      },
+      removeCategory(category) {
+        this.bookList = this.bookList.filter(item => {
+          return category.id !== item.id
+        })
+      },
+      editGroupName(newName){
+        this.category!.title = newName
+        this.saveBookShelfToLocalStorage()
+      }
     }
   })
 
@@ -286,6 +306,8 @@ const ShelfCategory: FC = () => {
         ifGroupEmpty={store.isEmpty}
         ifShowTitle={true}
         onEditClick={store.onEditClick}
+        deleteGroup={store.deleteGroup}
+        editGroupName={store.editGroupName}
       ></ShelfTitle>
       {!store.isEmpty ? (
         <>

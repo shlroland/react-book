@@ -99,5 +99,8 @@ export interface BookShelfCategoryReturn {
   clearAddFromBookList: () => void
   appendAddToBookList: () => void
   moveOutGroup: () => void
-  appendBookToList: () => void
+  appendBookToList: (books: BookItem[]) => void
+  removeCategory: (category: CategoryItem) => void
+  deleteGroup: () => void
+  editGroupName: (name: string) => void
 }

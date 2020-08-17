@@ -77,8 +77,8 @@ const useToast = (timeout = 1500) => {
     portalRoot = document.createElement('div')
     portalRoot.id = 'portal-root'
     document.body.appendChild(portalRoot)
-
   }
+  
   const RenderToast = () =>
     createPortal(
       <CSSTransition

@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useImperativeHandle,
 } from 'react'
+import { createPortal } from 'react-dom'
 import { PopupWrapper } from './style'
 import { CSSTransition } from 'react-transition-group'
 import classnames from 'classnames'
@@ -15,10 +16,12 @@ interface PopupProp {
   cancelText: string
   thirdText?: string
   confirm: (...args: any) => any
+  third?: (...args: any) => any
 }
 
 export interface RefProp {
   show: () => void
+  hide: () => void
 }
 
 const Popup = forwardRef<RefProp, PopupProp>((props, ref) => {
@@ -32,9 +35,11 @@ const Popup = forwardRef<RefProp, PopupProp>((props, ref) => {
     cancelText,
     thirdText,
     confirm,
+    third,
   } = props
 
   const show = useCallback(() => {
+    console.log('show')
     setVisible(true)
     setPopupVisible(true)
   }, [])
@@ -55,9 +60,20 @@ const Popup = forwardRef<RefProp, PopupProp>((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     show,
+    hide,
   }))
 
-  return (
+  let portalRoot: HTMLElement
+  const element = document.getElementById('portal-root')
+  if (element) {
+    portalRoot = element
+  } else {
+    portalRoot = document.createElement('div')
+    portalRoot.id = 'portal-root'
+    document.body.appendChild(portalRoot)
+  }
+
+  return createPortal(
     <PopupWrapper style={{ display: visible ? 'block' : 'none' }}>
       <div
         className="popup-bg"
@@ -84,7 +100,16 @@ const Popup = forwardRef<RefProp, PopupProp>((props, ref) => {
             <div className="popup-title">{title}</div>
           ) : null}
           {thirdText && thirdText.length > 0 ? (
-            <div className="popup-confirm-btn">{thirdText}</div>
+            <div className="popup-confirm-btn" onClick={() => {
+              if(third) {
+                hide()
+                setTimeout(()=>{
+                  third()
+                },250)
+              }
+            }}>
+              {thirdText}
+            </div>
           ) : null}
           <div
             className={classnames({
@@ -100,7 +125,8 @@ const Popup = forwardRef<RefProp, PopupProp>((props, ref) => {
           </div>
         </div>
       </CSSTransition>
-    </PopupWrapper>
+    </PopupWrapper>,
+    portalRoot
   )
 })
 
