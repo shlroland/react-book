@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/static/css/main.fed8517b.chunk.css",
+    "main.js": "/static/js/main.6786a19d.chunk.js",
+    "main.js.map": "/static/js/main.6786a19d.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.4d36e973.js",
+    "runtime-main.js.map": "/static/js/runtime-main.4d36e973.js.map",
+    "static/js/2.56eda0c9.chunk.js": "/static/js/2.56eda0c9.chunk.js",
+    "static/js/2.56eda0c9.chunk.js.map": "/static/js/2.56eda0c9.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.c9b12f2dc77ac1c89c3e3dceeb2b1110.js": "/precache-manifest.c9b12f2dc77ac1c89c3e3dceeb2b1110.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.fed8517b.chunk.css.map": "/static/css/main.fed8517b.chunk.css.map",
+    "static/js/2.56eda0c9.chunk.js.LICENSE.txt": "/static/js/2.56eda0c9.chunk.js.LICENSE.txt",
+    "static/media/compass-left.png": "/static/media/compass-left.449019b3.png",
+    "static/media/compass-right.png": "/static/media/compass-right.8ff56c5c.png",
+    "static/media/crown-left.png": "/static/media/crown-left.fe9cf002.png",
+    "static/media/crown-right.png": "/static/media/crown-right.b0edb78b.png",
+    "static/media/gift-left.png": "/static/media/gift-left.322c044a.png",
+    "static/media/gift-right.png": "/static/media/gift-right.b83f580a.png",
+    "static/media/heart-left.png": "/static/media/heart-left.608cf278.png",
+    "static/media/heart-right.png": "/static/media/heart-right.003340dd.png",
+    "static/media/icon.css": "/static/media/icomoon.6df9152e.ttf",
+    "static/media/star-left.png": "/static/media/star-left.746e22aa.png",
+    "static/media/star-right.png": "/static/media/star-right.71b561b3.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4d36e973.js",
+    "static/js/2.56eda0c9.chunk.js",
+    "static/css/main.fed8517b.chunk.css",
+    "static/js/main.6786a19d.chunk.js"
+  ]
+}

@@ -1,4 +1,0 @@
-{
-  "plugins": ["react-activation/babel"],
-  "presets": ["react-app"]
-}
